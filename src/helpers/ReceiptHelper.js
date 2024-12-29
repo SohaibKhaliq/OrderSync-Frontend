@@ -1,4 +1,4 @@
-const RECEIPT_KEY = "RESTROPROSAAS__RECEIPT__PRINT";
+const RECEIPT_KEY = "ordersync__RECEIPT__PRINT";
 
 export function getDetailsForReceiptPrint() {
     return JSON.parse(localStorage.getItem(RECEIPT_KEY));

@@ -1,4 +1,4 @@
-const KEY = 'restroprosaas_user'
+const KEY = 'ordersync_user'
 export function saveUserDetailsInLocalStorage(user) {
     localStorage.setItem(KEY, JSON.stringify(user));
 }

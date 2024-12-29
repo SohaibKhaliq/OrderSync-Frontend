@@ -1,4 +1,4 @@
-const NAVBAR_SIZE_KEY = 'RESTROPROSAAS__NAVBAR';
+const NAVBAR_SIZE_KEY = 'ordersync__NAVBAR';
 
 /**
  * @returns {boolean} - 

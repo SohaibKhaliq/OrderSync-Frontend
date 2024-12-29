@@ -1,7 +1,7 @@
 import axios from "axios";
 import { API } from "../config/config";
 
-const CART_KEY = 'RESTROPROSAAS__CART';
+const CART_KEY = 'ordersync__CART';
 
 export async function getQRMenuInit(qrcode, tableId) {
     axios.defaults.withCredentials = true;
