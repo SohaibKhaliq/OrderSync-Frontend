@@ -26,14 +26,14 @@ export default function LadingPage() {
         </h3>
 
         <p className="text-gray-500 mt-8 text-center">
-          Effortless POS. Unparalleled Growth. RestroPRO POS empowers you with
+          Effortless POS. Unparalleled Growth. OrderSync POS empowers you with
           the tools you need to streamline operations, increase staff
           productivity, and gain valuable customer insights. Make data-driven
           decisions, optimize your menu, and watch your foodservice business
           flourish.
         </p>
 
-        <div className="flex items-center gap-4 mt-8">
+        {/* <div className="flex items-center gap-4 mt-8">
           <Link
             className="hover:bg-restro-green-dark bg-restro-green text-lg text-white rounded-full px-5 py-3 transition active:scale-95"
             to="/login"
@@ -46,7 +46,7 @@ export default function LadingPage() {
           >
             View Pricing
           </a>
-        </div>
+        </div> */}
       </div>
       <img
         src="/assets/hero.webp"
@@ -69,7 +69,7 @@ export default function LadingPage() {
           </div>
           <h3 className="mt-4 font-bold text-2xl text-center">Minimal UI</h3>
           <p className="text-gray-700 mt-2 text-center">
-            Effortless Interface, RestroPRO POS boasts a clean and intuitive
+            Effortless Interface, OrderSync POS boasts a clean and intuitive
             design. No cluttered screens, just the essentials you need to manage
             your business with ease.
           </p>
@@ -81,7 +81,7 @@ export default function LadingPage() {
           </div>
           <h3 className="mt-4 font-bold text-2xl text-center">POS</h3>
           <p className="text-gray-700 mt-2 text-center">
-            RestroPRO POS simplifies sales. Manage orders, categories & variants
+            OrderSync POS simplifies sales. Manage orders, categories & variants
             with ease. Send to kitchen instantly & accept payments securely.
             All-in-one for a smooth flow.
           </p>
@@ -102,7 +102,7 @@ export default function LadingPage() {
       {/* features */}
 
       {/* pricing */}
-      <h3 className="text-4xl font-bold text-center container mx-auto mt-40">
+      {/* <h3 className="text-4xl font-bold text-center container mx-auto mt-40">
         Pricing
       </h3>
       <div
@@ -119,7 +119,7 @@ export default function LadingPage() {
             <li>✅ Live Kitchen Orders</li>
           </ul>
         </div>
-      </div>
+      </div> */}
       {/* pricing */}
 
       {/* contact */}

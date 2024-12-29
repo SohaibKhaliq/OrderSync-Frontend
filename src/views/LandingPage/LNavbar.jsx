@@ -21,12 +21,12 @@ export default function LNavbar() {
           >
             Features
           </a>
-          <a
+          {/* <a
             className="hover:bg-gray-100 text-gray-700 rounded-full px-4 py-2 transition active:scale-95"
             href="#pricing"
           >
             Pricing
-          </a>
+          </a> */}
           <a
             className="hover:bg-gray-100 text-gray-700 rounded-full px-4 py-2 transition active:scale-95"
             href="#contact"
@@ -41,17 +41,16 @@ export default function LNavbar() {
           >
             Login
           </Link>
-          <Link
+          {/* <Link
             className="hover:bg-restro-green-dark bg-restro-green text-white rounded-full px-4 py-2 transition active:scale-95"
             to="/register"
           >
             Get Started
-          </Link>
+          </Link> */}
         </div>
 
         {/* mobile btn */}
         <div className="block lg:hidden">
-          
           <label
             aria-label="open sidebar"
             htmlFor="my-drawer"
@@ -107,14 +106,14 @@ export default function LNavbar() {
               Login
             </Link>
           </li>
-          <li onClick={closeDrawer} className="mt-4">
+          {/* <li onClick={closeDrawer} className="mt-4">
             <Link
               className="hover:bg-restro-green-dark block text-center bg-restro-green text-white rounded-full px-4 py-2 transition active:scale-95"
               to="/register"
             >
               Get Started
             </Link>
-          </li>
+          </li> */}
         </ul>
       </div>
       {/* mobile menu */}
