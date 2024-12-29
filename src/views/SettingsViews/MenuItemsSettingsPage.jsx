@@ -1,12 +1,21 @@
 import React, { useRef } from "react";
 import Page from "../../components/Page";
-import { IconCarrot, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react";
+import {
+  IconCarrot,
+  IconPencil,
+  IconPlus,
+  IconTrash,
+} from "@tabler/icons-react";
 import { iconStroke } from "../../config/config";
 import { useCategories, useTaxes } from "../../controllers/settings.controller";
 import toast from "react-hot-toast";
 import { mutate } from "swr";
 import { Link, useNavigate } from "react-router-dom";
-import { addMenuItem, deleteMenuItem, useMenuItems } from "../../controllers/menu_item.controller";
+import {
+  addMenuItem,
+  deleteMenuItem,
+  useMenuItems,
+} from "../../controllers/menu_item.controller";
 
 export default function MenuItemsSettingsPage() {
   const navigate = useNavigate();
@@ -15,6 +24,7 @@ export default function MenuItemsSettingsPage() {
   const netPriceRef = useRef();
   const taxIdRef = useRef();
   const categoryIdRef = useRef();
+  const imageRef = useRef();
 
   const {
     APIURL: APIURLCategories,
@@ -23,61 +33,107 @@ export default function MenuItemsSettingsPage() {
     isLoading: isLoadingCategories,
   } = useCategories();
 
-  const { APIURL: APIURLTaxes, data:taxes, error:errorTaxes, isLoading:isLoadingTaxes } = useTaxes();
+  const {
+    APIURL: APIURLTaxes,
+    data: taxes,
+    error: errorTaxes,
+    isLoading: isLoadingTaxes,
+  } = useTaxes();
 
-  const {APIURL,data: menuItems,error,isLoading} = useMenuItems();
+  const { APIURL, data: menuItems, error, isLoading } = useMenuItems();
 
-  if (isLoadingCategories) {
+  if (isLoadingCategories || isLoadingTaxes || isLoading) {
     return <Page>Please wait...</Page>;
   }
 
-  if (errorCategories) {
+  if (errorCategories || errorTaxes || error) {
     return <Page>Error loading details! Please Try Later!</Page>;
   }
 
-  if(isLoadingTaxes) {
-    return <Page>Please wait...</Page>
-  }
+  // Ensure menuItems is an array
+  const menuItemsArray = Array.isArray(menuItems) ? menuItems : [];
 
-  if(errorTaxes) {
-    return <Page>Error loading details! Please Try Later!</Page>;
-  }
+  // Debugging
+  console.log("menuItems:", menuItems);
+  console.log("menuItemsArray:", menuItemsArray);
 
-  if(isLoading) {
-    return <Page>Please wait...</Page>
-  }
+  // async function btnAdd() {
+  //   const title = titleRef.current.value;
+  //   const price = priceRef.current.value;
+  //   const netPrice = netPriceRef.current.value || null;
+  //   const categoryId = categoryIdRef.current.value || null;
+  //   const taxId = taxIdRef.current.value || null;
+  //   const image = imageRef.current.files[0] || null;
 
-  if(error) {
-    return <Page>Error loading details! Please Try Later!</Page>;
-  }
+  //   if (!title) {
+  //     toast.error("Please enter title!");
+  //     return;
+  //   }
 
+  //   if (price < 0) {
+  //     toast.error("Please provide valid price!");
+  //     return;
+  //   }
+
+  //   try {
+  //     toast.loading("Please wait...");
+  //     const res = await addMenuItem(title, price, netPrice, categoryId, taxId, image);
+
+  //     if (res.status === 200) {
+  //       titleRef.current.value = null;
+  //       priceRef.current.value = null;
+  //       netPriceRef.current.value = null;
+  //       categoryIdRef.current.value = null;
+  //       taxIdRef.current.value = null;
+  //       imageRef.current.value = null;
+
+  //       await mutate(APIURL);
+  //       toast.dismiss();
+  //       toast.success(res.data.message);
+  //     }
+  //   } catch (error) {
+  //     const message = error.response.data.message || "Something went wrong!";
+  //     console.error(error);
+  //     toast.dismiss();
+  //     toast.error(message);
+  //   }
+  // }
   async function btnAdd() {
     const title = titleRef.current.value;
     const price = priceRef.current.value;
     const netPrice = netPriceRef.current.value || null;
     const categoryId = categoryIdRef.current.value || null;
     const taxId = taxIdRef.current.value || null;
+    const image = imageRef.current.files[0] || null;
 
-    if(!title) {
+    if (!title) {
       toast.error("Please enter title!");
       return;
     }
 
-    if(price < 0) {
+    if (price < 0) {
       toast.error("Please provide valid price!");
       return;
     }
 
     try {
       toast.loading("Please wait...");
-      const res = await addMenuItem(title, price, netPrice, categoryId, taxId);
+      const res = await addMenuItem(
+        title,
+        price,
+        netPrice,
+        categoryId,
+        taxId,
+        image
+      );
 
-      if(res.status == 200) {
+      if (res.status === 200) {
         titleRef.current.value = null;
         priceRef.current.value = null;
         netPriceRef.current.value = null;
         categoryIdRef.current.value = null;
         taxIdRef.current.value = null;
+        imageRef.current.value = null;
 
         await mutate(APIURL);
         toast.dismiss();
@@ -90,11 +146,12 @@ export default function MenuItemsSettingsPage() {
       toast.error(message);
     }
   }
-
   const btnDelete = async (id) => {
-    const isConfirm = window.confirm("Are you sure! This process is irreversible!");
+    const isConfirm = window.confirm(
+      "Are you sure! This process is irreversible!"
+    );
 
-    if(!isConfirm) {
+    if (!isConfirm) {
       return;
     }
 
@@ -102,7 +159,7 @@ export default function MenuItemsSettingsPage() {
       toast.loading("Please wait...");
       const res = await deleteMenuItem(id);
 
-      if(res.status == 200) {
+      if (res.status === 200) {
         await mutate(APIURL);
         toast.dismiss();
         toast.success(res.data.message);
@@ -118,7 +175,7 @@ export default function MenuItemsSettingsPage() {
 
   const btnShowUpdate = (id) => {
     navigate(`/dashboard/settings/menu-items/${id}`);
-  }
+  };
 
   return (
     <Page className="px-8 py-6">
@@ -139,8 +196,18 @@ export default function MenuItemsSettingsPage() {
       </div>
 
       <div className="mt-8 w-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
-        {menuItems.map((menuItem, index) => {
-          const { id, title, price, net_price, tax_id, category_id, category_title, addons, variants } = menuItem;
+        {menuItemsArray.map((menuItem, index) => {
+          const {
+            id,
+            title,
+            price,
+            net_price,
+            tax_id,
+            category_id,
+            category_title,
+            addons,
+            variants,
+          } = menuItem;
 
           return (
             <div
@@ -154,12 +221,12 @@ export default function MenuItemsSettingsPage() {
                 <p>
                   {title} - {price}
                 </p>
-                <p className="text-gray-400 text-xs">
-                  {category_title}
-                </p>
-                {variants.length > 0 && <p className="text-gray-400 text-xs">
-                  {variants.length} Variants
-                </p>}
+                <p className="text-gray-400 text-xs">{category_title}</p>
+                {variants.length > 0 && (
+                  <p className="text-gray-400 text-xs">
+                    {variants.length} Variants
+                  </p>
+                )}
               </div>
               <div className="flex gap-0">
                 <button
@@ -250,18 +317,17 @@ export default function MenuItemsSettingsPage() {
                 placeholder="Select Category"
               >
                 <option value="">None</option>
-                {
-                  categories.map((category, index)=>{
-                    return <option value={category.id} key={category.id}>{category.title}</option>
-                  })
-                }
+                {categories.map((category, index) => {
+                  return (
+                    <option value={category.id} key={category.id}>
+                      {category.title}
+                    </option>
+                  );
+                })}
               </select>
             </div>
             <div className="flex-1">
-              <label
-                htmlFor="tax"
-                className="mb-1 block text-gray-500 text-sm"
-              >
+              <label htmlFor="tax" className="mb-1 block text-gray-500 text-sm">
                 Tax
               </label>
               <select
@@ -271,13 +337,27 @@ export default function MenuItemsSettingsPage() {
                 placeholder="Select Tax"
               >
                 <option value="">None</option>
-                {
-                  taxes.map((tax, index)=>{
-                    return <option value={tax.id} key={tax.id}>{tax.title} - {tax.rate}% ({tax.type})</option>
-                  })
-                }
+                {taxes.map((tax, index) => {
+                  return (
+                    <option value={tax.id} key={tax.id}>
+                      {tax.title} - {tax.rate}% ({tax.type})
+                    </option>
+                  );
+                })}
               </select>
             </div>
+          </div>
+
+          <div className="flex-1">
+            <label htmlFor="image" className="text-gray-500 text-sm">
+              Image
+            </label>
+            <input
+              ref={imageRef}
+              type="file"
+              name="image"
+              className="text-sm w-full border rounded-lg px-4 py-2 bg-gray-50 outline-restro-border-green-light"
+            />
           </div>
 
           <div className="modal-action">
