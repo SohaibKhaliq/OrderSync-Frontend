@@ -25,8 +25,55 @@ export function useMenuItem(id) {
   };
 }
 
-export async function addMenuItem(formData) {
+// export async function addMenuItem(title, price, netPrice, categoryId, taxId) {
+//   try {
+//     const response = await ApiClient.post("/menu-items/add", {
+//       title,
+//       price,
+//       netPrice,
+//       categoryId,
+//       taxId,
+//       image
+//     });
+//     return response;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+// export async function addMenuItem(title, price, netPrice, categoryId, taxId, image) {
+//   try {
+//     const formData = new FormData();
+//     formData.append("title", title);
+//     formData.append("price", price);
+//     formData.append("netPrice", netPrice);
+//     formData.append("categoryId", categoryId);
+//     formData.append("taxId", taxId);
+//     if (image) {
+//       formData.append("image", image);
+//     }
+
+//     const response = await ApiClient.post("/menu-items/add", formData, {
+//       headers: {
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//     return response;
+//   } catch (error) {
+//     throw error;
+//   }
+// }
+export async function addMenuItem(title, price, netPrice, categoryId, taxId, image) {
   try {
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("price", price);
+    formData.append("netPrice", netPrice);
+    formData.append("categoryId", categoryId);
+    formData.append("taxId", taxId);
+    if (image) {
+      formData.append("image", image);
+    }
+
     const response = await ApiClient.post("/menu-items/add", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -37,8 +84,6 @@ export async function addMenuItem(formData) {
     throw error;
   }
 }
-
-
 export async function updateMenuItem(id, title, price, netPrice, categoryId, taxId) {
   try {
     const response = await ApiClient.post(`/menu-items/update/${id}`, {
