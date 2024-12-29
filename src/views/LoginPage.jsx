@@ -173,12 +173,12 @@ export default function LoginPage() {
               <div className="flex-1 border-b"></div>
             </div>
 
-            <Link
+            {/* <Link
               to="/register"
               className="block w-full text-center bg-slate-100 text-slate-500 rounded-xl px-4 py-3 transition hover:scale-105 active:scale-95 hover:shadow-xl hover:bg-slate-200 hover:shadow-slate-800/10"
             >
               Create Account
-            </Link>
+            </Link> */}
 
           </form>
         </div>
