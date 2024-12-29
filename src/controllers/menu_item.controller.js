@@ -25,20 +25,19 @@ export function useMenuItem(id) {
   };
 }
 
-export async function addMenuItem(title, price, netPrice, categoryId, taxId) {
+export async function addMenuItem(formData) {
   try {
-    const response = await ApiClient.post("/menu-items/add", {
-      title,
-      price,
-      netPrice,
-      categoryId,
-      taxId,
+    const response = await ApiClient.post("/menu-items/add", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return response;
   } catch (error) {
     throw error;
   }
 }
+
 
 export async function updateMenuItem(id, title, price, netPrice, categoryId, taxId) {
   try {
