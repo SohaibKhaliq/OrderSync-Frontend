@@ -147,8 +147,7 @@ async function handlePost(url, data) {
   // Auth
   if (url === "/auth/signin" || url === "/auth/login") {
     const { username, password } = data || {};
-    const { Users: U } = await import("../localdb/LocalDB");
-    const user = U.findByUsername(username);
+    const user = Users.findByUsername(username);
     if (!user || user.password !== password) {
       return err("Invalid username or password", 401);
     }
