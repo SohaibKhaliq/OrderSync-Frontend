@@ -17,7 +17,8 @@ export default defineConfig({
       manifest: {
         name: "OrderSync",
         short_name: "OrderSync",
-        description: "Manage Your Restaurant, Cafe, Hotel, Bar, Food Truck, Stall, any food store.",
+        description:
+          "Manage Your Restaurant, Cafe, Hotel, Bar, Food Truck, Stall, any food store.",
         theme_color: "#ECF1EB",
         icons: [
           {
