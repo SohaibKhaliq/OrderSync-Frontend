@@ -1,139 +1,72 @@
-import ApiClient from "../helpers/ApiClient";
-import axios from "axios";
-import { API } from "../config/config";
+// superadmin.controller.js – offline stub (superadmin not used in offline mode)
+import { Users, initDB } from "../localdb/LocalDB";
 import { clearUserDetailsInLocalStorage } from "../helpers/UserDetails";
-import useSWR from "swr";
+
+initDB();
+
+const STUB_DASHBOARD = { totalTenants: 0, activeTenants: 0, revenue: 0 };
+const STUB_TENANTS = { tenants: [], total: 0 };
 
 export async function signIn(username, password) {
-  axios.defaults.withCredentials = true;
-  try {
-    const response = await axios.post(`${API}/superadmin/signin`, {
-      username, password
-    });
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  // Offline: superadmin login is disabled
+  throw {
+    response: {
+      status: 401,
+      data: { message: "Superadmin is not available in offline mode" },
+    },
+  };
 }
-
 
 export async function signOut() {
-  axios.defaults.withCredentials = true;
-  try {
-    const response = await ApiClient.post(`${API}/superadmin/signout`);
-
-    clearUserDetailsInLocalStorage();
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  clearUserDetailsInLocalStorage();
+  localStorage.removeItem("session_user");
+  return { status: 200, data: { message: "Signed out" } };
 }
 
-const fetcher = (url) => ApiClient.get(url).then((res) => res.data);
-
 export function useSuperAdminDashboard() {
-  const APIURL = `/superadmin/dashboard`;
-  const { data, error, isLoading } = useSWR(APIURL, fetcher);
-  return {
-    data,
-    error,
-    isLoading,
-    APIURL,
-  };
+  return { data: STUB_DASHBOARD, error: null, isLoading: false, APIURL: null };
 }
 
 export function useSuperAdminTenantsData() {
-  const APIURL = `/superadmin/tenantsData`;
-  const { data, error, isLoading } = useSWR(APIURL, fetcher);
-  return {
-    data,
-    error,
-    isLoading,
-    APIURL,
-  };
+  return { data: STUB_TENANTS, error: null, isLoading: false, APIURL: null };
 }
 
 export async function getSuperAdminTenantsData() {
-  try {
-    const APIURL = `/superadmin/tenantsData`;
-    const response = await ApiClient.get(APIURL);
-    return response;
-  } catch (error) {
-    throw error;
-  }
-}
-export async function getTenantsData({page, perPage, search, status , type , from , to}) {
-  try {
-    const response = await ApiClient.get(`${API}/superadmin/tenants?page=${page}&perPage=${perPage}&search=${search}&status=${status}&type=${type}&from=${from}&to=${to}`);
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return { status: 200, data: STUB_TENANTS };
 }
 
-export async function addTenant(name , email , password , isActive) {
-  try {
-    const response = await ApiClient.post(`${API}/superadmin/tenants/add`, {
-      name , email , password , isActive
-    });
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
+export async function getTenantsData({
+  page,
+  perPage,
+  search,
+  status,
+  type,
+  from,
+  to,
+}) {
+  return { status: 200, data: STUB_TENANTS };
 }
 
-export async function updateTenant(name , email , isActive , id) {
-  try {
-    const response = await ApiClient.patch(`${API}/superadmin/tenants/update/${id}`, {
-      name , email , isActive
-    });
-        return response;
-    } catch (error) {
-        throw error;
-    }
+export async function addTenant(name, email, password, isActive) {
+  return { status: 200, data: { message: "Not available in offline mode" } };
+}
+
+export async function updateTenant(name, email, isActive, id) {
+  return { status: 200, data: { message: "Not available in offline mode" } };
 }
 
 export async function deleteTenant(id) {
-  try {
-    const response = await ApiClient.delete(`${API}/superadmin/tenants/delete/${id}`);
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return { status: 200, data: { message: "Not available in offline mode" } };
 }
 
 export async function getTenantsDataByStatus(status) {
-  try {
-    const response = await ApiClient.get(`${API}/superadmin/tenantsData/${status}`);
-
-    return response;
-  } catch (error) {
-    throw error;
-  }
+  return { status: 200, data: STUB_TENANTS };
 }
 
 export function useSuperAdminReports({ type, from = null, to = null }) {
-  const APIURL = `/superadmin/reports?type=${type}&from=${from}&to=${to}`;
-  const { data, error, isLoading } = useSWR(APIURL, fetcher);
-  return {
-    data,
-    error,
-    isLoading,
-    APIURL,
-  };
+  return { data: { reports: [] }, error: null, isLoading: false, APIURL: null };
 }
 
 export function useSuperAdminTenantSubscriptionHistory(tenantId) {
-  const APIURL = `/superadmin/tenants/${tenantId}/subscription-history`;
-  const { data, error, isLoading } = useSWR(APIURL, fetcher);
-  return {
-    data,
-    error,
-    isLoading,
-    APIURL,
-  };
+  return { data: { history: [] }, error: null, isLoading: false, APIURL: null };
 }
