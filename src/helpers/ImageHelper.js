@@ -1,5 +1,8 @@
-import { API_IMAGES_BASE_URL } from "../config/config";
-
+// ImageHelper.js – offline mode: no backend image serving
 export function getImageURL(path) {
-    return API_IMAGES_BASE_URL + path;
+  if (!path) return null;
+  // If it's already a full data URL or absolute URL, return as-is
+  if (path.startsWith("data:") || path.startsWith("http")) return path;
+  // Offline: return null so UI falls back to placeholder icons
+  return null;
 }
