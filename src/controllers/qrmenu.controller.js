@@ -1,6 +1,6 @@
 // qrmenu.controller.js – offline mode
 // QR menu public-facing pages read from LocalDB directly
-import { Settings, MenuItems, Orders } from "../localdb/LocalDB";
+import { Settings, MenuItems, Orders, Customers } from "../localdb/LocalDB";
 
 const CART_KEY = "ordersync__CART";
 
@@ -46,7 +46,6 @@ export async function createOrderFromQrMenu(
     // Add customer if new
     let customerId = customer?.id || null;
     if (customer && !customerId && customer.phone) {
-      const { Customers } = await import("../localdb/LocalDB");
       const existing = Customers.search(customer.phone);
       if (existing.length > 0) {
         customerId = existing[0].id;
