@@ -1,4 +1,4 @@
+// AuthStatus.js – offline mode: check localStorage session instead of cookie
 export function isRestroUserAuthenticated() {
-    const restroAuthenticated = document.cookie.includes("ordersync__authenticated=");
-    return restroAuthenticated;
+  return !!localStorage.getItem("session_user");
 }
