@@ -1,108 +1,101 @@
-import ApiClient from "../helpers/ApiClient";
-import axios from "axios";
-import { API } from "../config/config";
+import { Users, initDB } from "../localdb/LocalDB";
 import { clearUserDetailsInLocalStorage } from "../helpers/UserDetails";
-import useSWR from "swr";
+
+initDB();
 
 export async function signIn(username, password) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await axios.post(`${API}/auth/signin`, {
-            username, password
-        });
-
-        return response;
-    } catch (error) {
-        throw error;
+  try {
+    const user = Users.findByUsername(username);
+    if (!user || user.password !== password) {
+      const err = {
+        response: {
+          status: 401,
+          data: { message: "Invalid username or password" },
+        },
+      };
+      throw err;
     }
+    const { password: _p, ...safeUser } = user;
+    localStorage.setItem("session_user", JSON.stringify(safeUser));
+    return {
+      status: 200,
+      data: { message: "Login successful", user: safeUser },
+    };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function signUp(biz_name, username, password) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await axios.post(`${API}/auth/signup`, {
-            biz_name, username, password
-        });
-
-        return response;
-    } catch (error) {
-        throw error;
+  try {
+    const existing = Users.findByUsername(username);
+    if (existing) {
+      throw {
+        response: { status: 400, data: { message: "Username already exists" } },
+      };
     }
+    const user = Users.add(
+      username,
+      password,
+      biz_name,
+      "",
+      "",
+      username,
+      "dashboard,pos,orders,kitchen,customers,invoices,reports,reservations,users,settings",
+    );
+    // Upgrade to admin role
+    const { getDB, saveDB } = await import("../localdb/LocalDB");
+    const db = getDB();
+    const idx = (db.users || []).findIndex((u) => u.username === username);
+    if (idx !== -1) {
+      db.users[idx].role = "admin";
+      saveDB(db);
+    }
+    return { status: 200, data: { message: "Registration successful", user } };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function signOut() {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await ApiClient.post(`${API}/auth/signout`);
-
-        clearUserDetailsInLocalStorage();
-
-        return response;
-    } catch (error) {
-        throw error;
-    }
+  try {
+    localStorage.removeItem("session_user");
+    clearUserDetailsInLocalStorage();
+    return { status: 200, data: { message: "Signed out" } };
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function forgotPassword(email) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await axios.post(`${API}/auth/forgot-password`, {
-            username: email
-        });
-
-        return response;
-    } catch (error) {
-        throw error;
-    }
+  // Offline mode: always pretend to succeed
+  return {
+    status: 200,
+    data: { message: "If that email exists, a reset link has been sent." },
+  };
 }
 
 export async function resetPassword(token, password) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await axios.post(`${API}/auth/reset-password/${token}`, {
-            password
-        });
-
-        return response;
-    } catch (error) {
-        throw error;
-    }
+  // Offline mode: always pretend to succeed
+  return { status: 200, data: { message: "Password reset successful" } };
 }
 
 export async function getStripeSubscriptionURL(productLookupKey) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await ApiClient.post(`${API}/auth/stripe-product-lookup`, {
-            id: productLookupKey
-        });
-        return response;
-    } catch (error) {
-        throw error;
-    }
+  return { status: 200, data: { url: "#" } };
 }
 
-
-const fetcher = (url) => ApiClient.get(url).then((res) => res.data);
-
 export function useSubscriptionDetails() {
-  const APIURL = `/auth/subscription-details`;
-  const { data, error, isLoading } = useSWR(APIURL, fetcher);
   return {
-    data,
-    error,
-    isLoading,
-    APIURL,
+    data: { plan: "offline", status: "active" },
+    error: null,
+    isLoading: false,
+    APIURL: null,
   };
 }
 
 export async function cancelSubscription(subscriptionId) {
-    axios.defaults.withCredentials = true;
-    try {
-        const response = await ApiClient.post(`${API}/auth/cancel-subscription`, {
-            id: subscriptionId
-        });
-        return response;
-    } catch (error) {
-        throw error;
-    }
+  return {
+    status: 200,
+    data: { message: "Subscription cancelled (offline mode)" },
+  };
 }
