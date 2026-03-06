@@ -1,23 +1,16 @@
-import io from 'socket.io-client';
-import { VITE_BACKEND_SOCKET_IO } from '../config/config';
+// socket.js – offline stub (socket.io replaced by window events via SocketContext)
+// This file is kept for compatibility with any remaining imports.
 
-const socket = io(VITE_BACKEND_SOCKET_IO, {
-  autoConnect: false, // Prevent automatic connection until explicit initialization
-  // transports: ['websocket'], // Prefer WebSockets for better performance
-  rejectUnauthorized: false,
-});
-
-export const initSocket = () => {
-  // if (!socket.connected) {
-  //   socket.connect();
-  // }
-  socket.connect();
+const socket = {
+  emit() {},
+  on() {},
+  off() {},
+  connect() {},
+  disconnect() {},
+  connected: true,
 };
 
-export const disconnectSocket = () => {
-  if (socket.connected) {
-    socket.disconnect();
-  }
-};
+export const initSocket = () => {};
+export const disconnectSocket = () => {};
 
 export default socket;
