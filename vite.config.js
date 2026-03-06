@@ -4,10 +4,16 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ["@tabler/icons-react"],
+  },
   plugins: [
     react(),
     VitePWA({
       registerType: "autoUpdate",
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+      },
       manifest: {
         name: "OrderSync",
         short_name: "OrderSync",
