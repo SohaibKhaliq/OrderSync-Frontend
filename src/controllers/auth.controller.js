@@ -1,4 +1,4 @@
-import { Users, initDB } from "../localdb/LocalDB";
+import { Users, initDB, getDB, saveDB } from "../localdb/LocalDB";
 import { clearUserDetailsInLocalStorage } from "../helpers/UserDetails";
 
 initDB();
@@ -44,7 +44,6 @@ export async function signUp(biz_name, username, password) {
       "dashboard,pos,orders,kitchen,customers,invoices,reports,reservations,users,settings",
     );
     // Upgrade to admin role
-    const { getDB, saveDB } = await import("../localdb/LocalDB");
     const db = getDB();
     const idx = (db.users || []).findIndex((u) => u.username === username);
     if (idx !== -1) {
