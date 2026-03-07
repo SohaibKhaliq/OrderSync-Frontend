@@ -62,6 +62,9 @@ import CafeCartPage from "./views/cafe/CafeCartPage";
 import CafeCheckoutPage from "./views/cafe/CafeCheckoutPage";
 import CafeOrdersPage from "./views/cafe/CafeOrdersPage";
 import CafeOrderTrackingPage from "./views/cafe/CafeOrderTrackingPage";
+import CafeAboutPage from "./views/cafe/CafeAboutPage";
+import CafeGalleryPage from "./views/cafe/CafeGalleryPage";
+import CafeContactPage from "./views/cafe/CafeContactPage";
 import CafeLayout from "./views/cafe/CafeLayout";
 
 // ── Payment Gateway Simulations ───────────────────────────
@@ -87,6 +90,9 @@ export default function App() {
                 {/* ── Customer cafe portal (root) ── */}
                 <Route element={<CafeLayout />}>
                   <Route path="/" element={<CafeLandingPage />} />
+                  <Route path="/about" element={<CafeAboutPage />} />
+                  <Route path="/gallery" element={<CafeGalleryPage />} />
+                  <Route path="/contact" element={<CafeContactPage />} />
                   <Route path="/login" element={<CafeLoginPage />} />
                   <Route path="/register" element={<CafeRegisterPage />} />
                   <Route
