@@ -7,7 +7,7 @@ export default function CustomerRoute({ children }) {
   const location = useLocation();
 
   if (!customer) {
-    return <Navigate to="/cafe/login" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;

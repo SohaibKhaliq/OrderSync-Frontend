@@ -4,7 +4,7 @@ import { isRestroUserAuthenticated } from "./AuthStatus";
 const PrivateRoute = ({ children }) => {
   const restroAuthenticated = isRestroUserAuthenticated();
 
-  if (!restroAuthenticated) return <Navigate to="/" replace />;
+  if (!restroAuthenticated) return <Navigate to="/staff/login" replace />;
   return children;
 };
 

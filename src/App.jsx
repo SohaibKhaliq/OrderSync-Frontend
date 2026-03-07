@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./helpers/PrivateRoute";
-import LandingPage from "./views/LandingPage/LandingPage";
 import LoginPage from "./views/LoginPage";
 import DashboardLayout from "./views/DashboardLayout";
 import DashboardPage from "./views/DashboardPage";
@@ -84,9 +83,54 @@ export default function App() {
           >
             <BrowserRouter>
               <Routes>
-                <Route path="/" element={<LandingPage />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/register" element={<RegistrationPage />} />
+                {/* ── Customer cafe portal (root) ── */}
+                <Route path="/" element={<CafeLandingPage />} />
+                <Route path="/login" element={<CafeLoginPage />} />
+                <Route path="/register" element={<CafeRegisterPage />} />
+                <Route
+                  path="/menu"
+                  element={
+                    <CustomerRoute>
+                      <CafeMenuPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/cart"
+                  element={
+                    <CustomerRoute>
+                      <CafeCartPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/checkout"
+                  element={
+                    <CustomerRoute>
+                      <CafeCheckoutPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/orders"
+                  element={
+                    <CustomerRoute>
+                      <CafeOrdersPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/orders/:id"
+                  element={
+                    <CustomerRoute>
+                      <CafeOrderTrackingPage />
+                    </CustomerRoute>
+                  }
+                />
+
+                {/* ── Staff login / register ── */}
+                <Route path="/staff/login" element={<LoginPage />} />
+                <Route path="/staff/register" element={<RegistrationPage />} />
                 <Route
                   path="/forgot-password"
                   element={<ForgotPasswordPage />}
@@ -318,51 +362,6 @@ export default function App() {
                   />
                 </Route>
                 {/* superadmin routes */}
-
-                {/* ── OCOS Cafe Portal ── */}
-                <Route path="/cafe" element={<CafeLandingPage />} />
-                <Route path="/cafe/login" element={<CafeLoginPage />} />
-                <Route path="/cafe/register" element={<CafeRegisterPage />} />
-                <Route
-                  path="/cafe/menu"
-                  element={
-                    <CustomerRoute>
-                      <CafeMenuPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/cafe/cart"
-                  element={
-                    <CustomerRoute>
-                      <CafeCartPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/cafe/checkout"
-                  element={
-                    <CustomerRoute>
-                      <CafeCheckoutPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/cafe/orders"
-                  element={
-                    <CustomerRoute>
-                      <CafeOrdersPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/cafe/orders/:id"
-                  element={
-                    <CustomerRoute>
-                      <CafeOrderTrackingPage />
-                    </CustomerRoute>
-                  }
-                />
 
                 {/* ── Payment Gateway Simulations ── */}
                 <Route path="/payment/jazzcash" element={<JazzCashPage />} />

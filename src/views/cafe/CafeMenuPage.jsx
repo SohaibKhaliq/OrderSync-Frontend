@@ -82,15 +82,15 @@ export default function CafeMenuPage() {
       {/* Navbar */}
       <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
         <div className="flex-1">
-          <Link to="/cafe" className="text-xl font-bold text-primary">
+          <Link to="/" className="text-xl font-bold text-primary">
             {store?.store_name || "Cafe"}
           </Link>
         </div>
         <div className="flex items-center gap-2">
-          <Link to="/cafe/orders" className="btn btn-ghost btn-sm">
+          <Link to="/orders" className="btn btn-ghost btn-sm">
             Orders
           </Link>
-          <Link to="/cafe/cart" className="btn btn-primary btn-sm indicator">
+          <Link to="/cart" className="btn btn-primary btn-sm indicator">
             {itemCount > 0 && (
               <span className="indicator-item badge badge-secondary badge-sm">
                 {itemCount}
@@ -102,7 +102,7 @@ export default function CafeMenuPage() {
             className="btn btn-ghost btn-sm"
             onClick={() => {
               logout();
-              navigate("/cafe");
+              navigate("/");
             }}
           >
             Logout

@@ -84,7 +84,7 @@ export default function CafeCheckoutPage() {
       });
       clearCart();
       toast.success("Order placed successfully!");
-      navigate(`/cafe/orders/${order.id}`);
+      navigate(`/orders/${order.id}`);
     } catch (err) {
       toast.error("Failed to place order. Please try again.");
     } finally {
@@ -95,7 +95,7 @@ export default function CafeCheckoutPage() {
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
       <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
-        <Link to="/cafe/cart" className="btn btn-ghost btn-sm">
+        <Link to="/cart" className="btn btn-ghost btn-sm">
           ← Back to Cart
         </Link>
         <span className="flex-1 text-center font-bold text-lg">Checkout</span>

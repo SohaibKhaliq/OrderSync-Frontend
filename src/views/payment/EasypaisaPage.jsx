@@ -61,7 +61,7 @@ export default function EasypaisaPage() {
           localStorage.removeItem("cafe_pending_order");
           clearCart();
           setLoading(false);
-          navigate(`/cafe/orders/${order.id}`);
+          navigate(`/orders/${order.id}`);
           toast.success("Payment successful! Reference: " + ref);
         } catch {
           setLoading(false);
@@ -76,7 +76,7 @@ export default function EasypaisaPage() {
 
   function handleCancel() {
     localStorage.removeItem("cafe_pending_order");
-    navigate("/cafe/checkout");
+    navigate("/checkout");
   }
 
   return (

@@ -25,7 +25,7 @@ export default function CafeCartPage() {
     return (
       <div className="min-h-screen bg-base-100 flex flex-col">
         <nav className="navbar bg-base-200 shadow-sm px-4">
-          <Link to="/cafe/menu" className="btn btn-ghost btn-sm">
+          <Link to="/menu" className="btn btn-ghost btn-sm">
             ← Back to Menu
           </Link>
           <span className="flex-1 text-center font-bold text-lg">
@@ -49,7 +49,7 @@ export default function CafeCartPage() {
             />
           </svg>
           <p className="text-lg font-semibold">Your cart is empty</p>
-          <Link to="/cafe/menu" className="btn btn-primary">
+          <Link to="/menu" className="btn btn-primary">
             Browse Menu
           </Link>
         </div>
@@ -60,7 +60,7 @@ export default function CafeCartPage() {
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
       <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
-        <Link to="/cafe/menu" className="btn btn-ghost btn-sm">
+        <Link to="/menu" className="btn btn-ghost btn-sm">
           ← Back to Menu
         </Link>
         <span className="flex-1 text-center font-bold text-lg">
@@ -157,7 +157,7 @@ export default function CafeCartPage() {
             </div>
             <button
               className="btn btn-primary w-full mt-4"
-              onClick={() => navigate("/cafe/checkout")}
+              onClick={() => navigate("/checkout")}
             >
               Proceed to Checkout
             </button>

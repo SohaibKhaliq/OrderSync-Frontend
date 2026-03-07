@@ -51,7 +51,7 @@ export default function CafeOrderTrackingPage() {
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
       <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
-        <Link to="/cafe/orders" className="btn btn-ghost btn-sm">
+        <Link to="/orders" className="btn btn-ghost btn-sm">
           ← My Orders
         </Link>
         <span className="flex-1 text-center font-bold text-lg">
@@ -187,7 +187,7 @@ export default function CafeOrderTrackingPage() {
           </div>
         </div>
 
-        <Link to="/cafe/menu" className="btn btn-outline">
+        <Link to="/menu" className="btn btn-outline">
           Order Again
         </Link>
       </div>

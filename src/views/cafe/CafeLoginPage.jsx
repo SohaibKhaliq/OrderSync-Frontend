@@ -11,7 +11,7 @@ export default function CafeLoginPage() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
-  const from = location.state?.from?.pathname || "/cafe/menu";
+  const from = location.state?.from?.pathname || "/menu";
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -40,7 +40,7 @@ export default function CafeLoginPage() {
     <div className="min-h-screen bg-base-100 flex flex-col">
       {/* Navbar */}
       <nav className="navbar bg-base-200 shadow-sm px-6">
-        <Link to="/cafe" className="text-xl font-bold text-primary">
+        <Link to="/" className="text-xl font-bold text-primary">
           ← Back to Home
         </Link>
       </nav>
@@ -102,7 +102,7 @@ export default function CafeLoginPage() {
             </form>
 
             <div className="divider text-xs">Don't have an account?</div>
-            <Link to="/cafe/register" className="btn btn-outline w-full">
+            <Link to="/register" className="btn btn-outline w-full">
               Create Account
             </Link>
           </div>

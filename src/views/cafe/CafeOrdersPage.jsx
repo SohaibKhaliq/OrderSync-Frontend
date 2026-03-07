@@ -26,7 +26,7 @@ export default function CafeOrdersPage() {
   return (
     <div className="min-h-screen bg-base-100 flex flex-col">
       <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
-        <Link to="/cafe/menu" className="btn btn-ghost btn-sm">
+        <Link to="/menu" className="btn btn-ghost btn-sm">
           ← Menu
         </Link>
         <span className="flex-1 text-center font-bold text-lg">My Orders</span>
@@ -37,7 +37,7 @@ export default function CafeOrdersPage() {
         {orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-base-content/50 gap-4">
             <p className="text-lg font-semibold">No orders yet</p>
-            <Link to="/cafe/menu" className="btn btn-primary">
+            <Link to="/menu" className="btn btn-primary">
               Start Ordering
             </Link>
           </div>
@@ -46,7 +46,7 @@ export default function CafeOrdersPage() {
             {orders.map((order) => (
               <Link
                 key={order.id}
-                to={`/cafe/orders/${order.id}`}
+                to={`/orders/${order.id}`}
                 className="card bg-base-200 shadow hover:shadow-md transition-shadow cursor-pointer"
               >
                 <div className="card-body py-4">

@@ -46,7 +46,7 @@ export default function CafeRegisterPage() {
       const session = CustomerAccounts.login(form.email, form.password);
       login(session);
       toast.success(`Welcome, ${account.name}!`);
-      navigate("/cafe/menu", { replace: true });
+      navigate("/menu", { replace: true });
     } catch (err) {
       toast.error(err.message || "Registration failed");
     } finally {
@@ -58,7 +58,7 @@ export default function CafeRegisterPage() {
     <div className="min-h-screen bg-base-100 flex flex-col">
       {/* Navbar */}
       <nav className="navbar bg-base-200 shadow-sm px-6">
-        <Link to="/cafe" className="text-xl font-bold text-primary">
+        <Link to="/" className="text-xl font-bold text-primary">
           ← Back to Home
         </Link>
       </nav>
@@ -170,7 +170,7 @@ export default function CafeRegisterPage() {
             </form>
 
             <div className="divider text-xs">Already have an account?</div>
-            <Link to="/cafe/login" className="btn btn-outline w-full">
+            <Link to="/login" className="btn btn-outline w-full">
               Sign In
             </Link>
           </div>

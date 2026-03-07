@@ -29,10 +29,10 @@ export default function CafeLandingPage() {
         <div className="flex gap-3">
           {customer ? (
             <>
-              <Link to="/cafe/menu" className="btn btn-sm btn-primary">
+              <Link to="/menu" className="btn btn-sm btn-primary">
                 Order Now
               </Link>
-              <Link to="/cafe/orders" className="btn btn-sm btn-ghost">
+              <Link to="/orders" className="btn btn-sm btn-ghost">
                 My Orders
               </Link>
               <button
@@ -46,10 +46,10 @@ export default function CafeLandingPage() {
             </>
           ) : (
             <>
-              <Link to="/cafe/login" className="btn btn-sm btn-ghost">
+              <Link to="/login" className="btn btn-sm btn-ghost">
                 Login
               </Link>
-              <Link to="/cafe/register" className="btn btn-sm btn-primary">
+              <Link to="/register" className="btn btn-sm btn-primary">
                 Register
               </Link>
             </>
@@ -68,11 +68,11 @@ export default function CafeLandingPage() {
             Browse our menu and order online with ease.
           </p>
           <div className="flex gap-4 flex-wrap justify-center">
-            <Link to="/cafe/menu" className="btn btn-primary btn-lg">
+            <Link to="/menu" className="btn btn-primary btn-lg">
               Browse Menu
             </Link>
             {!customer && (
-              <Link to="/cafe/register" className="btn btn-outline btn-lg">
+              <Link to="/register" className="btn btn-outline btn-lg">
                 Create Account
               </Link>
             )}
@@ -105,7 +105,7 @@ export default function CafeLandingPage() {
                     </span>
                   </div>
                   <div className="card-actions justify-end mt-3">
-                    <Link to="/cafe/menu" className="btn btn-sm btn-primary">
+                    <Link to="/menu" className="btn btn-sm btn-primary">
                       Order
                     </Link>
                   </div>
