@@ -231,7 +231,7 @@ const CartPage = () => {
                   <div className="flex items-start">
                     <div className="w-20 h-20 bg-gray-200 rounded-lg overflow-hidden mr-4 object-cover flex items-center justify-center text-gray-500">
                       {image ? (
-                        <img src={imageURL} alt={title} className="object-cover w-full h-full" />
+                        <img src={imageURL} onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80" }} alt={title} className="object-cover w-full h-full" />
                       ) : (
                         <IconCarrot size={24} />
                       )}
