@@ -68,6 +68,11 @@ export default function CafeLayout() {
                 Hi, {customer?.name?.split(" ")[0]} ▾
               </div>
               <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                <li className="px-4 py-2 border-b border-gray-100 mb-1">
+                  <span className="text-xs text-gray-400 block mb-1 uppercase tracking-wider font-bold">Wallet Balance</span>
+                  <span className="font-semibold text-primary">{store?.currency || '$'}{parseFloat(customer.credit_balance || 0).toFixed(2)}</span>
+                </li>
+                <li><Link to="/orders">My Orders</Link></li>
                 <li><a onClick={() => logout()}>Logout</a></li>
               </ul>
               <Link to="/menu" className="btn btn-primary rounded-full px-6 font-semibold hidden md:inline-flex">Order Now</Link>
