@@ -14,6 +14,8 @@ import {
   Reports,
   Users,
   initDB,
+  CustomerAccounts,
+  CafeOrders,
 } from "../localdb/LocalDB";
 
 // Initialise seed data on first load
@@ -136,6 +138,31 @@ async function handleGet(url) {
   // Superadmin stubs
   if (url.startsWith("/superadmin"))
     return ok({ tenants: [], total: 0, revenue: 0 });
+
+  // ── CAFE / OCOS GET routes ────────────────────────────
+  if (url === "/cafe/menu") {
+    return ok({
+      menuItems: MenuItems.getAll(),
+      categories: Settings.getCategories(),
+      storeSetting: Settings.getStoreSetting(),
+    });
+  }
+  if (url === "/cafe/store") {
+    return ok(Settings.getStoreSetting());
+  }
+  if (url === "/cafe/auth/session") {
+    return ok({ account: CustomerAccounts.getSession() });
+  }
+  if ((m = match(url, "/cafe/orders"))) {
+    const session = CustomerAccounts.getSession();
+    if (!session) return err("Unauthorized", 401);
+    return ok({ orders: CafeOrders.getByCustomer(session.id) });
+  }
+  if ((m = match(url, "/cafe/orders/:id"))) {
+    const order = CafeOrders.getById(m[1]);
+    if (!order) return err("Order not found", 404);
+    return ok({ order });
+  }
 
   console.warn("[FakeClient] Unhandled GET:", url);
   return ok(null);
@@ -421,6 +448,37 @@ async function handlePost(url, data) {
   // Superadmin stubs
   if (url.startsWith("/superadmin")) return ok({ message: "OK" });
   if (url === "/auth/refresh-token") return ok({ message: "OK" });
+
+  // ── CAFE / OCOS routes ────────────────────────────────
+  if (url === "/cafe/auth/register") {
+    try {
+      const account = CustomerAccounts.register(
+        data?.name,
+        data?.email,
+        data?.password,
+        data?.phone,
+      );
+      return ok({ account, message: "Registration successful" });
+    } catch (e) {
+      return err(e.message, 409);
+    }
+  }
+  if (url === "/cafe/auth/login") {
+    try {
+      const account = CustomerAccounts.login(data?.email, data?.password);
+      return ok({ account, message: "Login successful" });
+    } catch (e) {
+      return err(e.message, 401);
+    }
+  }
+  if (url === "/cafe/auth/logout") {
+    CustomerAccounts.logout();
+    return ok({ message: "Logged out" });
+  }
+  if (url === "/cafe/orders/create") {
+    const order = CafeOrders.create(data || {});
+    return ok({ order, message: "Order placed successfully" });
+  }
 
   console.warn("[FakeClient] Unhandled POST:", url);
   return ok({ message: "OK" });
