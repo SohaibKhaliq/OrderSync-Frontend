@@ -59,6 +59,12 @@ export default function InvoicesPage() {
     currency: null
   });
 
+  const {data: invoices, error, isLoading} = useInvoices({
+    type: state.filter,
+    from: state.fromDate,
+    to: state.toDate,
+  });
+
   useEffect(()=>{
     async function init(){
       try {
@@ -67,12 +73,12 @@ export default function InvoicesPage() {
           const ordersInit = res.data;
           const currency = CURRENCIES.find((c)=>c.cc==ordersInit?.storeSettings?.currency);
 
-          setState({
-            ...state,
+          setState(prevState => ({
+            ...prevState,
             printSettings: ordersInit.printSettings || {},
             storeSettings: ordersInit.storeSettings || {},
             currency: currency?.symbol,
-          });
+          }));
         }
       } catch (error) {
         console.error(error);
@@ -82,12 +88,6 @@ export default function InvoicesPage() {
     }
     init();
   },[]);
-
-  const {data: invoices, error, isLoading} = useInvoices({
-    type: state.filter,
-    from: state.fromDate,
-    to: state.toDate,
-  });
 
   if (isLoading) {
     return <Page>Please wait...</Page>;
