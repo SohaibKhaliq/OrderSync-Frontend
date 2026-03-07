@@ -51,186 +51,330 @@ import CartPage from "./views/CartPage";
 import OrderSuccessPage from "./views/OrderSuccessPage";
 import OrderFailedPage from "./views/OrderFailedPage";
 
+// ── OCOS – Customer Portal ────────────────────────────────
+import { CustomerProvider } from "./contexts/CustomerContext";
+import { CafeCartProvider } from "./contexts/CafeCartContext";
+import CustomerRoute from "./helpers/CustomerRoute";
+import CafeLandingPage from "./views/cafe/CafeLandingPage";
+import CafeLoginPage from "./views/cafe/CafeLoginPage";
+import CafeRegisterPage from "./views/cafe/CafeRegisterPage";
+import CafeMenuPage from "./views/cafe/CafeMenuPage";
+import CafeCartPage from "./views/cafe/CafeCartPage";
+import CafeCheckoutPage from "./views/cafe/CafeCheckoutPage";
+import CafeOrdersPage from "./views/cafe/CafeOrdersPage";
+import CafeOrderTrackingPage from "./views/cafe/CafeOrderTrackingPage";
+
+// ── Payment Gateway Simulations ───────────────────────────
+import JazzCashPage from "./views/payment/JazzCashPage";
+import EasypaisaPage from "./views/payment/EasypaisaPage";
+import StripePage from "./views/payment/StripePage";
+import PaymentResultPage from "./views/payment/PaymentResultPage";
+
 export default function App() {
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useState(
-    getIsNavbarCollapsed()
+    getIsNavbarCollapsed(),
   );
 
   return (
     <SocketProvider>
-    <NavbarContext.Provider value={[isNavbarCollapsed, setIsNavbarCollapsed]}>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/print-receipt" element={<PrintReceiptPage />} />
-          <Route path="/print-token" element={<PrintTokenPage />} />
-          <Route path="/no-access" element={<NoAccessPage />} />
-
-          <Route path="/success" element={<PaymentSuccessPage />} />
-          <Route path="/cancelled-payment" element={<PaymentCancelledPage />} />
-
-          <Route path="/dashboard/inactive-subscription" element={<InActiveSubscriptionPage />} />
-
-          <Route path="/m/:qrcode" element={<QRMenuPage />} />
-          <Route path="/m/:qrcode/cart" element={<CartPage />} />
-          <Route path="/m/order-success" element={<OrderSuccessPage />} />
-          <Route path="/m/order-failed" element={<OrderFailedPage />} />
-
-
-          {/* app routes */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <DashboardLayout />
-              </PrivateRoute>
-            }
+      <CustomerProvider>
+        <CafeCartProvider>
+          <NavbarContext.Provider
+            value={[isNavbarCollapsed, setIsNavbarCollapsed]}
           >
-            <Route
-              path=""
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.DASHBOARD]}>
-                  <DashboardPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="home"
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.DASHBOARD]}>
-                  <DashboardPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route path="profile" element={<ProfilePage />} />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegistrationPage />} />
+                <Route
+                  path="/forgot-password"
+                  element={<ForgotPasswordPage />}
+                />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/print-receipt" element={<PrintReceiptPage />} />
+                <Route path="/print-token" element={<PrintTokenPage />} />
+                <Route path="/no-access" element={<NoAccessPage />} />
 
-            <Route
-              path="pos"
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.POS]}>
-                  <POSPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="orders"
-              element={
-                <ScopeProtectedRoute
-                  scopes={[
-                    SCOPES.POS,
-                    SCOPES.ORDERS,
-                    SCOPES.ORDER_STATUS,
-                    SCOPES.ORDER_STATUS_DISPLAY,
-                  ]}
+                <Route path="/success" element={<PaymentSuccessPage />} />
+                <Route
+                  path="/cancelled-payment"
+                  element={<PaymentCancelledPage />}
+                />
+
+                <Route
+                  path="/dashboard/inactive-subscription"
+                  element={<InActiveSubscriptionPage />}
+                />
+
+                <Route path="/m/:qrcode" element={<QRMenuPage />} />
+                <Route path="/m/:qrcode/cart" element={<CartPage />} />
+                <Route path="/m/order-success" element={<OrderSuccessPage />} />
+                <Route path="/m/order-failed" element={<OrderFailedPage />} />
+
+                {/* app routes */}
+                <Route
+                  path="/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <DashboardLayout />
+                    </PrivateRoute>
+                  }
                 >
-                  <OrdersPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="kitchen"
-              element={
-                <ScopeProtectedRoute
-                  scopes={[SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]}
+                  <Route
+                    path=""
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.DASHBOARD]}>
+                        <DashboardPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="home"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.DASHBOARD]}>
+                        <DashboardPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route path="profile" element={<ProfilePage />} />
+
+                  <Route
+                    path="pos"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.POS]}>
+                        <POSPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="orders"
+                    element={
+                      <ScopeProtectedRoute
+                        scopes={[
+                          SCOPES.POS,
+                          SCOPES.ORDERS,
+                          SCOPES.ORDER_STATUS,
+                          SCOPES.ORDER_STATUS_DISPLAY,
+                        ]}
+                      >
+                        <OrdersPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="kitchen"
+                    element={
+                      <ScopeProtectedRoute
+                        scopes={[SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]}
+                      >
+                        <KitchenPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="reservation"
+                    element={
+                      <ScopeProtectedRoute
+                        scopes={[
+                          SCOPES.RESERVATIONS,
+                          SCOPES.VIEW_RESERVATIONS,
+                          SCOPES.MANAGE_RESERVATIONS,
+                        ]}
+                      >
+                        <ReservationPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="customers"
+                    element={
+                      <ScopeProtectedRoute
+                        scopes={[
+                          SCOPES.CUSTOMERS,
+                          SCOPES.VIEW_CUSTOMERS,
+                          SCOPES.MANAGE_CUSTOMERS,
+                        ]}
+                      >
+                        <CustomersPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="invoices"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.INVOICES]}>
+                        <InvoicesPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="users"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.SETTINGS]}>
+                        <UsersPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="reports"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.REPORTS]}>
+                        <ReportsPage />
+                      </ScopeProtectedRoute>
+                    }
+                  />
+
+                  <Route path="devices" element={<DevicesPage />} />
+                  <Route
+                    path="settings"
+                    element={
+                      <ScopeProtectedRoute scopes={[SCOPES.SETTINGS]}>
+                        <SettingsPage />
+                      </ScopeProtectedRoute>
+                    }
+                  >
+                    <Route path="" element={<SettingDetailsPage />} />
+                    <Route path="details" element={<SettingDetailsPage />} />
+                    <Route
+                      path="print-settings"
+                      element={<PrintSettingsPage />}
+                    />
+                    <Route path="tables" element={<TablesSettingsPage />} />
+                    <Route
+                      path="menu-items"
+                      element={<MenuItemsSettingsPage />}
+                    />
+                    <Route
+                      path="menu-items/:id"
+                      element={<MenuItemViewPage />}
+                    />
+                    <Route
+                      path="menu-items/categories"
+                      element={<CategoriesPage />}
+                    />
+                    <Route path="tax-setup" element={<TaxSetupPage />} />
+                    <Route
+                      path="payment-types"
+                      element={<PaymentTypesPage />}
+                    />
+                  </Route>
+                </Route>
+                {/* app routes */}
+
+                {/* superadmin routes */}
+                <Route path="/superadmin" element={<SuperAdminLoginPage />} />
+                <Route
+                  path="/superadmin/login"
+                  element={<SuperAdminLoginPage />}
+                />
+                <Route
+                  path="/superadmin/dashboard"
+                  element={
+                    <PrivateRoute>
+                      <SuperAdminDashboadLayout />
+                    </PrivateRoute>
+                  }
                 >
-                  <KitchenPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="reservation"
-              element={
-                <ScopeProtectedRoute
-                  scopes={[
-                    SCOPES.RESERVATIONS,
-                    SCOPES.VIEW_RESERVATIONS,
-                    SCOPES.MANAGE_RESERVATIONS,
-                  ]}
-                >
-                  <ReservationPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="customers"
-              element={
-                <ScopeProtectedRoute
-                  scopes={[
-                    SCOPES.CUSTOMERS,
-                    SCOPES.VIEW_CUSTOMERS,
-                    SCOPES.MANAGE_CUSTOMERS,
-                  ]}
-                >
-                  <CustomersPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route
-              path="invoices"
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.INVOICES]}>
-                  <InvoicesPage />
-                </ScopeProtectedRoute>
-              }
-            />
-            <Route path="users" element={<ScopeProtectedRoute scopes={[SCOPES.SETTINGS]}><UsersPage /></ScopeProtectedRoute>} />
-            <Route
-              path="reports"
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.REPORTS]}>
-                  <ReportsPage />
-                </ScopeProtectedRoute>
-              }
-            />
+                  <Route
+                    path=""
+                    element={
+                      <SuperAdminProtectedRoute>
+                        <SuperAdminDashboardPage />
+                      </SuperAdminProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="home"
+                    element={
+                      <SuperAdminProtectedRoute>
+                        <SuperAdminDashboardPage />
+                      </SuperAdminProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="tenants"
+                    element={
+                      <SuperAdminProtectedRoute>
+                        <SuperAdminTenantsPage />
+                      </SuperAdminProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="tenants/:id/subscription-history"
+                    element={
+                      <SuperAdminProtectedRoute>
+                        <SuperAdminTenantSubscriptionHistoryPage />
+                      </SuperAdminProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="reports"
+                    element={
+                      <SuperAdminProtectedRoute>
+                        <SuperAdminReportsPage />
+                      </SuperAdminProtectedRoute>
+                    }
+                  />
+                </Route>
+                {/* superadmin routes */}
 
-            <Route path="devices" element={<DevicesPage />} />
-            <Route
-              path="settings"
-              element={
-                <ScopeProtectedRoute scopes={[SCOPES.SETTINGS]}>
-                  <SettingsPage />
-                </ScopeProtectedRoute>
-              }
-            >
-              <Route path="" element={<SettingDetailsPage />} />
-              <Route path="details" element={<SettingDetailsPage />} />
-              <Route path="print-settings" element={<PrintSettingsPage />} />
-              <Route path="tables" element={<TablesSettingsPage />} />
-              <Route path="menu-items" element={<MenuItemsSettingsPage />} />
-              <Route path="menu-items/:id" element={<MenuItemViewPage />} />
-              <Route
-                path="menu-items/categories"
-                element={<CategoriesPage />}
-              />
-              <Route path="tax-setup" element={<TaxSetupPage />} />
-              <Route path="payment-types" element={<PaymentTypesPage />} />
+                {/* ── OCOS Cafe Portal ── */}
+                <Route path="/cafe" element={<CafeLandingPage />} />
+                <Route path="/cafe/login" element={<CafeLoginPage />} />
+                <Route path="/cafe/register" element={<CafeRegisterPage />} />
+                <Route
+                  path="/cafe/menu"
+                  element={
+                    <CustomerRoute>
+                      <CafeMenuPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/cafe/cart"
+                  element={
+                    <CustomerRoute>
+                      <CafeCartPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/cafe/checkout"
+                  element={
+                    <CustomerRoute>
+                      <CafeCheckoutPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/cafe/orders"
+                  element={
+                    <CustomerRoute>
+                      <CafeOrdersPage />
+                    </CustomerRoute>
+                  }
+                />
+                <Route
+                  path="/cafe/orders/:id"
+                  element={
+                    <CustomerRoute>
+                      <CafeOrderTrackingPage />
+                    </CustomerRoute>
+                  }
+                />
 
-            </Route>
-          </Route>
-          {/* app routes */}
-
-
-          {/* superadmin routes */}
-          <Route path="/superadmin" element={<SuperAdminLoginPage />} />
-          <Route path="/superadmin/login" element={<SuperAdminLoginPage />} />
-          <Route path="/superadmin/dashboard" element={<PrivateRoute><SuperAdminDashboadLayout/></PrivateRoute>}>
-            <Route path="" element={<SuperAdminProtectedRoute><SuperAdminDashboardPage /></SuperAdminProtectedRoute>} />
-            <Route path="home" element={<SuperAdminProtectedRoute><SuperAdminDashboardPage /></SuperAdminProtectedRoute>} />
-            <Route path="tenants" element={<SuperAdminProtectedRoute><SuperAdminTenantsPage /></SuperAdminProtectedRoute>} />
-            <Route path="tenants/:id/subscription-history" element={<SuperAdminProtectedRoute><SuperAdminTenantSubscriptionHistoryPage /></SuperAdminProtectedRoute>} />
-            <Route path="reports" element={<SuperAdminProtectedRoute><SuperAdminReportsPage /></SuperAdminProtectedRoute>} />
-          </Route>
-          {/* superadmin routes */}
-
-
-        </Routes>
-        <Toaster />
-      </BrowserRouter>
-    </NavbarContext.Provider>
+                {/* ── Payment Gateway Simulations ── */}
+                <Route path="/payment/jazzcash" element={<JazzCashPage />} />
+                <Route path="/payment/easypaisa" element={<EasypaisaPage />} />
+                <Route path="/payment/stripe" element={<StripePage />} />
+                <Route path="/payment/result" element={<PaymentResultPage />} />
+              </Routes>
+              <Toaster />
+            </BrowserRouter>
+          </NavbarContext.Provider>
+        </CafeCartProvider>
+      </CustomerProvider>
     </SocketProvider>
   );
 }
