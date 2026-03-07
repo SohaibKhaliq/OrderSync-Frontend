@@ -10,7 +10,9 @@ import {
   IconFileInvoice,
   IconFriends,
   IconLayoutDashboard,
+  IconQrcode,
   IconSettings2,
+  IconShoppingBag,
   IconToolsKitchen3,
   IconUsersGroup,
 } from "@tabler/icons-react";
@@ -37,28 +39,33 @@ export default function Navbar() {
       text: "Dashboard",
       icon: <IconLayoutDashboard stroke={iconStroke} />,
       path: "/dashboard/home",
-      scopes: [SCOPES.DASHBOARD]
+      scopes: [SCOPES.DASHBOARD],
     },
     {
       type: "link",
       text: "POS",
       icon: <IconDeviceIpadHorizontal stroke={iconStroke} />,
       path: "/dashboard/pos",
-      scopes: [SCOPES.POS]
+      scopes: [SCOPES.POS],
     },
     {
       type: "link",
       text: "Orders",
       icon: <IconToolsKitchen3 stroke={iconStroke} />,
       path: "/dashboard/orders",
-      scopes: [SCOPES.POS, SCOPES.ORDERS, SCOPES.ORDER_STATUS, SCOPES.ORDER_STATUS_DISPLAY]
+      scopes: [
+        SCOPES.POS,
+        SCOPES.ORDERS,
+        SCOPES.ORDER_STATUS,
+        SCOPES.ORDER_STATUS_DISPLAY,
+      ],
     },
     {
       type: "link",
       text: "Kitchen",
       icon: <IconChefHat stroke={iconStroke} />,
       path: "/dashboard/kitchen",
-      scopes: [SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]
+      scopes: [SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY],
     },
 
     {
@@ -70,21 +77,48 @@ export default function Navbar() {
       text: "Reservation",
       icon: <IconArmchair2 stroke={iconStroke} />,
       path: "/dashboard/reservation",
-      scopes: [SCOPES.RESERVATIONS, SCOPES.VIEW_RESERVATIONS, SCOPES.MANAGE_RESERVATIONS]
+      scopes: [
+        SCOPES.RESERVATIONS,
+        SCOPES.VIEW_RESERVATIONS,
+        SCOPES.MANAGE_RESERVATIONS,
+      ],
     },
     {
       type: "link",
       text: "Customers",
       icon: <IconFriends stroke={iconStroke} />,
       path: "/dashboard/customers",
-      scopes: [SCOPES.CUSTOMERS, SCOPES.VIEW_CUSTOMERS, SCOPES.MANAGE_CUSTOMERS]
+      scopes: [
+        SCOPES.CUSTOMERS,
+        SCOPES.VIEW_CUSTOMERS,
+        SCOPES.MANAGE_CUSTOMERS,
+      ],
     },
     {
       type: "link",
       text: "Invoices",
       icon: <IconFileInvoice stroke={iconStroke} />,
       path: "/dashboard/invoices",
-      scopes: [SCOPES.INVOICES]
+      scopes: [SCOPES.INVOICES],
+    },
+
+    {
+      type: "text",
+      text: "Cafe Portal",
+    },
+    {
+      type: "link",
+      text: "Cafe Orders",
+      icon: <IconShoppingBag stroke={iconStroke} />,
+      path: "/dashboard/cafe-orders",
+      scopes: [SCOPES.POS, SCOPES.ORDERS],
+    },
+    {
+      type: "link",
+      text: "Table QR Codes",
+      icon: <IconQrcode stroke={iconStroke} />,
+      path: "/dashboard/cafe-table-qr",
+      scopes: [SCOPES.SETTINGS],
     },
 
     {
@@ -96,21 +130,21 @@ export default function Navbar() {
       text: "Users",
       icon: <IconUsersGroup stroke={iconStroke} />,
       path: "/dashboard/users",
-      scopes: []
+      scopes: [],
     },
     {
       type: "link",
       text: "Reports",
       icon: <IconChartArea stroke={iconStroke} />,
       path: "/dashboard/reports",
-      scopes: [SCOPES.REPORTS]
+      scopes: [SCOPES.REPORTS],
     },
     {
       type: "link",
       text: "Settings",
       icon: <IconSettings2 stroke={iconStroke} />,
       path: "/dashboard/settings",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
   ];
 
@@ -128,37 +162,38 @@ export default function Navbar() {
     return (
       <div className="flex flex-col items-start gap-3 bg-restro-green-light h-screen px-5 py-6 overflow-y-auto fixed left-0 top-0">
         <img src={Logo} alt="logo" className="w-12 block mb-6" />
-        {navbarItems.filter((navItem)=>{
-          const requiredScopes = navItem.scopes;
-          if(navItem.type=="link") {
-            if(userRole == "admin") {
-              return true;
+        {navbarItems
+          .filter((navItem) => {
+            const requiredScopes = navItem.scopes;
+            if (navItem.type == "link") {
+              if (userRole == "admin") {
+                return true;
+              }
+
+              return requiredScopes.some((scope) => userScopes.includes(scope));
+            }
+          })
+          .map((item, index) => {
+            if (item.type == "text") {
+              return;
             }
 
-            return requiredScopes.some((scope)=>userScopes.includes(scope));
-          }
-        }).map((item, index) => {
-          if (item.type == "text") {
-            return;
-          }
-
-          return (
-            <Link
-              key={index}
-              className={clsx(
-                "w-12 h-12 flex items-center justify-center rounded-full transition hover:bg-restro-border-green-light text-restro-green-dark",
-                {
-                  "bg-restro-border-green-light font-medium": pathname.includes(
-                    item.path
-                  ),
-                }
-              )}
-              to={item.path}
-            >
-              {item.icon}
-            </Link>
-          );
-        })}
+            return (
+              <Link
+                key={index}
+                className={clsx(
+                  "w-12 h-12 flex items-center justify-center rounded-full transition hover:bg-restro-border-green-light text-restro-green-dark",
+                  {
+                    "bg-restro-border-green-light font-medium":
+                      pathname.includes(item.path),
+                  },
+                )}
+                to={item.path}
+              >
+                {item.icon}
+              </Link>
+            );
+          })}
 
         <button
           onClick={btnToggleNavbar}
@@ -173,7 +208,11 @@ export default function Navbar() {
   return (
     <div className="relative h-screen">
       <div className="md:w-72 flex flex-col items-start gap-2 md:gap-3 bg-restro-green-light h-screen px-5 py-6 overflow-y-auto fixed left-0 top-0">
-        <img src={Logo} alt="logo" className="w-12 md:w-auto md:h-14 block mb-2 md:mb-6 " />
+        <img
+          src={Logo}
+          alt="logo"
+          className="w-12 md:w-auto md:h-14 block mb-2 md:mb-6 "
+        />
 
         <div className="hidden md:flex items-center gap-2 w-full md:mb-6">
           <img
@@ -190,45 +229,46 @@ export default function Navbar() {
           </div>
         </div>
 
-        {navbarItems.filter((navItem)=>{
-          const requiredScopes = navItem.scopes;
-          if(navItem.type=="text") {
-            return true;
-          }
-          if(navItem.type=="link") {
-            if(userRole == "admin") {
+        {navbarItems
+          .filter((navItem) => {
+            const requiredScopes = navItem.scopes;
+            if (navItem.type == "text") {
               return true;
             }
+            if (navItem.type == "link") {
+              if (userRole == "admin") {
+                return true;
+              }
 
-            return requiredScopes.some((scope)=>userScopes.includes(scope));
-          }
-        }).map((item, index) => {
-          if (item.type == "text") {
+              return requiredScopes.some((scope) => userScopes.includes(scope));
+            }
+          })
+          .map((item, index) => {
+            if (item.type == "text") {
+              return (
+                <p key={index} className="font-bold hidden md:block">
+                  {item.text}
+                </p>
+              );
+            }
+
             return (
-              <p key={index} className="font-bold hidden md:block">
-                {item.text}
-              </p>
+              <Link
+                key={index}
+                className={clsx(
+                  "w-12 h-12 md:w-full flex justify-center md:justify-normal items-center md:gap-1 md:px-4 md:py-3 rounded-full transition hover:bg-restro-border-green-light text-restro-green-dark",
+                  {
+                    // "bg-restro-border-green-light font-medium": item.path == pathname,
+                    "bg-restro-border-green-light font-medium":
+                      pathname.includes(item.path),
+                  },
+                )}
+                to={item.path}
+              >
+                {item.icon} <p className="hidden md:block">{item.text}</p>
+              </Link>
             );
-          }
-
-          return (
-            <Link
-              key={index}
-              className={clsx(
-                "w-12 h-12 md:w-full flex justify-center md:justify-normal items-center md:gap-1 md:px-4 md:py-3 rounded-full transition hover:bg-restro-border-green-light text-restro-green-dark",
-                {
-                  // "bg-restro-border-green-light font-medium": item.path == pathname,
-                  "bg-restro-border-green-light font-medium": pathname.includes(
-                    item.path
-                  ),
-                }
-              )}
-              to={item.path}
-            >
-              {item.icon} <p className="hidden md:block">{item.text}</p>
-            </Link>
-          );
-        })}
+          })}
       </div>
 
       <button
