@@ -46,7 +46,7 @@ async function handleGet(url) {
   if (url === "/dashboard") return ok(Dashboard.get());
 
   // Orders / Kitchen
-  if (url === "/orders") return ok(Orders.getKitchenOrders());
+  if (url === "/orders") return ok(Orders.getGroupedKitchenOrders());
   if (url === "/orders/init") return ok(Orders.getOrdersInit());
   if (url === "/kitchen") return ok(Orders.getKitchenOrders());
 
