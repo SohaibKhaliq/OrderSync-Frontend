@@ -65,6 +65,7 @@ import CafeOrderTrackingPage from "./views/cafe/CafeOrderTrackingPage";
 import CafeAboutPage from "./views/cafe/CafeAboutPage";
 import CafeGalleryPage from "./views/cafe/CafeGalleryPage";
 import CafeContactPage from "./views/cafe/CafeContactPage";
+import CafeReservationPage from "./views/cafe/CafeReservationPage";
 import CafeLayout from "./views/cafe/CafeLayout";
 
 // ── Payment Gateway Simulations ───────────────────────────
@@ -93,6 +94,7 @@ export default function App() {
                   <Route path="/about" element={<CafeAboutPage />} />
                   <Route path="/gallery" element={<CafeGalleryPage />} />
                   <Route path="/contact" element={<CafeContactPage />} />
+                  <Route path="/reserve" element={<CafeReservationPage />} />
                   <Route path="/login" element={<CafeLoginPage />} />
                   <Route path="/register" element={<CafeRegisterPage />} />
                   <Route
