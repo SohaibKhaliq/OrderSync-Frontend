@@ -860,7 +860,7 @@ export default function POSPage() {
 
             return <div className='bg-white border border-restro-border-green-light rounded-2xl p-2 flex gap-2' key={i}>
               <div className="w-28 h-36 bg-gray-100 rounded-lg hidden md:flex items-center justify-center text-gray-300 relative">
-                {image ? <img src={imageURL} alt={title} className="w-full h-full absolute top-0 left-0 rounded-lg object-cover" />  : <IconCarrot />}
+                {image ? <img src={imageURL} onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80" }} alt={title} className="w-full h-full absolute top-0 left-0 rounded-lg object-cover" />  : <IconCarrot />}
               </div>
               <div>
                 <p>{title}</p>
