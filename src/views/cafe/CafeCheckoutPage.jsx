@@ -93,151 +93,158 @@ export default function CafeCheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col">
-      <nav className="navbar bg-base-200 shadow-sm px-4 sticky top-0 z-30">
-        <Link to="/cart" className="btn btn-ghost btn-sm">
-          ← Back to Cart
-        </Link>
-        <span className="flex-1 text-center font-bold text-lg">Checkout</span>
-        <div className="w-24" />
-      </nav>
+    <div className="bg-theme-light flex-1 py-12 px-6 md:px-12 xl:px-24">
+      <div className="max-w-[800px] mx-auto">
+        <div className="mb-10 text-center flex flex-col items-center">
+           <Link to="/cart" className="text-primary text-sm font-bold uppercase tracking-widest hover:underline mb-4 inline-block">
+             ← Back to Cart
+           </Link>
+           <h1 className="text-4xl md:text-5xl font-serif font-bold text-secondary">
+             Checkout
+           </h1>
+        </div>
 
-      <div className="max-w-2xl mx-auto w-full px-4 py-6 flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
         {/* Delivery type */}
-        <div className="card bg-base-200 shadow">
-          <div className="card-body">
-            <h3 className="font-bold mb-3">Delivery Type</h3>
-            <div className="flex gap-4">
-              {[
-                { id: "delivery", label: "🚚 Delivery" },
-                { id: "pickup", label: "🏪 Pickup" },
-                { id: "dine_in", label: "🍽 Dine In" },
-              ].map((opt) => (
-                <label
-                  key={opt.id}
-                  className="flex items-center gap-2 cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name="deliveryType"
-                    className="radio radio-primary radio-sm"
-                    value={opt.id}
-                    checked={form.deliveryType === opt.id}
-                    onChange={handleChange}
-                  />
-                  <span className="text-sm">{opt.label}</span>
-                </label>
-              ))}
-            </div>
-
-            {form.deliveryType === "delivery" && (
-              <div className="form-control mt-3">
-                <label className="label">
-                  <span className="label-text">Delivery Address</span>
-                </label>
-                <textarea
-                  name="address"
-                  className="textarea textarea-bordered"
-                  rows={2}
-                  placeholder="Enter your full delivery address"
-                  value={form.address}
+        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 p-6 md:p-8 shrink-0">
+          <h3 className="font-serif font-bold text-2xl mb-6 text-secondary pb-4 border-b border-gray-100">1. Delivery Type</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            {[
+              { id: "delivery", label: "🚚 Delivery" },
+              { id: "pickup", label: "🏪 Pickup" },
+              { id: "dine_in", label: "🍽 Dine In" },
+            ].map((opt) => (
+              <label
+                key={opt.id}
+                className={`flex flex-col items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-colors ${
+                  form.deliveryType === opt.id
+                    ? "border-primary bg-primary/5 text-primary"
+                    : "border-gray-100 shadow-sm hover:border-gray-200 text-secondary"
+                 }`}
+              >
+                <input
+                  type="radio"
+                  name="deliveryType"
+                  className="hidden"
+                  value={opt.id}
+                  checked={form.deliveryType === opt.id}
                   onChange={handleChange}
                 />
-              </div>
-            )}
+                <span className="font-semibold">{opt.label}</span>
+              </label>
+            ))}
           </div>
+
+          {form.deliveryType === "delivery" && (
+            <div className="form-control mt-4">
+              <label className="label mb-2">
+                <span className="text-sm font-semibold text-neutral">Delivery Address</span>
+              </label>
+              <textarea
+                name="address"
+                className="w-full rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors p-4 resize-none"
+                rows={3}
+                placeholder="Enter your full delivery address"
+                value={form.address}
+                onChange={handleChange}
+              />
+            </div>
+          )}
         </div>
 
         {/* Payment method */}
-        <div className="card bg-base-200 shadow">
-          <div className="card-body">
-            <h3 className="font-bold mb-3">Payment Method</h3>
-            <div className="flex flex-col gap-3">
-              {PAYMENT_METHODS.map((pm) => (
-                <label
-                  key={pm.id}
-                  className={`flex items-center gap-3 p-3 rounded-lg border-2 cursor-pointer transition-colors ${
-                    form.paymentMethod === pm.id
-                      ? "border-primary bg-primary/5"
-                      : "border-base-300"
-                  }`}
-                >
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    className="radio radio-primary radio-sm"
-                    value={pm.id}
-                    checked={form.paymentMethod === pm.id}
-                    onChange={handleChange}
-                  />
-                  <span className="text-xl">{pm.icon}</span>
-                  <span className="font-medium">{pm.label}</span>
-                </label>
-              ))}
-            </div>
+        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 p-6 md:p-8 shrink-0">
+          <h3 className="font-serif font-bold text-2xl mb-6 text-secondary pb-4 border-b border-gray-100">2. Payment Method</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {PAYMENT_METHODS.map((pm) => (
+              <label
+                key={pm.id}
+                className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-colors ${
+                  form.paymentMethod === pm.id
+                    ? "border-primary bg-primary/5 text-secondary"
+                    : "border-gray-100 shadow-sm hover:border-gray-200 text-secondary"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  className="radio radio-primary radio-sm bg-white"
+                  value={pm.id}
+                  checked={form.paymentMethod === pm.id}
+                  onChange={handleChange}
+                />
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">{pm.icon}</span>
+                  <span className="font-semibold">{pm.label}</span>
+                </div>
+              </label>
+            ))}
           </div>
         </div>
 
         {/* Order summary */}
-        <div className="card bg-base-200 shadow">
-          <div className="card-body">
-            <h3 className="font-bold mb-3">Order Summary</h3>
+        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-primary/20 p-6 md:p-8 shrink-0">
+          <h3 className="font-serif font-bold text-2xl mb-6 text-secondary pb-4 border-b border-gray-100">3. Order Summary</h3>
+          <div className="space-y-3 mb-6">
             {cartItems.map((item) => (
               <div
                 key={item._key}
-                className="flex justify-between text-sm mb-1"
+                className="flex justify-between text-neutral text-sm md:text-base border-b border-gray-50 pb-2 border-dashed"
               >
-                <span>
+                <span className="font-medium">
                   {item.title}
                   {item.variant ? ` (${item.variant.title})` : ""}
-                  {" ×"}
-                  {item.quantity}
+                  <span className="text-gray-400"> × {item.quantity}</span>
                 </span>
-                <span>
+                <span className="font-semibold text-secondary">
                   {symbol}
                   {((item.price + item.addonTotal) * item.quantity).toFixed(2)}
                 </span>
               </div>
             ))}
-            <div className="divider my-2" />
-            <div className="flex justify-between text-sm">
-              <span>Subtotal</span>
-              <span>
-                {symbol}
-                {subtotal.toFixed(2)}
+          </div>
+          
+          <div className="space-y-2 mb-6 text-neutral text-sm md:text-base">
+            <div className="flex justify-between items-center">
+              <span className="opacity-80">Subtotal</span>
+              <span className="font-semibold text-secondary">
+                {symbol}{subtotal.toFixed(2)}
               </span>
             </div>
-            <div className="flex justify-between text-sm">
-              <span>Tax</span>
-              <span>
-                {symbol}
-                {taxTotal.toFixed(2)}
-              </span>
-            </div>
-            <div className="flex justify-between font-bold text-lg mt-2">
-              <span>Total</span>
-              <span className="text-primary">
-                {symbol}
-                {total.toFixed(2)}
+            <div className="flex justify-between items-center">
+              <span className="opacity-80">Tax</span>
+              <span className="font-semibold text-secondary">
+                {symbol}{taxTotal.toFixed(2)}
               </span>
             </div>
           </div>
-        </div>
 
-        <button
-          className="btn btn-primary btn-lg w-full"
-          disabled={loading}
-          onClick={handlePlaceOrder}
-        >
-          {loading ? (
-            <span className="loading loading-spinner loading-sm" />
-          ) : form.paymentMethod === "cash" ? (
-            "Place Order"
-          ) : (
-            `Pay with ${PAYMENT_METHODS.find((p) => p.id === form.paymentMethod)?.label}`
-          )}
-        </button>
+          <div className="border-t border-dashed border-gray-300 my-6"></div>
+          
+          <div className="flex justify-between items-center mb-8">
+            <span className="font-serif font-bold text-2xl text-secondary">Total</span>
+            <span className="text-3xl font-bold text-primary">
+              {symbol}{total.toFixed(2)}
+            </span>
+          </div>
+
+          <button
+            className="btn btn-primary w-full rounded-full h-14 min-h-0 text-white font-bold text-lg border-0 shadow-lg shadow-primary/30 hover:scale-[1.02] transition-transform flex items-center justify-center gap-2"
+            disabled={loading}
+            onClick={handlePlaceOrder}
+          >
+            {loading ? (
+              <span className="loading loading-spinner loading-md" />
+            ) : (
+               <>
+                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                 {form.paymentMethod === "cash" ? "Place Order" : `Pay with ${PAYMENT_METHODS.find((p) => p.id === form.paymentMethod)?.label}`}
+               </>
+            )}
+          </button>
+        </div>
       </div>
+    </div>
     </div>
   );
 }
