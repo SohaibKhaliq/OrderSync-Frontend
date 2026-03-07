@@ -4,10 +4,8 @@ import HeroSection from "./components/HeroSection";
 import MenuPreviewSection from "./components/MenuPreviewSection";
 import AboutSection from "./components/AboutSection";
 import PhilosophySection from "./components/PhilosophySection";
-import BlogPreviewSection from "./components/BlogPreviewSection";
 import GallerySection from "./components/GallerySection";
 import TestimonialsSection from "./components/TestimonialsSection";
-import NewsletterSection from "./components/NewsletterSection";
 
 export default function CafeLandingPage() {
   const [featured, setFeatured] = useState([]);
@@ -31,13 +29,9 @@ export default function CafeLandingPage() {
       
       <PhilosophySection />
       
-      <BlogPreviewSection />
-      
       <GallerySection />
       
       <TestimonialsSection />
-      
-      <NewsletterSection />
     </div>
   );
 }
