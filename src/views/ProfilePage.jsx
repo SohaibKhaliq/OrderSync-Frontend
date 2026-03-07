@@ -3,7 +3,6 @@ import Page from "../components/Page";
 import { IconCreditCard, IconUser } from "@tabler/icons-react";
 import { getUserDetailsInLocalStorage } from "../helpers/UserDetails"
 import { iconStroke } from "../config/config";
-import SubscriptionDetails from '../components/SubscriptionDetails';
 export default function ProfilePage() {
 
   const user = getUserDetailsInLocalStorage();
@@ -29,10 +28,6 @@ export default function ProfilePage() {
             <p>{designation}</p>
           </div>
         </div>
-
-        {
-          role == "admin" && <SubscriptionDetails />
-        }
       </div>
     </Page>
   )
