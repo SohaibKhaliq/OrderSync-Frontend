@@ -23,6 +23,7 @@ import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
 import { SCOPES } from "../config/scopes";
 import { validateEmail } from "../utils/emailValidator";
 import { validatePhone } from "../utils/phoneValidator";
+import { CustomerAccounts } from "../localdb/LocalDB";
 
 export default function CustomersPage() {
   const { role, scope } = getUserDetailsInLocalStorage();
@@ -41,12 +42,15 @@ export default function CustomersPage() {
   const emailRef = useRef();
   const genderRef = useRef();
   const birthDateRef = useRef();
-
   const searchRef = useRef();
+  const walletAmountRef = useRef();
+
   const [state, setState] = useState({
     spage: 1,
     search: ""
   });
+  const [activeWalletCustomer, setActiveWalletCustomer] = useState(null);
+
   const { APIURL, data, error, isLoading } = useCustomers({
     page: state.spage,
     perPage: 10,
@@ -157,6 +161,50 @@ export default function CustomersPage() {
     genderRef.current.value = gender;
 
     document.getElementById("modal-update-customer").showModal()
+  };
+
+  const btnShowWallet = (customerEmail) => {
+    // Find customer in LocalDB
+    const acc = CustomerAccounts.findByEmail(customerEmail);
+    if (!acc) {
+      toast.error("Customer not found in Cafe accounts matching this email. Have them register in Cafe first.");
+      return;
+    }
+    setActiveWalletCustomer(acc);
+    if (walletAmountRef.current) walletAmountRef.current.value = "";
+    document.getElementById("modal-wallet").showModal();
+  };
+
+  const btnTopUpWallet = () => {
+    const amount = parseFloat(walletAmountRef.current.value);
+    if (!amount || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+    try {
+      CustomerAccounts.addCredit(activeWalletCustomer.id, amount);
+      toast.success(`Successfully added to wallet!`);
+      document.getElementById("modal-wallet").close();
+      setActiveWalletCustomer(CustomerAccounts.findByEmail(activeWalletCustomer.email)); // update state
+    } catch(err) {
+      toast.error("Failed to add credit");
+    }
+  };
+
+  const btnDeductWallet = () => {
+    const amount = parseFloat(walletAmountRef.current.value);
+    if (!amount || amount <= 0) {
+      toast.error("Please enter a valid amount");
+      return;
+    }
+    try {
+      CustomerAccounts.deductCredit(activeWalletCustomer.id, amount);
+      toast.success(`Successfully deducted from wallet!`);
+      document.getElementById("modal-wallet").close();
+      setActiveWalletCustomer(CustomerAccounts.findByEmail(activeWalletCustomer.email)); // update state
+    } catch(err) {
+      toast.error(err.message || "Failed to deduct credit");
+    }
   };
 
   async function btnUpdate() {
@@ -285,6 +333,7 @@ export default function CustomersPage() {
 
               <div className="flex gap-4 mt-4">
                 <button onClick={()=>{btnShowUpdate(phone, name, email, birth_date, gender)}} className="btn btn-sm text-gray-500 flex-1">Edit</button>
+                <button onClick={()=>{if(email) btnShowWallet(email); else toast.error("Email required to find Cafe wallet");}} className="btn btn-sm bg-primary/10 text-primary border-primary/20 flex-1 hover:bg-primary hover:text-white">Wallet</button>
                 <button onClick={()=>{btnDelete(phone)}} className="btn text-red-400 btn-sm flex-1">Delete</button>
               </div>
             </div>
@@ -442,6 +491,54 @@ export default function CustomersPage() {
       </div>
     </dialog>
       {/* update dialog */}
+
+      {/* wallet dialog */}
+      <dialog id="modal-wallet" className="modal modal-bottom sm:modal-middle">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-2">Customer Wallet</h3>
+          {activeWalletCustomer && (
+            <div className="bg-gray-50 p-4 rounded-xl mb-4 border border-gray-100">
+              <p className="text-sm text-gray-500">Name: <span className="font-semibold text-gray-800">{activeWalletCustomer.name}</span></p>
+              <p className="text-sm text-gray-500">Email: <span className="font-semibold text-gray-800">{activeWalletCustomer.email}</span></p>
+              <div className="mt-3 pt-3 border-t border-gray-200">
+                <p className="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Current Balance</p>
+                <p className="text-3xl font-bold text-primary">${parseFloat(activeWalletCustomer.credit_balance || 0).toFixed(2)}</p>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-2">
+            <label className="mb-1 block text-gray-500 text-sm">Amount</label>
+            <input
+              ref={walletAmountRef}
+              type="number"
+              min="0"
+              step="0.01"
+              className="text-lg font-bold w-full border rounded-lg px-4 py-3 bg-gray-50 outline-restro-border-green-light"
+              placeholder="0.00"
+            />
+          </div>
+
+          <div className="flex gap-4 mt-6">
+            <button onClick={btnDeductWallet} className="flex-1 rounded-lg hover:bg-red-600 transition active:scale-95 px-4 py-3 bg-red-500 text-white font-bold shadow-lg shadow-red-500/30">
+              Deduct
+            </button>
+            <button onClick={btnTopUpWallet} className="flex-1 rounded-lg hover:bg-green-600 transition active:scale-95 px-4 py-3 bg-restro-green text-white font-bold shadow-lg shadow-green-500/30">
+              Top Up
+            </button>
+          </div>
+
+          <div className="modal-action mt-2">
+            <form method="dialog" className="w-full">
+              <button className="w-full rounded-lg hover:bg-gray-200 transition active:scale-95 px-4 py-3 bg-gray-100 text-gray-500 font-bold">
+                Close
+              </button>
+            </form>
+          </div>
+        </div>
+      </dialog>
+      {/* wallet dialog */}
+
     </Page>
   );
 }
