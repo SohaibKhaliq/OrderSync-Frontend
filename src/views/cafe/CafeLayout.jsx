@@ -4,6 +4,7 @@ import { useCustomer } from "../../contexts/CustomerContext";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { Settings } from "../../localdb/LocalDB";
 import { IconShoppingBag } from "@tabler/icons-react";
+import NotificationDropdown from "../../components/NotificationDropdown";
 
 export default function CafeLayout() {
   const { customer, logout } = useCustomer();
@@ -39,6 +40,7 @@ export default function CafeLayout() {
           <Link to="/" className={`hover:text-primary transition-colors ${location.pathname === '/' ? 'text-primary' : 'text-neutral'}`}>Home</Link>
           <Link to="/about" className={`hover:text-primary transition-colors ${location.pathname === '/about' ? 'text-primary' : 'text-neutral'}`}>About</Link>
           <Link to="/menu" className={`hover:text-primary transition-colors ${location.pathname === '/menu' ? 'text-primary' : 'text-neutral'}`}>Menu</Link>
+          <Link to="/reserve" className={`hover:text-primary transition-colors ${location.pathname === '/reserve' ? 'text-primary' : 'text-neutral'}`}>Reservations</Link>
           <Link to="/gallery" className={`hover:text-primary transition-colors ${location.pathname === '/gallery' ? 'text-primary' : 'text-neutral'}`}>Gallery</Link>
           <Link to="/contact" className={`hover:text-primary transition-colors ${location.pathname === '/contact' ? 'text-primary' : 'text-neutral'}`}>Contact</Link>
           {customer && <Link to="/orders" className={`hover:text-primary transition-colors ${location.pathname.includes('/orders') ? 'text-primary' : 'text-neutral'}`}>Orders</Link>}
@@ -46,6 +48,11 @@ export default function CafeLayout() {
 
         {/* Right Actions */}
         <div className="flex-none flex items-center gap-4">
+          
+          {customer && (
+            <NotificationDropdown userId={customer.id} userRole="customer" isDarkTheme={false} />
+          )}
+
           <Link to="/cart" className="relative text-neutral hover:text-primary transition-colors mr-2">
             <IconShoppingBag stroke={1.5} size={28} />
             {itemCount > 0 && (
