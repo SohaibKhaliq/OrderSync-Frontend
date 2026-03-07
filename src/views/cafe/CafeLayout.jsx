@@ -265,7 +265,7 @@ export default function CafeLayout() {
         {/* Bottom copyright */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
           <p>
-            © {new Date().getFullYear()} {store?.store_name || "OrderSync"}. All
+            © {new Date().getFullYear()} {store?.store_name || "Campus Karahi"}. All
             Rights Reserved.
           </p>
           <div className="flex gap-6">
