@@ -55,125 +55,122 @@ export default function CafeRegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-base-100 flex flex-col">
-      {/* Navbar */}
-      <nav className="navbar bg-base-200 shadow-sm px-6">
-        <Link to="/" className="text-xl font-bold text-primary">
-          ← Back to Home
-        </Link>
-      </nav>
-
-      <div className="flex-1 flex items-center justify-center px-4 py-12">
-        <div className="card bg-base-200 shadow-lg w-full max-w-md">
-          <div className="card-body">
-            <h2 className="card-title text-2xl justify-center mb-2">
+    <div className="bg-theme-light flex-1 flex flex-col items-center justify-center px-4 py-12 md:py-24">
+      <div className="bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-primary/10 w-full max-w-md overflow-hidden">
+        <div className="p-8 md:p-10">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-serif font-bold text-secondary mb-2">
               Create Account
             </h2>
-            <p className="text-center text-sm text-base-content/60 mb-6">
-              Join us to order online and track your orders
+            <p className="text-sm font-medium text-neutral opacity-70">
+              Join us to order online and track your delicious food.
             </p>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Full Name</span>
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  className="input input-bordered"
-                  placeholder="John Doe"
-                  value={form.name}
-                  onChange={handleChange}
-                  required
-                  autoComplete="name"
-                />
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Email Address</span>
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  className="input input-bordered"
-                  placeholder="you@example.com"
-                  value={form.email}
-                  onChange={handleChange}
-                  required
-                  autoComplete="email"
-                />
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">
-                    Phone{" "}
-                    <span className="text-base-content/40">(optional)</span>
-                  </span>
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  className="input input-bordered"
-                  placeholder="+1 234 567 8900"
-                  value={form.phone}
-                  onChange={handleChange}
-                  autoComplete="tel"
-                />
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Password</span>
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  className="input input-bordered"
-                  placeholder="Min. 6 characters"
-                  value={form.password}
-                  onChange={handleChange}
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
-
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Confirm Password</span>
-                </label>
-                <input
-                  type="password"
-                  name="confirmPassword"
-                  className="input input-bordered"
-                  placeholder="Repeat password"
-                  value={form.confirmPassword}
-                  onChange={handleChange}
-                  required
-                  autoComplete="new-password"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-primary w-full mt-2"
-                disabled={loading}
-              >
-                {loading ? (
-                  <span className="loading loading-spinner loading-sm" />
-                ) : (
-                  "Create Account"
-                )}
-              </button>
-            </form>
-
-            <div className="divider text-xs">Already have an account?</div>
-            <Link to="/login" className="btn btn-outline w-full">
-              Sign In
-            </Link>
           </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Full Name</span>
+              </label>
+              <input
+                type="text"
+                name="name"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
+                placeholder="John Doe"
+                value={form.name}
+                onChange={handleChange}
+                required
+                autoComplete="name"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Email Address</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
+                placeholder="you@example.com"
+                value={form.email}
+                onChange={handleChange}
+                required
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Phone <span className="text-neutral/40 font-normal normal-case">(optional)</span>
+                </span>
+              </label>
+              <input
+                type="tel"
+                name="phone"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
+                placeholder="+1 234 567 8900"
+                value={form.phone}
+                onChange={handleChange}
+                autoComplete="tel"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Password</span>
+              </label>
+              <input
+                type="password"
+                name="password"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
+                placeholder="Min. 6 characters"
+                value={form.password}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Confirm Password</span>
+              </label>
+              <input
+                type="password"
+                name="confirmPassword"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
+                placeholder="Repeat password"
+                value={form.confirmPassword}
+                onChange={handleChange}
+                required
+                autoComplete="new-password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary w-full h-14 min-h-0 rounded-xl mt-4 text-white font-bold text-lg border-0 shadow-lg shadow-primary/30 hover:scale-[1.02] transition-transform"
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading loading-spinner loading-md" />
+              ) : (
+                "Create Account"
+              )}
+            </button>
+          </form>
+
+          <div className="my-8 flex items-center gap-4">
+            <div className="h-px bg-gray-200 flex-1"></div>
+            <span className="text-xs font-bold text-neutral opacity-50 uppercase tracking-widest">Already a user?</span>
+            <div className="h-px bg-gray-200 flex-1"></div>
+          </div>
+          
+          <Link to="/login" className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl w-full h-14 min-h-0 font-bold text-lg transition-colors">
+            Sign In
+          </Link>
         </div>
       </div>
     </div>
