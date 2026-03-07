@@ -71,7 +71,8 @@ export default function CafeCartPage() {
                 {/* Image placeholder for cart */}
                 <div className="h-20 w-20 md:h-24 md:w-24 rounded-xl overflow-hidden shrink-0 bg-gray-100 flex items-center justify-center shadow-inner mr-4 md:mr-6">
                   <img 
-                    src={`https://images.unsplash.com/photo-${['1544025162-8311ab3cd9f8', '1568901346375-23c9450c58cd', '1559847844-5315695dadae', '1432139555190-58524dae6a55'][(item.id || 0) % 4]}?q=80&w=200&auto=format&fit=crop`}
+                    src={item.image || `https://images.unsplash.com/photo-${['1540189549336-e6e99c3679fe', '1565299624946-b28f40a0ae38', '1482049016688-2d3e1b311543', '1481070414801-51fd732d7184'][(item.id || 0) % 4]}?q=80&w=200&auto=format&fit=crop`}
+                    onError={(e) => { e.target.onerror = null; e.target.src = `https://images.unsplash.com/photo-${['1540189549336-e6e99c3679fe', '1565299624946-b28f40a0ae38', '1482049016688-2d3e1b311543', '1481070414801-51fd732d7184'][(item.id || 0) % 4]}?q=80&w=200&auto=format&fit=crop` }}
                     alt={item.title} 
                     className="w-full h-full object-cover"
                   />
