@@ -1465,6 +1465,7 @@ export const CustomerAccounts = {
       password,
       phone: phone || "",
       role: "customer",
+      credit_balance: 0,
       created_at: new Date().toISOString(),
     };
     db.customer_accounts.push(account);
@@ -1500,10 +1501,55 @@ export const CustomerAccounts = {
       db.customer_accounts[idx] = { ...db.customer_accounts[idx], name, phone };
       saveDB(db);
       const { password: _p, ...safe } = db.customer_accounts[idx];
-      localStorage.setItem("cafe_session", JSON.stringify(safe));
+      // Only update session if this is the currently logged in user
+      const currentSession = CustomerAccounts.getSession();
+      if (currentSession && currentSession.id === id) {
+        localStorage.setItem("cafe_session", JSON.stringify(safe));
+      }
       return safe;
     }
     return null;
+  },
+  addCredit(id, amount) {
+    const db = getDB();
+    const idx = (db.customer_accounts || []).findIndex(
+      (c) => String(c.id) === String(id),
+    );
+    if (idx !== -1) {
+      const currentBalance = db.customer_accounts[idx].credit_balance || 0;
+      db.customer_accounts[idx].credit_balance = currentBalance + parseFloat(amount);
+      saveDB(db);
+      const { password: _p, ...safe } = db.customer_accounts[idx];
+      const currentSession = CustomerAccounts.getSession();
+      if (currentSession && currentSession.id === id) {
+        localStorage.setItem("cafe_session", JSON.stringify(safe));
+        window.dispatchEvent(new Event('cafe_session'));
+      }
+      return safe;
+    }
+    throw new Error("Customer not found");
+  },
+  deductCredit(id, amount) {
+    const db = getDB();
+    const idx = (db.customer_accounts || []).findIndex(
+      (c) => String(c.id) === String(id),
+    );
+    if (idx !== -1) {
+      const currentBalance = db.customer_accounts[idx].credit_balance || 0;
+      if (currentBalance < parseFloat(amount)) {
+        throw new Error("Insufficient credit balance");
+      }
+      db.customer_accounts[idx].credit_balance = currentBalance - parseFloat(amount);
+      saveDB(db);
+      const { password: _p, ...safe } = db.customer_accounts[idx];
+      const currentSession = CustomerAccounts.getSession();
+      if (currentSession && currentSession.id === id) {
+        localStorage.setItem("cafe_session", JSON.stringify(safe));
+        window.dispatchEvent(new Event('cafe_session'));
+      }
+      return safe;
+    }
+    throw new Error("Customer not found");
   },
 };
 
