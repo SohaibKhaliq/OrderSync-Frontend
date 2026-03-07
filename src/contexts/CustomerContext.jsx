@@ -19,7 +19,7 @@ export function CustomerProvider({ children }) {
     setCustomer(CustomerAccounts.getSession());
   }
 
-  // Sync across tabs
+  // Sync across tabs and listen for local updates
   useEffect(() => {
     function onStorage(e) {
       if (e.key === "cafe_session") {
@@ -27,7 +27,12 @@ export function CustomerProvider({ children }) {
       }
     }
     window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    window.addEventListener("cafe_session", refreshSession);
+    
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("cafe_session", refreshSession);
+    };
   }, []);
 
   return (
