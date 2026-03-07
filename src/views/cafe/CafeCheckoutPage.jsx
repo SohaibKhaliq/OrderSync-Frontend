@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { useCustomer } from "../../contexts/CustomerContext";
 import { CafeOrders, Settings } from "../../localdb/LocalDB";
+import { addNotification } from "../../hooks/useNotifications";
 
 const PAYMENT_METHODS = [
   { id: "cash", label: "Cash on Delivery", icon: "💵" },
@@ -83,6 +84,22 @@ export default function CafeCheckoutPage() {
         total: total.toFixed(2),
       });
       clearCart();
+
+      // Add Notification for Admin
+      addNotification({
+        userId: "admin",
+        forAdmin: true,
+        message: `New Order #${order.id} placed by ${customer.name} for ${symbol}${total.toFixed(2)}`,
+        type: 'info'
+      });
+
+      // Add Notification for Customer
+      addNotification({
+        userId: customer.id,
+        message: `Your order #${order.id} has been placed successfully for ${symbol}${total.toFixed(2)}.`,
+        type: 'success'
+      });
+
       toast.success("Order placed successfully!");
       navigate(`/orders/${order.id}`);
     } catch (err) {
