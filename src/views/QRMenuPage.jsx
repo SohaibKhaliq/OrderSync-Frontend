@@ -7,6 +7,7 @@ import {
   IconPhone,
   IconShare,
   IconX,
+  IconCalendarPlus,
 } from "@tabler/icons-react";
 import React, { useEffect, useState } from "react";
 import { iconStroke } from "../config/config";
@@ -311,6 +312,17 @@ export default function QRMenuPage() {
               </a>
             )}
           </div>
+          {encryptedTableId && (
+            <div className="mt-6 border-t border-gray-200 pt-4">
+              <button 
+                onClick={() => navigate(`/reserve?tableId=${encryptedTableId}`)}
+                className="w-full bg-primary text-primary-content hover:bg-primary/90 transition-colors py-3 rounded-xl font-bold flex items-center justify-center gap-2 shadow-sm"
+              >
+                <IconCalendarPlus stroke={iconStroke} />
+                Pre-Book this Table
+              </button>
+            </div>
+          )}
         </div>
         {/* store details: name, phone, address, email, share menu link */}
 
