@@ -415,7 +415,7 @@ export default function MenuItemViewPage() {
 
             {
               image ? <div className="w-full h-full relative top-0 left-0">
-                <img src={imageURL} alt={title} className="w-full h-full absolute top-0 left-0 rounded-2xl object-cover" /> 
+                <img src={imageURL} onError={(e) => { e.target.onerror = null; e.target.src = "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80" }} alt={title} className="w-full h-full absolute top-0 left-0 rounded-2xl object-cover" /> 
               </div>:
               <p className="absolute"><IconCarrot stroke={iconStroke} /></p>
             }
