@@ -5295,11 +5295,77 @@ export const Orders = {
     return { orderId, tokenNo, invoiceId };
   },
 
+  // Normalise a LocalDB order_item to the shape both KitchenPage and OrdersPage expect
+  _normaliseItem(oi, orderCreatedAt) {
+    return {
+      id: oi.id,
+      order_id: oi.order_id,
+      item_id: oi.menu_item_id ?? oi.item_id,
+      item_title: oi.title ?? oi.item_title,
+      variant_id: oi.variant_id ?? null,
+      variant_title: oi.variant ?? oi.variant_title ?? null,
+      quantity: oi.quantity,
+      status: oi.status,
+      date: oi.date ?? orderCreatedAt,
+      addons: Array.isArray(oi.addons)
+        ? oi.addons
+        : oi.addons
+          ? oi.addons.split(",").map((a) => ({ title: a.trim() }))
+          : [],
+      notes: oi.notes ?? null,
+    };
+  },
+
+  // Flat list — used by KitchenPage (/kitchen)
   getKitchenOrders() {
-    const orders = col("orders");
-    return orders
+    return col("orders")
       .filter((o) => o.status === "pending" || o.status === "preparing")
-      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+      .map((o) => ({
+        id: o.id,
+        date: o.created_at,
+        delivery_type: o.delivery_type,
+        customer_type: o.customer_type,
+        customer_id: o.customer_id,
+        customer_name: o.customer_name,
+        table_id: o.table_id ?? null,
+        table_title: o.table_title ?? null,
+        floor: (() => {
+          const t = col("store_tables").find(
+            (t) => String(t.id) === String(o.table_id),
+          );
+          return t?.floor ?? null;
+        })(),
+        status: o.status,
+        payment_status: o.payment_status,
+        token_no: o.token_no,
+        items: (o.order_items || []).map((oi) =>
+          Orders._normaliseItem(oi, o.created_at),
+        ),
+      }));
+  },
+
+  // Grouped by table — used by OrdersPage (/orders)
+  getGroupedKitchenOrders() {
+    const tables = col("store_tables");
+    const active = Orders.getKitchenOrders(); // already normalised flat orders
+
+    const groups = {};
+    for (const o of active) {
+      const key = o.table_id != null ? String(o.table_id) : "__takeaway__";
+      if (!groups[key]) {
+        groups[key] = {
+          table_id: o.table_id,
+          table_title: o.table_title,
+          floor: o.floor,
+          order_ids: [],
+          orders: [],
+        };
+      }
+      groups[key].order_ids.push(o.id);
+      groups[key].orders.push(o);
+    }
+    return Object.values(groups);
   },
 
   getOrdersInit() {
