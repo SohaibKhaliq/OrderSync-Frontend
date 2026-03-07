@@ -245,6 +245,11 @@ const SEED = {
   reservations: [],
   devices: [],
 
+  // OCOS – customer portal accounts
+  customer_accounts: [],
+  // OCOS – cafe orders placed by customers online
+  cafe_orders: [],
+
   token_counter: { value: 0 },
 };
 
@@ -270,6 +275,8 @@ export function initDB() {
       "payments",
       "reservations",
       "devices",
+      "customer_accounts",
+      "cafe_orders",
     ];
     defaults.forEach((k) => {
       if (db[k] === undefined) {
@@ -1427,6 +1434,141 @@ export const Reports = {
       topSellingItems,
       revenueTotal: parseFloat(revenueTotal.toFixed(2)),
     };
+  },
+};
+
+// ── CUSTOMER ACCOUNTS (OCOS portal) ──────────────────────
+export const CustomerAccounts = {
+  findByEmail(email) {
+    return col("customer_accounts").find(
+      (c) => c.email.toLowerCase() === email.toLowerCase(),
+    );
+  },
+  register(name, email, password, phone) {
+    const db = getDB();
+    db.customer_accounts = db.customer_accounts || [];
+    if (
+      db.customer_accounts.find(
+        (c) => c.email.toLowerCase() === email.toLowerCase(),
+      )
+    ) {
+      throw new Error("Email already registered");
+    }
+    const maxId = db.customer_accounts.reduce(
+      (m, c) => Math.max(m, c.id || 0),
+      0,
+    );
+    const account = {
+      id: maxId + 1,
+      name,
+      email,
+      password,
+      phone: phone || "",
+      role: "customer",
+      created_at: new Date().toISOString(),
+    };
+    db.customer_accounts.push(account);
+    saveDB(db);
+    const { password: _p, ...safe } = account;
+    return safe;
+  },
+  login(email, password) {
+    const account = CustomerAccounts.findByEmail(email);
+    if (!account || account.password !== password) {
+      throw new Error("Invalid email or password");
+    }
+    const { password: _p, ...safe } = account;
+    localStorage.setItem("cafe_session", JSON.stringify(safe));
+    return safe;
+  },
+  logout() {
+    localStorage.removeItem("cafe_session");
+  },
+  getSession() {
+    try {
+      return JSON.parse(localStorage.getItem("cafe_session")) || null;
+    } catch {
+      return null;
+    }
+  },
+  updateProfile(id, name, phone) {
+    const db = getDB();
+    const idx = (db.customer_accounts || []).findIndex(
+      (c) => String(c.id) === String(id),
+    );
+    if (idx !== -1) {
+      db.customer_accounts[idx] = { ...db.customer_accounts[idx], name, phone };
+      saveDB(db);
+      const { password: _p, ...safe } = db.customer_accounts[idx];
+      localStorage.setItem("cafe_session", JSON.stringify(safe));
+      return safe;
+    }
+    return null;
+  },
+};
+
+// ── CAFE ORDERS (OCOS customer-placed orders) ─────────────
+export const CafeOrders = {
+  create({
+    customerId,
+    customerName,
+    customerEmail,
+    customerPhone,
+    items,
+    deliveryType,
+    address,
+    paymentMethod,
+    paymentGatewayRef,
+    subtotal,
+    taxTotal,
+    total,
+  }) {
+    const db = getDB();
+    db.cafe_orders = db.cafe_orders || [];
+    const maxId = db.cafe_orders.reduce((m, o) => Math.max(m, o.id || 0), 0);
+    const order = {
+      id: maxId + 1,
+      customer_id: customerId,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      customer_phone: customerPhone,
+      items: items || [],
+      delivery_type: deliveryType || "delivery",
+      address: address || "",
+      payment_method: paymentMethod || "cash",
+      payment_gateway_ref: paymentGatewayRef || null,
+      payment_status: paymentMethod === "cash" ? "pending" : "paid",
+      status: "pending",
+      subtotal: parseFloat(subtotal || 0).toFixed(2),
+      tax_total: parseFloat(taxTotal || 0).toFixed(2),
+      total: parseFloat(total || 0).toFixed(2),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+    db.cafe_orders.push(order);
+    saveDB(db);
+    return order;
+  },
+  getByCustomer(customerId) {
+    return col("cafe_orders")
+      .filter((o) => String(o.customer_id) === String(customerId))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+  getById(id) {
+    return col("cafe_orders").find((o) => String(o.id) === String(id)) || null;
+  },
+  updateStatus(id, status) {
+    const db = getDB();
+    const idx = (db.cafe_orders || []).findIndex(
+      (o) => String(o.id) === String(id),
+    );
+    if (idx !== -1) {
+      db.cafe_orders[idx].status = status;
+      db.cafe_orders[idx].updated_at = new Date().toISOString();
+      saveDB(db);
+      return db.cafe_orders[idx];
+    }
+    return null;
   },
 };
 
