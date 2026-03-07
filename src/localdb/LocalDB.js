@@ -4462,7 +4462,6 @@ function generateSeedCafeOrders() {
   ];
 }
 
-
 export function initDB() {
   // Version bump: increment SEED_VERSION to force-reset all data when schema changes
   const SEED_VERSION = "3";
@@ -5839,6 +5838,124 @@ export const CafeOrders = {
       return db.cafe_orders[idx];
     }
     return null;
+  },
+  // Return all cafe orders sorted newest first (for admin POS)
+  getAll() {
+    return col("cafe_orders").sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at),
+    );
+  },
+};
+
+// ── WALLET TRANSACTIONS ────────────────────────────────────
+// Tracks every top-up and deduction for a customer's wallet
+export const WalletTransactions = {
+  /**
+   * Record a wallet top-up transaction.
+   * @param {object} opts
+   * @param {number|string} opts.customerId
+   * @param {number}        opts.amount       - positive amount added
+   * @param {string}        opts.method       - 'jazzcash'|'easypaisa'|'stripe'|'cash'
+   * @param {string}        [opts.ref]        - payment gateway reference
+   */
+  addTopUp({ customerId, amount, method, ref }) {
+    const db = getDB();
+    db.wallet_transactions = db.wallet_transactions || [];
+    const maxId = db.wallet_transactions.reduce(
+      (m, t) => Math.max(m, t.id || 0),
+      0,
+    );
+    const txn = {
+      id: maxId + 1,
+      customer_id: String(customerId),
+      type: "topup",
+      amount: parseFloat(amount),
+      method,
+      ref: ref || null,
+      created_at: new Date().toISOString(),
+    };
+    db.wallet_transactions.push(txn);
+    saveDB(db);
+    return txn;
+  },
+
+  /**
+   * Record a wallet deduction (order payment).
+   */
+  addDeduction({ customerId, amount, orderId }) {
+    const db = getDB();
+    db.wallet_transactions = db.wallet_transactions || [];
+    const maxId = db.wallet_transactions.reduce(
+      (m, t) => Math.max(m, t.id || 0),
+      0,
+    );
+    const txn = {
+      id: maxId + 1,
+      customer_id: String(customerId),
+      type: "deduction",
+      amount: parseFloat(amount),
+      method: "wallet",
+      ref: orderId ? `ORDER-${orderId}` : null,
+      created_at: new Date().toISOString(),
+    };
+    db.wallet_transactions.push(txn);
+    saveDB(db);
+    return txn;
+  },
+
+  /**
+   * Get all transactions for a specific customer (newest first).
+   */
+  getByCustomer(customerId) {
+    return col("wallet_transactions")
+      .filter((t) => String(t.customer_id) === String(customerId))
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  },
+};
+
+// ── TABLE BOOKING HELPERS ──────────────────────────────────
+// Helpers to check table availability for reservations
+export const TableBookings = {
+  /**
+   * Check if a table is already booked for a given date (YYYY-MM-DD).
+   * Looks at reservations with status 'booked' or 'confirmed'.
+   */
+  isBooked(tableId, dateStr) {
+    if (!tableId || !dateStr) return false;
+    return col("reservations").some((r) => {
+      if (String(r.table_id) !== String(tableId)) return false;
+      if (!["booked", "confirmed"].includes(r.status)) return false;
+      const rDate = r.date ? r.date.split("T")[0] : "";
+      return rDate === dateStr;
+    });
+  },
+
+  /**
+   * Get number of booked seats for a table on a given date.
+   */
+  bookedSeats(tableId, dateStr) {
+    if (!tableId || !dateStr) return 0;
+    return col("reservations")
+      .filter((r) => {
+        if (String(r.table_id) !== String(tableId)) return false;
+        if (!["booked", "confirmed"].includes(r.status)) return false;
+        const rDate = r.date ? r.date.split("T")[0] : "";
+        return rDate === dateStr;
+      })
+      .reduce((sum, r) => sum + (parseInt(r.people_count) || 0), 0);
+  },
+
+  /**
+   * Get all reservations for today (admin POS view).
+   */
+  getTodaysReservations() {
+    const today = new Date().toISOString().split("T")[0];
+    return col("reservations")
+      .filter((r) => {
+        const rDate = r.date ? r.date.split("T")[0] : "";
+        return rDate === today;
+      })
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
   },
 };
 
