@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCustomer } from "../../contexts/CustomerContext";
 import { addNotification } from "../../hooks/useNotifications";
@@ -8,6 +7,8 @@ import { getDB, saveDB } from "../../localdb/LocalDB";
 export default function CafeReservationPage() {
   const navigate = useNavigate();
   const { customer, login } = useCustomer();
+  // Always call all hooks unconditionally at the top of the component
+  const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [tables, setTables] = useState([]);
 
@@ -16,7 +17,7 @@ export default function CafeReservationPage() {
     date: "",
     time: "",
     peopleCount: "2",
-    tableId: "",
+    tableId: searchParams.get("tableId") || "",
     notes: "",
     name: customer?.name || "",
     phone: customer?.phone || "",
@@ -35,7 +36,12 @@ export default function CafeReservationPage() {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const dateStr = tomorrow.toISOString().split("T")[0];
-    setForm((prev) => ({ ...prev, date: dateStr, time: "19:00" }));
+    
+    setForm((prev) => ({ 
+      ...prev, 
+      date: dateStr, 
+      time: "19:00"
+    }));
   }, []);
 
   function handleChange(e) {
