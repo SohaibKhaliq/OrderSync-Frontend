@@ -16,8 +16,10 @@ import {
   IconLifebuoy,
   IconLogout,
   IconPrinter,
+  IconQrcode,
   IconReceiptTax,
   IconSearch,
+  IconShoppingBag,
   IconToolsKitchen3,
   IconUser,
   IconUsersGroup,
@@ -83,113 +85,140 @@ export default function AppBar() {
       description: "",
       icon: <IconLayoutDashboard stroke={iconStroke} />,
       link: "/dashboard/home",
-      scopes: [SCOPES.DASHBOARD]
+      scopes: [SCOPES.DASHBOARD],
     },
     {
       title: "POS - Point of Sale",
       description: "",
       icon: <IconDeviceTablet stroke={iconStroke} />,
       link: "/dashboard/pos",
-      scopes: [SCOPES.POS]
+      scopes: [SCOPES.POS],
     },
     {
       title: "Kitchen",
       description: "",
       icon: <IconChefHat stroke={iconStroke} />,
       link: "/dashboard/kitchen",
-      scopes: [SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY]
+      scopes: [SCOPES.KITCHEN, SCOPES.KITCHEN_DISPLAY],
     },
     {
       title: "Orders",
       description: "",
       icon: <IconToolsKitchen3 stroke={iconStroke} />,
       link: "/dashboard/orders",
-      scopes: [SCOPES.POS, SCOPES.ORDERS, SCOPES.ORDER_STATUS, SCOPES.ORDER_STATUS_DISPLAY]
+      scopes: [
+        SCOPES.POS,
+        SCOPES.ORDERS,
+        SCOPES.ORDER_STATUS,
+        SCOPES.ORDER_STATUS_DISPLAY,
+      ],
     },
     {
       title: "Reservations",
       description: "",
       icon: <IconArmchair2 stroke={iconStroke} />,
       link: "/dashboard/reservation",
-      scopes: [SCOPES.RESERVATIONS, SCOPES.VIEW_RESERVATIONS, SCOPES.MANAGE_RESERVATIONS]
+      scopes: [
+        SCOPES.RESERVATIONS,
+        SCOPES.VIEW_RESERVATIONS,
+        SCOPES.MANAGE_RESERVATIONS,
+      ],
     },
     {
       title: "Customers",
       description: "",
       icon: <IconFriends stroke={iconStroke} />,
       link: "/dashboard/customers",
-      scopes: [SCOPES.CUSTOMERS, SCOPES.VIEW_CUSTOMERS, SCOPES.MANAGE_CUSTOMERS]
+      scopes: [
+        SCOPES.CUSTOMERS,
+        SCOPES.VIEW_CUSTOMERS,
+        SCOPES.MANAGE_CUSTOMERS,
+      ],
     },
     {
       title: "Invoices",
       description: "",
       icon: <IconFileInvoice stroke={iconStroke} />,
       link: "/dashboard/invoices",
-      scopes: [SCOPES.INVOICES]
+      scopes: [SCOPES.INVOICES],
     },
     {
       title: "Users",
       description: "",
       icon: <IconUsersGroup stroke={iconStroke} />,
       link: "/dashboard/users",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Reports",
       description: "",
       icon: <IconChartArea stroke={iconStroke} />,
       link: "/dashboard/reports",
-      scopes: [SCOPES.REPORTS]
+      scopes: [SCOPES.REPORTS],
     },
     {
       title: "Store Settings",
       description: "",
       icon: <IconInfoSquareRounded stroke={iconStroke} />,
       link: "/dashboard/settings",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Print Settings",
       description: "",
       icon: <IconPrinter stroke={iconStroke} />,
       link: "/dashboard/settings/print-settings",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Store Tables",
       description: "",
       icon: <IconArmchair2 stroke={iconStroke} />,
       link: "/dashboard/settings/tables",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Menu Items",
       description: "",
       icon: <IconBook stroke={iconStroke} />,
       link: "/dashboard/settings/menu-items",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Tax Setup",
       description: "",
       icon: <IconReceiptTax stroke={iconStroke} />,
       link: "/dashboard/settings/tax-setup",
-      scopes: [SCOPES.SETTINGS]
+      scopes: [SCOPES.SETTINGS],
     },
     {
       title: "Devices",
       description: "",
       icon: <IconDevices stroke={iconStroke} />,
       link: "/dashboard/devices",
-      scopes: []
+      scopes: [],
     },
     {
       title: "Profile",
       description: "",
       icon: <IconUser stroke={iconStroke} />,
       link: "/dashboard/profile",
-      scopes: []
-    }
+      scopes: [],
+    },
+    {
+      title: "Cafe Orders",
+      description: "Live student portal orders",
+      icon: <IconShoppingBag stroke={iconStroke} />,
+      link: "/dashboard/cafe-orders",
+      scopes: [SCOPES.POS, SCOPES.ORDERS],
+    },
+    {
+      title: "Table QR Codes",
+      description: "Print & download per-table QR codes",
+      icon: <IconQrcode stroke={iconStroke} />,
+      link: "/dashboard/cafe-table-qr",
+      scopes: [SCOPES.SETTINGS],
+    },
   ];
 
   return (
@@ -208,9 +237,10 @@ export default function AppBar() {
           >
             <p>Search</p>
             <div className="flex items-center gap-2">
-              <div className="kbd kbd-sm"><IconCommand stroke={iconStroke} size={20}/></div>
+              <div className="kbd kbd-sm">
+                <IconCommand stroke={iconStroke} size={20} />
+              </div>
               <div className="kbd kbd-sm">K</div>
-
             </div>
           </div>
         </button>
@@ -227,47 +257,67 @@ export default function AppBar() {
       <dialog id="search-modal" className="modal">
         <div className="modal-box max-h-96 relative">
           <div className="flex items-center justify-between gap-4 sticky top-0">
-            <input type="search" className="input input-bordered w-full" placeholder="Search" autoFocus value={search} onChange={e=>setSearch(e.target.value)} />
+            <input
+              type="search"
+              className="input input-bordered w-full"
+              placeholder="Search"
+              autoFocus
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
 
             <div>
               <form method="dialog">
                 {/* if there is a button in form, it will close the modal */}
-                <button className="btn text-slate-500 btn-circle"><IconX stroke={iconStroke} /></button>
+                <button className="btn text-slate-500 btn-circle">
+                  <IconX stroke={iconStroke} />
+                </button>
               </form>
             </div>
           </div>
 
           <div className="my-4">
             <form method="dialog">
-            {
-              searchItems
-              .filter((navItem)=>{
-                const requiredScopes = navItem.scopes;
-                if(userRole == "admin") {
-                  return true;
-                }
+              {searchItems
+                .filter((navItem) => {
+                  const requiredScopes = navItem.scopes;
+                  if (userRole == "admin") {
+                    return true;
+                  }
 
-                if(requiredScopes.length == 0) {
-                  return true;
-                }
+                  if (requiredScopes.length == 0) {
+                    return true;
+                  }
 
-                return requiredScopes.some((scope)=>userScopes.includes(scope));
-              })
-              .filter((item)=>item.title.toLowerCase().includes(search.trim().toLowerCase())).map((item, index)=>{
-                return <button onClick={()=>navigate(item.link)} key={index} className="w-full flex items-center gap-2 px-4 py-3 mb-2 transition hover:bg-gray-100 active:scale-90 focus:bg-gray-100 rounded-2xl justify-between">
-                  <div>
-                    {item.icon}
-                  </div>
-                  <div className="flex-1 text-start">
-                    <p>{item.title}</p>
-                    <p className="text-xs text-gray-500">{item.description}</p>
-                  </div>
-                  <div>
-                    <IconChevronRight stroke={iconStroke} />
-                  </div>
-                </button>
-              })
-            }
+                  return requiredScopes.some((scope) =>
+                    userScopes.includes(scope),
+                  );
+                })
+                .filter((item) =>
+                  item.title
+                    .toLowerCase()
+                    .includes(search.trim().toLowerCase()),
+                )
+                .map((item, index) => {
+                  return (
+                    <button
+                      onClick={() => navigate(item.link)}
+                      key={index}
+                      className="w-full flex items-center gap-2 px-4 py-3 mb-2 transition hover:bg-gray-100 active:scale-90 focus:bg-gray-100 rounded-2xl justify-between"
+                    >
+                      <div>{item.icon}</div>
+                      <div className="flex-1 text-start">
+                        <p>{item.title}</p>
+                        <p className="text-xs text-gray-500">
+                          {item.description}
+                        </p>
+                      </div>
+                      <div>
+                        <IconChevronRight stroke={iconStroke} />
+                      </div>
+                    </button>
+                  );
+                })}
             </form>
           </div>
 
