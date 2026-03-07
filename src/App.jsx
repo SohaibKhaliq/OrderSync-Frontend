@@ -49,6 +49,8 @@ import SuperAdminTenantSubscriptionHistoryPage from "./views/SuperAdmin/SuperAdm
 import CartPage from "./views/CartPage";
 import OrderSuccessPage from "./views/OrderSuccessPage";
 import OrderFailedPage from "./views/OrderFailedPage";
+import CafeOrdersAdminPage from "./views/CafeOrdersAdminPage";
+import CafeTableQRAdminPage from "./views/CafeTableQRAdminPage";
 
 // ── OCOS – Customer Portal ────────────────────────────────
 import { CustomerProvider } from "./contexts/CustomerContext";
@@ -66,6 +68,8 @@ import CafeAboutPage from "./views/cafe/CafeAboutPage";
 import CafeGalleryPage from "./views/cafe/CafeGalleryPage";
 import CafeContactPage from "./views/cafe/CafeContactPage";
 import CafeReservationPage from "./views/cafe/CafeReservationPage";
+import CafeWalletPage from "./views/cafe/CafeWalletPage";
+import CafeTableQRPage from "./views/cafe/CafeTableQRPage";
 import CafeLayout from "./views/cafe/CafeLayout";
 
 // ── Payment Gateway Simulations ───────────────────────────
@@ -137,7 +141,18 @@ export default function App() {
                       </CustomerRoute>
                     }
                   />
+                  <Route
+                    path="/wallet"
+                    element={
+                      <CustomerRoute>
+                        <CafeWalletPage />
+                      </CustomerRoute>
+                    }
+                  />
                 </Route>
+
+                {/* QR table landing — no auth required */}
+                <Route path="/table/:tableId" element={<CafeTableQRPage />} />
 
                 {/* ── Staff login / register ── */}
                 <Route path="/staff/login" element={<LoginPage />} />
@@ -314,6 +329,12 @@ export default function App() {
                       element={<PaymentTypesPage />}
                     />
                   </Route>
+
+                  <Route path="cafe-orders" element={<CafeOrdersAdminPage />} />
+                  <Route
+                    path="cafe-table-qr"
+                    element={<CafeTableQRAdminPage />}
+                  />
                 </Route>
                 {/* app routes */}
 
