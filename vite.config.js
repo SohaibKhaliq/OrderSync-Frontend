@@ -15,8 +15,8 @@ export default defineConfig({
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
       },
       manifest: {
-        name: "OrderSync",
-        short_name: "OrderSync",
+        name: "Campus Karahi",
+        short_name: "Campus Karahi",
         description:
           "Manage Your Restaurant, Cafe, Hotel, Bar, Food Truck, Stall, any food store.",
         theme_color: "#ECF1EB",
