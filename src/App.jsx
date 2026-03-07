@@ -62,6 +62,7 @@ import CafeCartPage from "./views/cafe/CafeCartPage";
 import CafeCheckoutPage from "./views/cafe/CafeCheckoutPage";
 import CafeOrdersPage from "./views/cafe/CafeOrdersPage";
 import CafeOrderTrackingPage from "./views/cafe/CafeOrderTrackingPage";
+import CafeLayout from "./views/cafe/CafeLayout";
 
 // ── Payment Gateway Simulations ───────────────────────────
 import JazzCashPage from "./views/payment/JazzCashPage";
@@ -84,49 +85,51 @@ export default function App() {
             <BrowserRouter>
               <Routes>
                 {/* ── Customer cafe portal (root) ── */}
-                <Route path="/" element={<CafeLandingPage />} />
-                <Route path="/login" element={<CafeLoginPage />} />
-                <Route path="/register" element={<CafeRegisterPage />} />
-                <Route
-                  path="/menu"
-                  element={
-                    <CustomerRoute>
-                      <CafeMenuPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/cart"
-                  element={
-                    <CustomerRoute>
-                      <CafeCartPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/checkout"
-                  element={
-                    <CustomerRoute>
-                      <CafeCheckoutPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/orders"
-                  element={
-                    <CustomerRoute>
-                      <CafeOrdersPage />
-                    </CustomerRoute>
-                  }
-                />
-                <Route
-                  path="/orders/:id"
-                  element={
-                    <CustomerRoute>
-                      <CafeOrderTrackingPage />
-                    </CustomerRoute>
-                  }
-                />
+                <Route element={<CafeLayout />}>
+                  <Route path="/" element={<CafeLandingPage />} />
+                  <Route path="/login" element={<CafeLoginPage />} />
+                  <Route path="/register" element={<CafeRegisterPage />} />
+                  <Route
+                    path="/menu"
+                    element={
+                      <CustomerRoute>
+                        <CafeMenuPage />
+                      </CustomerRoute>
+                    }
+                  />
+                  <Route
+                    path="/cart"
+                    element={
+                      <CustomerRoute>
+                        <CafeCartPage />
+                      </CustomerRoute>
+                    }
+                  />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <CustomerRoute>
+                        <CafeCheckoutPage />
+                      </CustomerRoute>
+                    }
+                  />
+                  <Route
+                    path="/orders"
+                    element={
+                      <CustomerRoute>
+                        <CafeOrdersPage />
+                      </CustomerRoute>
+                    }
+                  />
+                  <Route
+                    path="/orders/:id"
+                    element={
+                      <CustomerRoute>
+                        <CafeOrderTrackingPage />
+                      </CustomerRoute>
+                    }
+                  />
+                </Route>
 
                 {/* ── Staff login / register ── */}
                 <Route path="/staff/login" element={<LoginPage />} />
