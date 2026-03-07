@@ -33,6 +33,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
 import { SCOPES } from "../config/scopes";
 import AppBarDropdown from "./AppBarDropdown";
+import NotificationDropdown from "./NotificationDropdown";
 
 export default function AppBar() {
   const navigate = useNavigate();
@@ -216,7 +217,10 @@ export default function AppBar() {
         {/* search */}
 
         {/* profile */}
-        <AppBarDropdown />
+        <div className="flex items-center gap-2">
+          <NotificationDropdown userId={user.id} userRole={userRole} />
+          <AppBarDropdown />
+        </div>
         {/* profile */}
       </div>
 
