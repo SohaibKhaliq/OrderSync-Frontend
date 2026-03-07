@@ -143,7 +143,8 @@ export default function CafeMenuPage() {
               >
                 <div className="relative h-48 w-full rounded-xl overflow-hidden mb-4">
                   <img 
-                    src={`https://images.unsplash.com/photo-${['1544025162-8311ab3cd9f8', '1568901346375-23c9450c58cd', '1559847844-5315695dadae', '1432139555190-58524dae6a55'][(item.id || 0) % 4]}?q=80&w=600&auto=format&fit=crop`}
+                    src={item.image || `https://images.unsplash.com/photo-${['1540189549336-e6e99c3679fe', '1565299624946-b28f40a0ae38', '1482049016688-2d3e1b311543', '1481070414801-51fd732d7184'][(item.id || 0) % 4]}?q=80&w=600&auto=format&fit=crop`}
+                    onError={(e) => { e.target.onerror = null; e.target.src = `https://images.unsplash.com/photo-${['1540189549336-e6e99c3679fe', '1565299624946-b28f40a0ae38', '1482049016688-2d3e1b311543', '1481070414801-51fd732d7184'][(item.id || 0) % 4]}?q=80&w=600&auto=format&fit=crop` }}
                     alt={item.title} 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
