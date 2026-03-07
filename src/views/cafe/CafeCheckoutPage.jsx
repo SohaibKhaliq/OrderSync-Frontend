@@ -3,10 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { useCustomer } from "../../contexts/CustomerContext";
-import { CafeOrders, Settings } from "../../localdb/LocalDB";
+import { CafeOrders, Settings, CustomerAccounts } from "../../localdb/LocalDB";
 import { addNotification } from "../../hooks/useNotifications";
 
 const PAYMENT_METHODS = [
+  { id: "wallet", label: "Credit Wallet", icon: "💰" },
   { id: "cash", label: "Cash on Delivery", icon: "💵" },
   { id: "jazzcash", label: "JazzCash", icon: "📱" },
   { id: "easypaisa", label: "Easypaisa", icon: "💚" },
@@ -43,8 +44,57 @@ export default function CafeCheckoutPage() {
       return;
     }
 
+    // Wallet Payment
+    if (form.paymentMethod === "wallet") {
+      const balance = parseFloat(customer.credit_balance || 0);
+      if (balance < total) {
+        toast.error(`Insufficient wallet balance. You need ${symbol}${(total - balance).toFixed(2)} more.`);
+        return;
+      }
+      setLoading(true);
+      try {
+        CustomerAccounts.deductCredit(customer.id, total);
+        const order = CafeOrders.create({
+          customerId: customer.id,
+          customerName: customer.name,
+          customerEmail: customer.email,
+          customerPhone: customer.phone,
+          items: cartItems,
+          deliveryType: form.deliveryType,
+          address: form.address,
+          paymentMethod: "wallet",
+          paymentGatewayRef: `WALLET-${Date.now()}`,
+          subtotal: subtotal.toFixed(2),
+          taxTotal: taxTotal.toFixed(2),
+          total: total.toFixed(2),
+        });
+        clearCart();
+
+        addNotification({
+          userId: "admin",
+          forAdmin: true,
+          message: `New Order #${order.id} placed by ${customer.name} (Paid via Wallet) for ${symbol}${total.toFixed(2)}`,
+          type: 'info'
+        });
+
+        addNotification({
+          userId: customer.id,
+          message: `Your order #${order.id} has been placed successfully for ${symbol}${total.toFixed(2)} using your Wallet.`,
+          type: 'success'
+        });
+
+        toast.success("Order placed successfully with Wallet!");
+        navigate(`/orders/${order.id}`);
+      } catch (err) {
+        toast.error(err.message || "Failed to place order.");
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
     // For online payment gateways, redirect to payment page
-    if (form.paymentMethod !== "cash") {
+    if (form.paymentMethod !== "cash" && form.paymentMethod !== "wallet") {
       // Persist pending order data temporarily
       const pendingOrder = {
         customerId: customer.id,
