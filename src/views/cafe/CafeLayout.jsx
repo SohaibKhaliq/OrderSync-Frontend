@@ -127,7 +127,7 @@ export default function CafeLayout() {
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                className="dropdown-content z-[9999] menu p-2 shadow bg-base-100 rounded-box w-52"
               >
                 <li className="px-4 py-2 border-b border-gray-100 mb-1">
                   <span className="text-xs text-gray-400 block mb-1 uppercase tracking-wider font-bold">
@@ -265,8 +265,8 @@ export default function CafeLayout() {
         {/* Bottom copyright */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
           <p>
-            © {new Date().getFullYear()} {store?.store_name || "Campus Karahi"}. All
-            Rights Reserved.
+            © {new Date().getFullYear()} {store?.store_name || "Campus Karahi"}.
+            All Rights Reserved.
           </p>
           <div className="flex gap-6">
             <span className="cursor-pointer hover:text-primary">Facebook</span>
