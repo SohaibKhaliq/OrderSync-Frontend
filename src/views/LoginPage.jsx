@@ -29,7 +29,9 @@ export default function LoginPage() {
         });
         return;
       }
-      const userScopes = scope.split(",");
+      const userScopes = Array.isArray(scope)
+        ? scope
+        : String(scope ?? "").split(",");
       if (userScopes.includes(SCOPES.DASHBOARD)) {
         navigate("/dashboard/home", {
           replace: true,
@@ -134,7 +136,7 @@ export default function LoginPage() {
               Login
             </div>
             <div>
-              <img src={Logo} className="h-16" />
+              <img src={Logo} className="h-20 w-20" />
             </div>
           </div>
 

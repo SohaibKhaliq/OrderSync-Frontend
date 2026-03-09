@@ -1,11 +1,6 @@
 import React, { useRef, useState, Fragment } from "react";
 import Page from "../components/Page";
-import {
-  IconFilter,
-  IconPlus,
-  IconSearch,
-  IconX,
-} from "@tabler/icons-react";
+import { IconFilter, IconPlus, IconSearch, IconX } from "@tabler/icons-react";
 import { iconStroke } from "../config/config";
 import { toast } from "react-hot-toast";
 import { mutate } from "swr";
@@ -23,18 +18,22 @@ import {
 import ReservationCard from "../components/ReservationCard";
 import { SCOPES } from "../config/scopes";
 import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
-import AsyncCreatableSelect from 'react-select/async-creatable';
-import DialogAddCustomer from '../components/DialogAddCustomer';
+import AsyncCreatableSelect from "react-select/async-creatable";
+import DialogAddCustomer from "../components/DialogAddCustomer";
 
 export default function ReservationPage() {
-
   const { role, scope } = getUserDetailsInLocalStorage();
-  const userScopes = scope?.split(",");
+  const userScopes = Array.isArray(scope)
+    ? scope
+    : String(scope ?? "").split(",");
   let isManageAllowed = false;
-  if(role == "admin") {
+  if (role == "admin") {
     isManageAllowed = true;
   } else {
-    if(userScopes.includes(SCOPES.MANAGE_RESERVATIONS) || userScopes.includes(SCOPES.RESERVATIONS)) {
+    if (
+      userScopes.includes(SCOPES.MANAGE_RESERVATIONS) ||
+      userScopes.includes(SCOPES.RESERVATIONS)
+    ) {
       isManageAllowed = true;
     }
   }
@@ -94,7 +93,6 @@ export default function ReservationPage() {
     isLoading: isLoadingStoreTables,
   } = useReservationsInit();
 
-
   const {
     APIURL,
     data: reservations,
@@ -121,7 +119,7 @@ export default function ReservationPage() {
     return <Page>Error loading details! Please try later!</Page>;
   }
 
-  const { storeTables } =  storeTablesData;
+  const { storeTables } = storeTablesData;
 
   const btnSearch = async () => {
     const searchQuery = searchRef.current.value;
@@ -132,7 +130,7 @@ export default function ReservationPage() {
     try {
       toast.loading("Please wait...");
       const res = await searchReservations(new String(searchQuery).trim());
-      if(res.status == 200) {
+      if (res.status == 200) {
         toast.dismiss();
         setState({
           ...state,
@@ -144,10 +142,10 @@ export default function ReservationPage() {
         toast.dismiss();
         toast.error("No result found!");
       }
-
     } catch (error) {
       console.error(error);
-      const message = error.response.data.message || "Something went wrong! Try later!";
+      const message =
+        error.response.data.message || "Something went wrong! Try later!";
 
       toast.dismiss();
       toast.error(message);
@@ -203,30 +201,31 @@ export default function ReservationPage() {
   };
 
   const setCustomer = (customer) => {
-    if(customer) {
+    if (customer) {
       setState({
         ...state,
-        customer: {phone: customer.value, name:customer.label},
-      })
+        customer: { phone: customer.value, name: customer.label },
+      });
     } else {
       clearSelectedCustomer();
     }
-  }
+  };
 
   const searchCustomersAsync = async (inputValue) => {
-
     try {
-      if(inputValue) {
+      if (inputValue) {
         const resp = await searchCustomer(inputValue);
-        if(resp.status == 200) {
-          return resp.data.map((data)=>( {label: `${data.name} - (${data.phone})`, value: data.phone} ));
+        if (resp.status == 200) {
+          return resp.data.map((data) => ({
+            label: `${data.name} - (${data.phone})`,
+            value: data.phone,
+          }));
         }
       }
     } catch (error) {
       console.log(error);
-
     }
-  }
+  };
 
   const btnAdd = async () => {
     const customerId = state.customer.phone;
@@ -253,7 +252,7 @@ export default function ReservationPage() {
         tableId,
         status,
         notes,
-        peopleCount
+        peopleCount,
       );
       if (res.status == 200) {
         reservationDateRef.current.value = null;
@@ -275,10 +274,12 @@ export default function ReservationPage() {
     }
   };
 
-  const btnDelete = async id => {
-    const isConfirm = window.confirm("Are you sure! This process is irreversible!");
+  const btnDelete = async (id) => {
+    const isConfirm = window.confirm(
+      "Are you sure! This process is irreversible!",
+    );
 
-    if(!isConfirm) {
+    if (!isConfirm) {
       return;
     }
 
@@ -286,11 +287,11 @@ export default function ReservationPage() {
       toast.loading("Please wait...");
       const res = await deleteReservation(id);
 
-      if(res.status == 200) {
+      if (res.status == 200) {
         await mutate(APIURL);
         setState({
           ...state,
-          searchResults: state.searchResults.filter(s=>s.id != id)
+          searchResults: state.searchResults.filter((s) => s.id != id),
         });
         toast.dismiss();
         toast.success(res.data.message);
@@ -335,7 +336,12 @@ export default function ReservationPage() {
 
     try {
       const res = await updateReservation(
-        id, date, tableId, status, notes, peopleCount
+        id,
+        date,
+        tableId,
+        status,
+        notes,
+        peopleCount,
       );
       if (res.status == 200) {
         updateReservationIdRef.current.value = null;
@@ -363,16 +369,16 @@ export default function ReservationPage() {
       <div className="flex flex-wrap gap-4 flex-col md:flex-row md:items-center md:justify-between">
         <div className="flex gap-6">
           <h3 className="text-2xl">Reservations</h3>
-          {
-            isManageAllowed && <button
-            onClick={() => {
-              document.getElementById("modal-add").showModal();
-            }}
-            className="rounded-lg border bg-gray-50 hover:bg-gray-100 transition active:scale-95 hover:shadow-lg text-gray-500 px-2 py-1 flex items-center gap-1"
-          >
-            <IconPlus size={22} stroke={iconStroke} /> New
-          </button>
-          }
+          {isManageAllowed && (
+            <button
+              onClick={() => {
+                document.getElementById("modal-add").showModal();
+              }}
+              className="rounded-lg border bg-gray-50 hover:bg-gray-100 transition active:scale-95 hover:shadow-lg text-gray-500 px-2 py-1 flex items-center gap-1"
+            >
+              <IconPlus size={22} stroke={iconStroke} /> New
+            </button>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -405,64 +411,80 @@ export default function ReservationPage() {
         </div>
       </div>
 
-
       {/* search result */}
-      {state.searchResults.length > 0 && <div className="mt-6">
-        <h3>Showing Search Result for "{state.search}"</h3>
-        <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-        {state.searchResults.map((reservation, index) => {
-            const {
-              id,
-              customer_id,
-              customer_name,
-              date,
-              table_id,
-              table_title,
-              status,
-              notes,
-              people_count,
-              unique_code,
-              created_at,
-              updated_at,
-            } = reservation;
+      {state.searchResults.length > 0 && (
+        <div className="mt-6">
+          <h3>Showing Search Result for "{state.search}"</h3>
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+            {state.searchResults.map((reservation, index) => {
+              const {
+                id,
+                customer_id,
+                customer_name,
+                date,
+                table_id,
+                table_title,
+                status,
+                notes,
+                people_count,
+                unique_code,
+                created_at,
+                updated_at,
+              } = reservation;
 
-            const dateLocal = new Date(date).toLocaleDateString("EN", {
-              dateStyle: "medium",
-            });
-            const timeLocal = new Date(date).toLocaleTimeString("EN", {
-              timeStyle: "short",
-            });
+              const dateLocal = new Date(date).toLocaleDateString("EN", {
+                dateStyle: "medium",
+              });
+              const timeLocal = new Date(date).toLocaleTimeString("EN", {
+                timeStyle: "short",
+              });
 
-            const d = new Date(date);
-            const dateFormatted = `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2, '0')}T${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+              const d = new Date(date);
+              const dateFormatted = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}T${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
 
-            const createdAt = new Date(created_at).toLocaleString("EN", {dateStyle: "medium", timeStyle: "short"});
+              const createdAt = new Date(created_at).toLocaleString("EN", {
+                dateStyle: "medium",
+                timeStyle: "short",
+              });
 
-            return <ReservationCard
-              btnDelete={()=>{
-                btnDelete(id)
-              }}
-              btnUpdate={()=>{
-                btnShowUpdate(id, dateFormatted, table_id, people_count, status, notes);
-              }}
-              createdAt={createdAt}
-              customer_name={customer_name}
-              dateLocal={dateLocal}
-              notes={notes}
-              people_count={people_count}
-              status={status}
-              table_title={table_title}
-              timeLocal={timeLocal}
-              unique_code={unique_code}
-              key={unique_code}
-            />;
-          })}
+              return (
+                <ReservationCard
+                  btnDelete={() => {
+                    btnDelete(id);
+                  }}
+                  btnUpdate={() => {
+                    btnShowUpdate(
+                      id,
+                      dateFormatted,
+                      table_id,
+                      people_count,
+                      status,
+                      notes,
+                    );
+                  }}
+                  createdAt={createdAt}
+                  customer_name={customer_name}
+                  dateLocal={dateLocal}
+                  notes={notes}
+                  people_count={people_count}
+                  status={status}
+                  table_title={table_title}
+                  timeLocal={timeLocal}
+                  unique_code={unique_code}
+                  key={unique_code}
+                />
+              );
+            })}
+          </div>
         </div>
-      </div>}
+      )}
       {/* search result */}
 
       {/* data */}
-      <h3 className="mt-6 mb-4 text-base">Showing Reservations for {filters.find(f=>f.key==state.filter).value}</h3>
+      <h3 className="mt-6 mb-4 text-base">
+        Showing Reservations for{" "}
+        {filters.find((f) => f.key == state.filter).value}
+      </h3>
       {reservations.length == 0 ? (
         <div className="text-center w-full h-[50vh] flex flex-col items-center justify-center text-gray-500">
           <img
@@ -498,28 +520,40 @@ export default function ReservationPage() {
             });
 
             const d = new Date(date);
-            const dateFormatted = `${d.getFullYear()}-${(d.getMonth()+1).toString().padStart(2,'0')}-${d.getDate().toString().padStart(2, '0')}T${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+            const dateFormatted = `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d.getDate().toString().padStart(2, "0")}T${d.getHours().toString().padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
 
-            const createdAt = new Date(created_at).toLocaleString("EN", {dateStyle: "medium", timeStyle: "short"});
+            const createdAt = new Date(created_at).toLocaleString("EN", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            });
 
-            return <ReservationCard
-              btnDelete={()=>{
-                btnDelete(id)
-              }}
-              btnUpdate={()=>{
-                btnShowUpdate(id, dateFormatted, table_id, people_count, status, notes);
-              }}
-              createdAt={createdAt}
-              customer_name={customer_name}
-              dateLocal={dateLocal}
-              notes={notes}
-              people_count={people_count}
-              status={status}
-              table_title={table_title}
-              timeLocal={timeLocal}
-              unique_code={unique_code}
-              key={unique_code}
-            />;
+            return (
+              <ReservationCard
+                btnDelete={() => {
+                  btnDelete(id);
+                }}
+                btnUpdate={() => {
+                  btnShowUpdate(
+                    id,
+                    dateFormatted,
+                    table_id,
+                    people_count,
+                    status,
+                    notes,
+                  );
+                }}
+                createdAt={createdAt}
+                customer_name={customer_name}
+                dateLocal={dateLocal}
+                notes={notes}
+                people_count={people_count}
+                status={status}
+                table_title={table_title}
+                timeLocal={timeLocal}
+                unique_code={unique_code}
+                key={unique_code}
+              />
+            );
           })}
         </div>
       )}
@@ -583,14 +617,19 @@ export default function ReservationPage() {
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
               <button className="btn">Close</button>
-              <button onClick={()=>{
-                setState({
-                  ...state,
-                  filter: filterTypeRef.current.value,
-                  fromDate: fromDateRef.current.value || null,
-                  toDate: toDateRef.current.value || null,
-                });
-              }} className="btn ml-2">Apply</button>
+              <button
+                onClick={() => {
+                  setState({
+                    ...state,
+                    filter: filterTypeRef.current.value,
+                    fromDate: fromDateRef.current.value || null,
+                    toDate: toDateRef.current.value || null,
+                  });
+                }}
+                className="btn ml-2"
+              >
+                Apply
+              </button>
             </form>
           </div>
         </div>
@@ -602,8 +641,8 @@ export default function ReservationPage() {
         defaultValue={state.addCustomerDefaultValue}
         branchId={state.addReservationSelectedBranch}
         role={role}
-        onSuccess={(phone, name)=>{
-          setCustomer({value: phone, label: `${name} - (${phone})`})
+        onSuccess={(phone, name) => {
+          setCustomer({ value: phone, label: `${name} - (${phone})` });
         }}
       />
       <dialog id="modal-add" className="modal modal-bottom sm:modal-middle">
@@ -634,23 +673,24 @@ export default function ReservationPage() {
               </button>
             </div> */}
 
-              <AsyncCreatableSelect
-              menuPlacement='auto'
+            <AsyncCreatableSelect
+              menuPlacement="auto"
               loadOptions={searchCustomersAsync}
               isClearable
-              noOptionsMessage={(v)=>{return "Type something to find..."}}
-              onChange={(v)=>{
+              noOptionsMessage={(v) => {
+                return "Type something to find...";
+              }}
+              onChange={(v) => {
                 setCustomer(v);
               }}
-              onCreateOption={(inputValue)=>{
+              onCreateOption={(inputValue) => {
                 setState({
                   ...state,
                   addCustomerDefaultValue: inputValue,
-                })
+                });
                 document.getElementById("modal-add-customer").showModal();
               }}
             />
-
           </div>
 
           <div className="mt-4">
@@ -683,7 +723,9 @@ export default function ReservationPage() {
                 name="date"
                 className="text-sm w-full border rounded-lg px-4 py-2 bg-gray-50 outline-restro-border-green-light"
                 placeholder="Select Date"
-                min={new Date().toISOString().slice(0,new Date().toISOString().lastIndexOf(":"))}
+                min={new Date()
+                  .toISOString()
+                  .slice(0, new Date().toISOString().lastIndexOf(":"))}
               />
             </div>
             <div className="flex-1">
@@ -883,9 +925,7 @@ export default function ReservationPage() {
           <div className="modal-action">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button
-                className="rounded-lg hover:bg-gray-200 transition active:scale-95 hover:shadow-lg px-4 py-3 bg-gray-200 text-gray-500"
-              >
+              <button className="rounded-lg hover:bg-gray-200 transition active:scale-95 hover:shadow-lg px-4 py-3 bg-gray-200 text-gray-500">
                 Close
               </button>
               <button
