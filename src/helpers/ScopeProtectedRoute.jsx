@@ -4,21 +4,23 @@ import { getUserDetailsInLocalStorage } from "./UserDetails";
 const ScopeProtectedRoute = ({ children, scopes }) => {
   const user = getUserDetailsInLocalStorage();
   const role = user.role;
-  
-  if(role == "admin") {
+
+  if (role == "admin") {
     return children;
   }
 
-  if(!scopes) {
+  if (!scopes) {
     return children;
   }
 
-  const userScopes = new String(user.scope).split(",");
+  const userScopes = Array.isArray(user.scope)
+    ? user.scope
+    : String(user.scope ?? "").split(",");
 
   // check scopes
-  const hasAccess = scopes?.some((scope)=>userScopes?.includes(scope));
+  const hasAccess = scopes?.some((scope) => userScopes?.includes(scope));
 
-  if(hasAccess) {
+  if (hasAccess) {
     return children;
   }
 

@@ -29,7 +29,9 @@ export default function Navbar() {
   const { pathname } = useLocation();
   const user = getUserDetailsInLocalStorage();
   const { role: userRole, scope } = user;
-  const userScopes = scope?.split(",");
+  const userScopes = Array.isArray(scope)
+    ? scope
+    : String(scope ?? "").split(",");
 
   const [isNavbarCollapsed, setIsNavbarCollapsed] = useContext(NavbarContext);
 

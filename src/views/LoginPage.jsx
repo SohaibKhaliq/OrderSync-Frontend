@@ -80,7 +80,9 @@ export default function LoginPage() {
           });
           return;
         }
-        const userScopes = scope.split(",");
+        const userScopes = Array.isArray(scope)
+          ? scope
+          : String(scope ?? "").split(",");
         if (userScopes.includes(SCOPES.DASHBOARD)) {
           navigate("/dashboard/home", {
             replace: true,
@@ -111,13 +113,20 @@ export default function LoginPage() {
 
   return (
     <div className="bg-restro-green-light relative overflow-x-hidden md:overflow-hidden">
-
-      <img src="/assets/circle_illustration.svg" alt="illustration" className="absolute w-96 lg:w-[1024px] h-96 lg:h-[1024px]  lg:-bottom-96 lg:-right-52 -right-36 " />
+      <img
+        src="/assets/circle_illustration.svg"
+        alt="illustration"
+        className="absolute w-96 lg:w-[1024px] h-96 lg:h-[1024px]  lg:-bottom-96 lg:-right-52 -right-36 "
+      />
 
       <div className="flex flex-col md:flex-row items-center justify-end md:justify-between gap-10 h-screen container mx-auto px-4 md:px-0 py-4 md:py-0 relative">
         <div>
-          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-dark">Cafe. Restaurant.</h3>
-          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-light outline-text">Hotel. Bar.</h3>
+          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-dark">
+            Cafe. Restaurant.
+          </h3>
+          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-light outline-text">
+            Hotel. Bar.
+          </h3>
         </div>
         <div className="bg-white rounded-2xl px-8 py-8 w-full sm:w-96 mx-8 sm:mx-0 shadow-2xl">
           <div className="flex items-center justify-between">
@@ -148,7 +157,12 @@ export default function LoginPage() {
                 <label className="block" htmlFor="password">
                   Password
                 </label>
-                <Link className="block text-xs text-gray-500" to="/forgot-password">Forgot Password?</Link>
+                <Link
+                  className="block text-xs text-gray-500"
+                  to="/forgot-password"
+                >
+                  Forgot Password?
+                </Link>
               </div>
               <input
                 type="password"
@@ -179,7 +193,6 @@ export default function LoginPage() {
             >
               Create Account
             </Link> */}
-
           </form>
         </div>
       </div>
