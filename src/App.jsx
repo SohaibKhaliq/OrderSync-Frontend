@@ -20,7 +20,7 @@ import TablesSettingsPage from "./views/SettingsViews/TableSettingsPage";
 import MenuItemsSettingsPage from "./views/SettingsViews/MenuItemsSettingsPage";
 import TaxSetupPage from "./views/SettingsViews/TaxSetupPage";
 import PaymentTypesPage from "./views/SettingsViews/PaymentTypesPage";
-import DevicesPage from "./views/SettingsViews/DevicesPage";
+
 import CategoriesPage from "./views/SettingsViews/CategoriesPage";
 import MenuItemViewPage from "./views/SettingsViews/MenuItemViewPage";
 import { NavbarContext } from "./contexts/NavbarContext";
@@ -295,7 +295,6 @@ export default function App() {
                     }
                   />
 
-                  <Route path="devices" element={<DevicesPage />} />
                   <Route
                     path="settings"
                     element={
