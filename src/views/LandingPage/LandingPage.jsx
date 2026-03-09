@@ -19,18 +19,19 @@ export default function LadingPage() {
 
       {/* hero */}
       <div className="w-full container mx-auto flex flex-col items-center mt-40 px-6 lg:px-0">
-        <h3 className="text-3xl lg:text-5xl font-bold text-center">All-in-One POS</h3>
+        <h3 className="text-3xl lg:text-5xl font-bold text-center">
+          All-in-One POS
+        </h3>
         <h3 className="text-3xl lg:text-5xl font-bold text-center">
           for <span className="text-restro-green">Your Food & Beverage</span>{" "}
           Business.
         </h3>
 
         <p className="text-gray-500 mt-8 text-center">
-          Effortless POS. Unparalleled Growth. Campus Karahi empowers you with
-          the tools you need to streamline operations, increase staff
-          productivity, and gain valuable customer insights. Make data-driven
-          decisions, optimize your menu, and watch your foodservice business
-          flourish.
+          Effortless POS. Unparalleled Growth. OCOS empowers you with the tools
+          you need to streamline operations, increase staff productivity, and
+          gain valuable customer insights. Make data-driven decisions, optimize
+          your menu, and watch your foodservice business flourish.
         </p>
 
         {/* <div className="flex items-center gap-4 mt-8">
@@ -48,11 +49,7 @@ export default function LadingPage() {
           </a>
         </div> */}
       </div>
-      <img
-        src="/assets/hero.webp"
-        alt="Campus Karahi image"
-        className="w-full block"
-      />
+      <img src="/assets/hero.webp" alt="OCOS image" className="w-full block" />
       {/* hero */}
 
       {/* features */}
@@ -69,9 +66,9 @@ export default function LadingPage() {
           </div>
           <h3 className="mt-4 font-bold text-2xl text-center">Minimal UI</h3>
           <p className="text-gray-700 mt-2 text-center">
-            Effortless Interface, Campus Karahi boasts a clean and intuitive
-            design. No cluttered screens, just the essentials you need to manage
-            your business with ease.
+            Effortless Interface, OCOS boasts a clean and intuitive design. No
+            cluttered screens, just the essentials you need to manage your
+            business with ease.
           </p>
         </div>
 
@@ -81,8 +78,8 @@ export default function LadingPage() {
           </div>
           <h3 className="mt-4 font-bold text-2xl text-center">POS</h3>
           <p className="text-gray-700 mt-2 text-center">
-            Campus Karahi simplifies sales. Manage orders, categories & variants
-            with ease. Send to kitchen instantly & accept payments securely.
+            OCOS simplifies sales. Manage orders, categories & variants with
+            ease. Send to kitchen instantly & accept payments securely.
             All-in-one for a smooth flow.
           </p>
         </div>
@@ -124,9 +121,7 @@ export default function LadingPage() {
 
       {/* contact */}
       <div id="contact" className="container mx-auto my-40 px-6 lg:px-0">
-        <div
-          className="lg:h-40 px-10 py-6 flex gap-4 flex-col md:flex-row lg:items-center rounded-3xl bg-restro-green-dark text-restro-green shadow-2xl shadow-green-700/40"
-        >
+        <div className="lg:h-40 px-10 py-6 flex gap-4 flex-col md:flex-row lg:items-center rounded-3xl bg-restro-green-dark text-restro-green shadow-2xl shadow-green-700/40">
           <h3 className="flex-1 font-bold text-4xl text-white">
             Have any queries?
           </h3>
@@ -138,7 +133,7 @@ export default function LadingPage() {
           </a>
         </div>
       </div>
-      
+
       {/* contact */}
 
       {/* footer */}
