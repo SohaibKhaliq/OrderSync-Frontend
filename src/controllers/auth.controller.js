@@ -26,7 +26,7 @@ export async function signIn(username, password) {
   }
 }
 
-export async function signUp(biz_name, username, password) {
+export async function signUp(biz_name, username, password, reg_no) {
   try {
     const existing = Users.findByUsername(username);
     if (existing) {
@@ -42,6 +42,7 @@ export async function signUp(biz_name, username, password) {
       "",
       username,
       "dashboard,pos,orders,kitchen,customers,invoices,reports,reservations,users,settings",
+      reg_no || "",
     );
     // Upgrade to admin role
     const db = getDB();

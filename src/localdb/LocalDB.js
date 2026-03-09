@@ -41,12 +41,13 @@ const SEED = {
   users: [
     {
       id: 1,
-      username: "admin@campuskarahi.pk",
+      username: "admin@ucp.edu.pk",
       password: "admin123",
       name: "Usman Ahmad",
       designation: "Head Manager",
       phone: "+923001234567",
-      email: "admin@campuskarahi.pk",
+      email: "admin@ucp.edu.pk",
+      reg_no: "G3F22UBSCS001",
       role: "admin",
       scope:
         "dashboard,pos,orders,kitchen,customers,invoices,reports,reservations,users,settings",
@@ -55,12 +56,13 @@ const SEED = {
     },
     {
       id: 2,
-      username: "fatima.malik@campuskarahi.pk",
+      username: "fatima.malik@ucp.edu.pk",
       password: "staff123",
       name: "Fatima Malik",
       designation: "Cashier",
       phone: "+923121234568",
-      email: "fatima.malik@campuskarahi.pk",
+      email: "fatima.malik@ucp.edu.pk",
+      reg_no: "G3F22UBSCS078",
       role: "staff",
       scope: "pos,orders,kitchen,customers,invoices,reservations",
       tenant_id: "local_tenant_001",
@@ -68,12 +70,13 @@ const SEED = {
     },
     {
       id: 3,
-      username: "bilal.hassan@campuskarahi.pk",
+      username: "bilal.hassan@ucp.edu.pk",
       password: "staff123",
       name: "Bilal Hassan",
       designation: "Kitchen Supervisor",
       phone: "+923211234569",
-      email: "bilal.hassan@campuskarahi.pk",
+      email: "bilal.hassan@ucp.edu.pk",
+      reg_no: "G3F21UBSCS043",
       role: "staff",
       scope: "kitchen,orders",
       tenant_id: "local_tenant_001",
@@ -81,12 +84,13 @@ const SEED = {
     },
     {
       id: 4,
-      username: "asad.rehman@campuskarahi.pk",
+      username: "asad.rehman@ucp.edu.pk",
       password: "staff123",
       name: "Asad Rehman",
       designation: "Waiter",
       phone: "+923331234570",
-      email: "asad.rehman@campuskarahi.pk",
+      email: "asad.rehman@ucp.edu.pk",
+      reg_no: "G3F23UBSCS015",
       role: "staff",
       scope: "pos,orders,reservations",
       tenant_id: "local_tenant_001",
@@ -728,9 +732,9 @@ const SEED = {
   store_setting: {
     id: 1,
     store_name: "OCOS",
-    address: "FAST-NUCES Campus, Faisal Town, Lahore, Pakistan",
-    phone: "+92 42 111 128 128",
-    email: "info@campuskarahi.pk",
+    address: "UCP Gujrat Campus, GT Road, Gujrat, Punjab, Pakistan",
+    phone: "+92 53 350 0021",
+    email: "info@ucp.edu.pk",
     currency: "PKR",
     image: null,
     is_qr_menu_enabled: 1,
@@ -741,8 +745,8 @@ const SEED = {
   print_setting: {
     id: 1,
     page_format: "80",
-    header: "Bismillah ir-Rahman ir-Rahim\nOCOS",
-    footer: "Dobara tashreef layen! Shukriya!\nFeedback: info@campuskarahi.pk",
+    header: "Bismillah ir-Rahman ir-Rahim\nOCOS - UCP Gujrat",
+    footer: "Dobara tashreef layen! Shukriya!\nFeedback: info@ucp.edu.pk",
     show_notes: 1,
     is_enable_print: 1,
     show_store_details: 1,
@@ -4464,7 +4468,7 @@ function generateSeedCafeOrders() {
 
 export function initDB() {
   // Version bump: increment SEED_VERSION to force-reset all data when schema changes
-  const SEED_VERSION = "3";
+  const SEED_VERSION = "4";
   const storedVersion = localStorage.getItem("ordersync_seed_version");
 
   if (!localStorage.getItem(DB_KEY) || storedVersion !== SEED_VERSION) {
@@ -4600,13 +4604,15 @@ export const Users = {
     return col("users").map(({ password, ...u }) => u);
   },
   findByUsername(username) {
+    const lower = username.toLowerCase();
     return col("users").find(
       (u) =>
-        u.username.toLowerCase() === username.toLowerCase() ||
-        u.email.toLowerCase() === username.toLowerCase(),
+        u.username.toLowerCase() === lower ||
+        u.email.toLowerCase() === lower ||
+        (u.reg_no && u.reg_no.toLowerCase() === lower),
     );
   },
-  add(username, password, name, designation, phone, email, userScopes) {
+  add(username, password, name, designation, phone, email, userScopes, reg_no) {
     const db = getDB();
     db.users = db.users || [];
     if (db.users.find((u) => u.username === username)) {
@@ -4620,6 +4626,7 @@ export const Users = {
       designation,
       phone,
       email,
+      reg_no: reg_no || "",
       role: "staff",
       scope: userScopes || "",
       tenant_id: "local_tenant_001",

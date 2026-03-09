@@ -5,8 +5,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { SCOPES } from "../config/scopes";
 import { signUp } from "../controllers/auth.controller";
 import { validateEmail } from "../utils/emailValidator";
-export default function RegistrationPage() {
 
+// UCP Gujrat reg_no format: e.g. G3F22UBSCS078
+const REG_NO_REGEX = /^[A-Z]\d[A-Z]\d{2}[A-Z]{2,6}\d{3}$/;
+
+export default function RegistrationPage() {
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -15,37 +18,48 @@ export default function RegistrationPage() {
     const bizName = e.target.biz_name.value;
     const email = e.target.username.value;
     const password = e.target.password.value;
+    const regNo = e.target.reg_no.value.trim().toUpperCase();
 
-    if(!bizName) {
+    if (!bizName) {
       toast.error("Please provide business name!");
       return;
     }
 
-    if(!email) {
+    if (!email) {
       toast.error("Please provide email!");
       return;
     }
 
-    if(!password) {
+    if (!password) {
       toast.error("Please provide password!");
       return;
     }
 
-    if(!validateEmail(email)) {
+    if (!validateEmail(email)) {
       toast.error("Please provide valid email!");
+      return;
+    }
+
+    if (!regNo) {
+      toast.error("Please provide your Registration Number!");
+      return;
+    }
+
+    if (!REG_NO_REGEX.test(regNo)) {
+      toast.error("Invalid Reg No. format. Example: G3F22UBSCS078");
       return;
     }
 
     try {
       toast.loading("Please wait...");
 
-      const res = await signUp(bizName, email, password);
+      const res = await signUp(bizName, email, password, regNo);
       toast.dismiss();
       if (res.status == 200) {
         toast.success(res.data.message);
         navigate("/login", {
-          replace: true
-        })
+          replace: true,
+        });
         return;
       } else {
         const message = res.data.message;
@@ -55,23 +69,32 @@ export default function RegistrationPage() {
       }
     } catch (error) {
       console.error(error);
-      const message = error?.response?.data?.message || "We're getting issues while processing the request, try later!";
+      const message =
+        error?.response?.data?.message ||
+        "We're getting issues while processing the request, try later!";
 
       toast.dismiss();
       toast.error(message);
       return;
     }
-  }
+  };
 
   return (
     <div className="bg-restro-green-light relative overflow-x-hidden md:overflow-hidden">
-
-      <img src="/assets/circle_illustration.svg" alt="illustration" className="absolute w-96 lg:w-[1024px] h-96 lg:h-[1024px]  lg:-bottom-96 lg:-right-52 -right-36 " />
+      <img
+        src="/assets/circle_illustration.svg"
+        alt="illustration"
+        className="absolute w-96 lg:w-[1024px] h-96 lg:h-[1024px]  lg:-bottom-96 lg:-right-52 -right-36 "
+      />
 
       <div className="flex flex-col md:flex-row items-center justify-end md:justify-between gap-10 h-screen container mx-auto px-4 md:px-0 py-4 md:py-0 relative">
         <div className="lg:block hidden">
-          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-dark">Signup Today &</h3>
-          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-light outline-text">Increase Productivity</h3>
+          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-dark">
+            Signup Today &
+          </h3>
+          <h3 className="text-2xl lg:text-6xl font-black text-restro-green-light outline-text">
+            Increase Productivity
+          </h3>
         </div>
         <div className="bg-white rounded-2xl px-8 py-8 w-full sm:w-96 mx-8 sm:mx-0 shadow-2xl">
           <div className="flex items-center justify-between">
@@ -111,6 +134,19 @@ export default function RegistrationPage() {
               />
             </div>
             <div className="mt-4">
+              <label className="block" htmlFor="reg_no">
+                Registration Number
+              </label>
+              <input
+                type="text"
+                id="reg_no"
+                name="reg_no"
+                required
+                placeholder="e.g. G3F22UBSCS078"
+                className="mt-1 block w-full bg-gray-100 px-4 py-3 rounded-xl uppercase tracking-widest"
+              />
+            </div>
+            <div className="mt-4">
               <label className="block" htmlFor="password">
                 Password
               </label>
@@ -143,7 +179,6 @@ export default function RegistrationPage() {
             >
               Signin
             </Link>
-
           </form>
         </div>
       </div>

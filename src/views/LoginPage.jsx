@@ -141,14 +141,14 @@ export default function LoginPage() {
           <form className="mt-6" onSubmit={handleSubmit}>
             <div>
               <label className="block" htmlFor="username">
-                Email
+                Email or Registration Number
               </label>
               <input
-                type="email"
+                type="text"
                 id="username"
                 name="username"
                 required
-                placeholder="Enter Your email here..."
+                placeholder="e.g. admin@ucp.edu.pk or G3F22UBSCS078"
                 className="mt-1 block w-full bg-gray-100 px-4 py-3 rounded-xl"
               />
             </div>
