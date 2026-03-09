@@ -3,7 +3,7 @@ import { Link, Outlet, useLocation } from "react-router-dom";
 import { useCustomer } from "../../contexts/CustomerContext";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { Settings } from "../../localdb/LocalDB";
-import { IconShoppingBag } from "@tabler/icons-react";
+import { IconShoppingBag, IconMenu2, IconX } from "@tabler/icons-react";
 import NotificationDropdown from "../../components/NotificationDropdown";
 
 export default function CafeLayout() {
@@ -12,10 +12,16 @@ export default function CafeLayout() {
   const location = useLocation();
 
   const [store, setStore] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     setStore(Settings.getStoreSetting());
   }, []);
+
+  // Close drawer on route change
+  useEffect(() => {
+    setDrawerOpen(false);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -26,8 +32,155 @@ export default function CafeLayout() {
 
   return (
     <div className="min-h-screen bg-theme-light text-theme-dark font-sans flex flex-col">
-      {/* Exact Replica Navbar */}
-      <nav className="navbar bg-transparent px-4 py-6 md:px-12 xl:px-24 flex items-center justify-between border-b border-base-200">
+      {/* Mobile Header */}
+      <div className="flex md:hidden items-center justify-between px-4 py-4 border-b border-base-200 bg-transparent">
+        <Link
+          to="/"
+          className="text-2xl font-serif font-bold tracking-tight text-secondary"
+        >
+          {store?.store_name || "DINING"}
+          <span className="text-primary text-base relative -top-1">®</span>
+        </Link>
+        <div className="flex items-center gap-3">
+          {customer && (
+            <NotificationDropdown
+              userId={customer.id}
+              userRole="customer"
+              isDarkTheme={false}
+            />
+          )}
+          <Link
+            to="/cart"
+            className="relative text-neutral hover:text-primary transition-colors"
+          >
+            <IconShoppingBag stroke={1.5} size={26} />
+            {itemCount > 0 && (
+              <span className="absolute -top-1 -right-2 bg-primary text-primary-content text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+                {itemCount}
+              </span>
+            )}
+          </Link>
+          <button
+            onClick={() => setDrawerOpen(true)}
+            className="p-1 text-neutral hover:text-primary transition-colors"
+          >
+            <IconMenu2 stroke={1.5} size={26} />
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Overlay */}
+      {drawerOpen && (
+        <div className="fixed inset-0 z-[9999] md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setDrawerOpen(false)}
+          />
+          {/* Drawer panel */}
+          <div className="absolute top-0 right-0 h-full w-72 bg-base-100 shadow-xl flex flex-col">
+            <div className="flex items-center justify-between px-5 py-5 border-b border-base-200">
+              <span className="text-xl font-serif font-bold text-secondary">
+                {store?.store_name || "DINING"}
+                <span className="text-primary text-sm relative -top-1">®</span>
+              </span>
+              <button
+                onClick={() => setDrawerOpen(false)}
+                className="p-1 text-neutral hover:text-primary"
+              >
+                <IconX stroke={1.5} size={24} />
+              </button>
+            </div>
+            <nav className="flex flex-col gap-1 px-4 py-4 flex-1 overflow-y-auto text-base font-semibold">
+              <Link
+                to="/"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/" ? "text-primary" : "text-neutral"}`}
+              >
+                Home
+              </Link>
+              <Link
+                to="/about"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/about" ? "text-primary" : "text-neutral"}`}
+              >
+                About
+              </Link>
+              <Link
+                to="/menu"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/menu" ? "text-primary" : "text-neutral"}`}
+              >
+                Menu
+              </Link>
+              <Link
+                to="/reserve"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/reserve" ? "text-primary" : "text-neutral"}`}
+              >
+                Reservations
+              </Link>
+              <Link
+                to="/gallery"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/gallery" ? "text-primary" : "text-neutral"}`}
+              >
+                Gallery
+              </Link>
+              <Link
+                to="/contact"
+                className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/contact" ? "text-primary" : "text-neutral"}`}
+              >
+                Contact
+              </Link>
+              {customer && (
+                <Link
+                  to="/orders"
+                  className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname.includes("/orders") ? "text-primary" : "text-neutral"}`}
+                >
+                  My Orders
+                </Link>
+              )}
+              {customer && (
+                <Link
+                  to="/wallet"
+                  className={`px-3 py-3 rounded-lg transition hover:bg-base-200 ${location.pathname === "/wallet" ? "text-primary" : "text-neutral"}`}
+                >
+                  My Wallet 💰
+                </Link>
+              )}
+            </nav>
+            <div className="px-4 py-4 border-t border-base-200">
+              {customer ? (
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm text-gray-500">
+                    Hi, {customer?.name?.split(" ")[0]}
+                  </span>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setDrawerOpen(false);
+                    }}
+                    className="btn btn-error btn-outline btn-sm w-full"
+                  >
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Link to="/login" className="btn btn-outline btn-sm w-full">
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="btn btn-primary btn-sm w-full rounded-full"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Exact Replica Navbar – desktop only */}
+      <nav className="navbar bg-transparent px-4 py-6 md:px-12 xl:px-24 items-center justify-between border-b border-base-200 hidden md:flex">
         <div className="flex-1 lg:flex-none">
           <Link
             to="/"
@@ -265,8 +418,8 @@ export default function CafeLayout() {
         {/* Bottom copyright */}
         <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs opacity-50">
           <p>
-            © {new Date().getFullYear()} {store?.store_name || "Campus Karahi"}.
-            All Rights Reserved.
+            © {new Date().getFullYear()} {store?.store_name || "OCOS"}. All
+            Rights Reserved.
           </p>
           <div className="flex gap-6">
             <span className="cursor-pointer hover:text-primary">Facebook</span>
