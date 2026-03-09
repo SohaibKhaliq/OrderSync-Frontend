@@ -1,5 +1,5 @@
 // ============================================================
-// LocalDB.js – Full offline LocalStorage database for OrderSync
+// LocalDB.js – Full offline LocalStorage database for OCOS
 // ============================================================
 
 const DB_KEY = "ordersync_db";
@@ -727,7 +727,7 @@ const SEED = {
 
   store_setting: {
     id: 1,
-    store_name: "Campus Karahi",
+    store_name: "OCOS",
     address: "FAST-NUCES Campus, Faisal Town, Lahore, Pakistan",
     phone: "+92 42 111 128 128",
     email: "info@campuskarahi.pk",
@@ -741,7 +741,7 @@ const SEED = {
   print_setting: {
     id: 1,
     page_format: "80",
-    header: "Bismillah ir-Rahman ir-Rahim\nCampus Karahi – FAST-NU Lahore",
+    header: "Bismillah ir-Rahman ir-Rahim\nOCOS",
     footer: "Dobara tashreef layen! Shukriya!\nFeedback: info@campuskarahi.pk",
     show_notes: 1,
     is_enable_print: 1,
