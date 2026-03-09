@@ -3856,14 +3856,13 @@ function generateSeedInvoices() {
 }
 
 function generateSeedCustomerAccounts() {
-  // Passwords are sha256-hashed "password123" placeholder – actual auth uses the
-  // stored hash compared inside auth.controller.js
   return [
     {
       id: 1,
       name: "Ahmed Raza",
-      email: "ahmed.raza@nu.edu.pk",
+      email: "ahmed.raza@ucp.edu.pk",
       phone: "03001234567",
+      reg_no: "G3F22UBSCS010",
       password: "password123",
       role: "customer",
       credit_balance: 250,
@@ -3873,8 +3872,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 2,
       name: "Fatima Khan",
-      email: "fatima.khan@nu.edu.pk",
+      email: "fatima.khan@ucp.edu.pk",
       phone: "03121234568",
+      reg_no: "G3F22UBSCS078",
       password: "password123",
       role: "customer",
       credit_balance: 0,
@@ -3884,8 +3884,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 3,
       name: "Usman Ali",
-      email: "usman.ali@nu.edu.pk",
+      email: "usman.ali@ucp.edu.pk",
       phone: "03211234569",
+      reg_no: "G3F21UBSCS055",
       password: "password123",
       role: "customer",
       credit_balance: 100,
@@ -3895,8 +3896,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 4,
       name: "Ayesha Siddiqui",
-      email: "ayesha.siddiqui@nu.edu.pk",
+      email: "ayesha.siddiqui@ucp.edu.pk",
       phone: "03331234570",
+      reg_no: "G3F23UBSCS032",
       password: "password123",
       role: "customer",
       credit_balance: 50,
@@ -3906,8 +3908,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 5,
       name: "Hamza Malik",
-      email: "hamza.malik@nu.edu.pk",
+      email: "hamza.malik@ucp.edu.pk",
       phone: "03451234571",
+      reg_no: "G3F22UBSIT019",
       password: "password123",
       role: "customer",
       credit_balance: 0,
@@ -3917,8 +3920,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 6,
       name: "Zara Qureshi",
-      email: "zara.qureshi@lums.edu.pk",
+      email: "zara.qureshi@ucp.edu.pk",
       phone: "03551234572",
+      reg_no: "G3F23UBSCS061",
       password: "password123",
       role: "customer",
       credit_balance: 200,
@@ -3928,8 +3932,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 7,
       name: "Bilal Hussain",
-      email: "bilal.hussain@lums.edu.pk",
+      email: "bilal.hussain@ucp.edu.pk",
       phone: "03001234573",
+      reg_no: "G3F21UBSIT007",
       password: "password123",
       role: "customer",
       credit_balance: 0,
@@ -3939,8 +3944,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 8,
       name: "Sara Ahmed",
-      email: "sara.ahmed@lums.edu.pk",
+      email: "sara.ahmed@ucp.edu.pk",
       phone: "03121234574",
+      reg_no: "G3F23UBSCS045",
       password: "password123",
       role: "customer",
       credit_balance: 75,
@@ -3950,8 +3956,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 9,
       name: "Muneeb Sheikh",
-      email: "muneeb.sheikh@comsats.edu.pk",
+      email: "muneeb.sheikh@ucp.edu.pk",
       phone: "03211234575",
+      reg_no: "G3F22UBSCS099",
       password: "password123",
       role: "customer",
       credit_balance: 0,
@@ -3961,8 +3968,9 @@ function generateSeedCustomerAccounts() {
     {
       id: 10,
       name: "Nadia Aslam",
-      email: "nadia.aslam@comsats.edu.pk",
+      email: "nadia.aslam@ucp.edu.pk",
       phone: "03331234576",
+      reg_no: "G3F21UBSCS088",
       password: "password123",
       role: "customer",
       credit_balance: 150,
@@ -5738,7 +5746,15 @@ export const CustomerAccounts = {
       (c) => c.email.toLowerCase() === email.toLowerCase(),
     );
   },
-  register(name, email, password, phone) {
+  findByCredential(credential) {
+    const lower = credential.toLowerCase();
+    return col("customer_accounts").find(
+      (c) =>
+        c.email.toLowerCase() === lower ||
+        (c.reg_no && c.reg_no.toLowerCase() === lower),
+    );
+  },
+  register(name, email, password, phone, reg_no) {
     const db = getDB();
     db.customer_accounts = db.customer_accounts || [];
     if (
@@ -5758,6 +5774,7 @@ export const CustomerAccounts = {
       email,
       password,
       phone: phone || "",
+      reg_no: reg_no || "",
       role: "customer",
       credit_balance: 0,
       created_at: new Date().toISOString(),
@@ -5771,6 +5788,15 @@ export const CustomerAccounts = {
     const account = CustomerAccounts.findByEmail(email);
     if (!account || account.password !== password) {
       throw new Error("Invalid email or password");
+    }
+    const { password: _p, ...safe } = account;
+    localStorage.setItem("cafe_session", JSON.stringify(safe));
+    return safe;
+  },
+  loginByCredential(credential, password) {
+    const account = CustomerAccounts.findByCredential(credential);
+    if (!account || account.password !== password) {
+      throw new Error("Invalid email/reg no. or password");
     }
     const { password: _p, ...safe } = account;
     localStorage.setItem("cafe_session", JSON.stringify(safe));

@@ -13,12 +13,16 @@ export default function CafeRegisterPage() {
     phone: "",
     password: "",
     confirmPassword: "",
+    reg_no: "",
   });
   const [loading, setLoading] = useState(false);
 
   function handleChange(e) {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
+
+  // UCP Gujrat reg_no format: e.g. G3F22UBSCS078
+  const REG_NO_REGEX = /^[A-Z]\d[A-Z]\d{2}[A-Z]{2,6}\d{3}$/;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -34,6 +38,15 @@ export default function CafeRegisterPage() {
       toast.error("Password must be at least 6 characters");
       return;
     }
+    const regNo = form.reg_no.trim().toUpperCase();
+    if (!regNo) {
+      toast.error("Registration Number is required");
+      return;
+    }
+    if (!REG_NO_REGEX.test(regNo)) {
+      toast.error("Invalid Reg No. format. Example: G3F22UBSCS078");
+      return;
+    }
     setLoading(true);
     try {
       const account = CustomerAccounts.register(
@@ -41,6 +54,7 @@ export default function CafeRegisterPage() {
         form.email,
         form.password,
         form.phone,
+        form.reg_no.trim().toUpperCase(),
       );
       // Auto-login after registration
       const session = CustomerAccounts.login(form.email, form.password);
@@ -70,7 +84,9 @@ export default function CafeRegisterPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Full Name</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Full Name
+                </span>
               </label>
               <input
                 type="text"
@@ -86,7 +102,9 @@ export default function CafeRegisterPage() {
 
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Email Address</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Email Address
+                </span>
               </label>
               <input
                 type="email"
@@ -103,7 +121,10 @@ export default function CafeRegisterPage() {
             <div className="form-control">
               <label className="label pb-2">
                 <span className="text-sm font-bold text-secondary uppercase tracking-wider">
-                  Phone <span className="text-neutral/40 font-normal normal-case">(optional)</span>
+                  Phone{" "}
+                  <span className="text-neutral/40 font-normal normal-case">
+                    (optional)
+                  </span>
                 </span>
               </label>
               <input
@@ -119,7 +140,27 @@ export default function CafeRegisterPage() {
 
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Password</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Registration Number
+                </span>
+              </label>
+              <input
+                type="text"
+                name="reg_no"
+                className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20 uppercase tracking-widest"
+                placeholder="e.g. G3F22UBSCS078"
+                value={form.reg_no}
+                onChange={handleChange}
+                required
+                autoComplete="off"
+              />
+            </div>
+
+            <div className="form-control">
+              <label className="label pb-2">
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Password
+                </span>
               </label>
               <input
                 type="password"
@@ -135,7 +176,9 @@ export default function CafeRegisterPage() {
 
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Confirm Password</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Confirm Password
+                </span>
               </label>
               <input
                 type="password"
@@ -164,11 +207,16 @@ export default function CafeRegisterPage() {
 
           <div className="my-8 flex items-center gap-4">
             <div className="h-px bg-gray-200 flex-1"></div>
-            <span className="text-xs font-bold text-neutral opacity-50 uppercase tracking-widest">Already a user?</span>
+            <span className="text-xs font-bold text-neutral opacity-50 uppercase tracking-widest">
+              Already a user?
+            </span>
             <div className="h-px bg-gray-200 flex-1"></div>
           </div>
-          
-          <Link to="/login" className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl w-full h-14 min-h-0 font-bold text-lg transition-colors">
+
+          <Link
+            to="/login"
+            className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl w-full h-14 min-h-0 font-bold text-lg transition-colors"
+          >
             Sign In
           </Link>
         </div>

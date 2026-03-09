@@ -25,7 +25,10 @@ export default function CafeLoginPage() {
     }
     setLoading(true);
     try {
-      const account = CustomerAccounts.login(form.email, form.password);
+      const account = CustomerAccounts.loginByCredential(
+        form.email,
+        form.password,
+      );
       login(account);
       toast.success(`Welcome back, ${account.name}!`);
       navigate(from, { replace: true });
@@ -52,13 +55,15 @@ export default function CafeLoginPage() {
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Email Address</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Email or Registration Number
+                </span>
               </label>
               <input
-                type="email"
+                type="text"
                 name="email"
                 className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
-                placeholder="you@example.com"
+                placeholder="you@ucp.edu.pk or G3F22UBSCS078"
                 value={form.email}
                 onChange={handleChange}
                 required
@@ -68,7 +73,9 @@ export default function CafeLoginPage() {
 
             <div className="form-control">
               <label className="label pb-2">
-                <span className="text-sm font-bold text-secondary uppercase tracking-wider">Password</span>
+                <span className="text-sm font-bold text-secondary uppercase tracking-wider">
+                  Password
+                </span>
               </label>
               <input
                 type="password"
@@ -97,11 +104,16 @@ export default function CafeLoginPage() {
 
           <div className="my-8 flex items-center gap-4">
             <div className="h-px bg-gray-200 flex-1"></div>
-            <span className="text-xs font-bold text-neutral opacity-50 uppercase tracking-widest">New here?</span>
+            <span className="text-xs font-bold text-neutral opacity-50 uppercase tracking-widest">
+              New here?
+            </span>
             <div className="h-px bg-gray-200 flex-1"></div>
           </div>
-          
-          <Link to="/register" className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl w-full h-14 min-h-0 font-bold text-lg transition-colors">
+
+          <Link
+            to="/register"
+            className="btn btn-outline border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl w-full h-14 min-h-0 font-bold text-lg transition-colors"
+          >
             Create an Account
           </Link>
         </div>
