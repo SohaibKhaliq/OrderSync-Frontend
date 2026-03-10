@@ -3,10 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Campus Karahi — Presentation</title>
+    <title>OCOS — Presentation</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"
       rel="stylesheet"
     />
     <style>
@@ -1031,6 +1035,9 @@
         font-size: 1.8rem;
         font-weight: 700;
         color: var(--gold);
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .metric-chip .lbl {
         font-size: 0.72rem;
@@ -1531,19 +1538,19 @@
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
         <div class="inner">
-          <div class="logo-badge">🍛</div>
+          <div class="logo-badge"><i class="ti ti-building-store"></i></div>
           <p class="eyebrow">Introducing</p>
-          <h1>Campus Karahi</h1>
+          <h1>OCOS</h1>
           <p class="tagline">
-            A complete multi-tenant restaurant &amp; café management platform
-            built for modern hospitality operations.
+            A complete campus order &amp; commerce operations platform built for
+            modern hospitality.
           </p>
           <div class="chips">
             <span class="chip">Staff POS</span>
             <span class="chip">Kitchen Display</span>
             <span class="chip">QR Ordering</span>
+            <span class="chip">JazzCash &amp; EasyPaisa</span>
             <span class="chip">Reservations</span>
-            <span class="chip">Analytics</span>
           </div>
         </div>
         <div class="slide-num">01 / 16</div>
@@ -1555,8 +1562,8 @@
         <div class="content">
           <p class="section-label">The Challenge</p>
           <h2>
-            Running a restaurant is hard.<br />Scaling it across campuses is
-            harder.
+            Running a restaurant is hard.<br />Managing it without the right
+            tools is harder.
           </h2>
           <div class="problem-grid">
             <div class="problem-card">
@@ -1564,7 +1571,7 @@
                 class="problem-icon"
                 style="background: rgba(239, 68, 68, 0.12); color: #f87171"
               >
-                📋
+                <i class="ti ti-list"></i>
               </div>
               <div>
                 <h3>Fragmented Operations</h3>
@@ -1579,7 +1586,7 @@
                 class="problem-icon"
                 style="background: rgba(245, 158, 11, 0.12); color: #fcd34d"
               >
-                🧾
+                <i class="ti ti-receipt"></i>
               </div>
               <div>
                 <h3>No Real-time Visibility</h3>
@@ -1594,7 +1601,7 @@
                 class="problem-icon"
                 style="background: rgba(59, 130, 246, 0.12); color: #60a5fa"
               >
-                👥
+                <i class="ti ti-users"></i>
               </div>
               <div>
                 <h3>Poor Customer Experience</h3>
@@ -1609,13 +1616,13 @@
                 class="problem-icon"
                 style="background: rgba(168, 85, 247, 0.12); color: #c084fc"
               >
-                📊
+                <i class="ti ti-chart-bar"></i>
               </div>
               <div>
                 <h3>Blind-spot Analytics</h3>
                 <p>
                   Without consolidated reporting, owners have no insight into
-                  best-sellers, peak hours, or revenue trends per location.
+                  best-sellers, peak hours, or revenue trends.
                 </p>
               </div>
             </div>
@@ -1631,12 +1638,12 @@
           <p class="section-label">The Solution</p>
           <h2>One platform. Every portal.</h2>
           <p class="sub">
-            Campus Karahi unifies your entire restaurant ecosystem into a single
-            React SPA — from staff workflows to customer self-service.
+            OCOS unifies your entire campus into a single React SPA — from staff
+            workflows to customer self-service and everything in between.
           </p>
           <div class="portal-row">
             <div class="portal-card">
-              <div class="icon">🖥️</div>
+              <div class="icon"><i class="ti ti-layout-dashboard"></i></div>
               <h3>Staff Dashboard</h3>
               <p>
                 Full POS, order management, kitchen display, invoices, users,
@@ -1645,7 +1652,7 @@
               <div class="route">/dashboard/*</div>
             </div>
             <div class="portal-card">
-              <div class="icon">☕</div>
+              <div class="icon"><i class="ti ti-coffee"></i></div>
               <h3>Customer Portal</h3>
               <p>
                 Menu browsing, cart, checkout, order tracking, wallet
@@ -1654,7 +1661,7 @@
               <div class="route">/cafe/*</div>
             </div>
             <div class="portal-card">
-              <div class="icon">📱</div>
+              <div class="icon"><i class="ti ti-device-mobile"></i></div>
               <h3>QR Menu</h3>
               <p>
                 Public, scan-to-order QR experience with zero authentication
@@ -1663,13 +1670,13 @@
               <div class="route">/m/:qrcode</div>
             </div>
             <div class="portal-card">
-              <div class="icon">🏢</div>
-              <h3>Super Admin</h3>
+              <div class="icon"><i class="ti ti-settings"></i></div>
+              <h3>Admin Panel</h3>
               <p>
-                Central multi-tenant management, subscription control, and
-                platform-wide oversight.
+                Centralised campus settings, user management, menu control, and
+                platform configuration.
               </p>
-              <div class="route">/superadmin/*</div>
+              <div class="route">/dashboard/settings</div>
             </div>
           </div>
         </div>
@@ -1685,7 +1692,7 @@
           <h2>Everything a modern restaurant needs</h2>
           <div class="features-grid">
             <div class="feature-card">
-              <div class="ico">💳</div>
+              <div class="ico"><i class="ti ti-credit-card"></i></div>
               <h4>Point of Sale (POS)</h4>
               <p>
                 Fast table-side and counter ordering with real-time order
@@ -1693,7 +1700,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">🍳</div>
+              <div class="ico"><i class="ti ti-chef-hat"></i></div>
               <h4>Kitchen Display System</h4>
               <p>
                 Live order tickets with status tracking — New, Preparing, Ready.
@@ -1701,7 +1708,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">📅</div>
+              <div class="ico"><i class="ti ti-calendar"></i></div>
               <h4>Table Reservations</h4>
               <p>
                 Online and walk-in booking management with guest capacity and
@@ -1709,7 +1716,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">📱</div>
+              <div class="ico"><i class="ti ti-device-mobile"></i></div>
               <h4>QR Contactless Menu</h4>
               <p>
                 Guests scan, browse, and order — no app install required.
@@ -1717,7 +1724,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">👛</div>
+              <div class="ico"><i class="ti ti-wallet"></i></div>
               <h4>Customer Wallet</h4>
               <p>
                 Built-in digital wallet for quick payments, top-ups, and loyalty
@@ -1725,7 +1732,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">📈</div>
+              <div class="ico"><i class="ti ti-trending-up"></i></div>
               <h4>Reports &amp; Analytics</h4>
               <p>
                 Sales summaries, item performance, peak-hour heatmaps, and
@@ -1733,7 +1740,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">🔔</div>
+              <div class="ico"><i class="ti ti-bell"></i></div>
               <h4>Real-time Notifications</h4>
               <p>
                 Socket.io-powered live updates across all portals — no refresh
@@ -1741,7 +1748,7 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">🔐</div>
+              <div class="ico"><i class="ti ti-lock"></i></div>
               <h4>Role-Based Access</h4>
               <p>
                 Granular RBAC scopes: Dashboard, POS, Kitchen, Reports,
@@ -1749,11 +1756,11 @@
               </p>
             </div>
             <div class="feature-card">
-              <div class="ico">🌐</div>
-              <h4>Multi-tenant SaaS</h4>
+              <div class="ico"><i class="ti ti-cash"></i></div>
+              <h4>Flexible Payments</h4>
               <p>
-                Each café/restaurant runs in its own isolated tenant with
-                subscription management.
+                Accept JazzCash, EasyPaisa, Card, Cash &amp; Wallet — all from
+                one seamless checkout.
               </p>
             </div>
           </div>
@@ -1876,31 +1883,31 @@
           <div class="journey-steps">
             <div class="step-item">
               <div class="step-num">1</div>
-              <div class="ico">🔑</div>
+              <div class="ico"><i class="ti ti-key"></i></div>
               <h4>Sign Up / Login</h4>
               <p>Email or social auth, persisted session</p>
             </div>
             <div class="step-item">
               <div class="step-num">2</div>
-              <div class="ico">🍜</div>
+              <div class="ico"><i class="ti ti-bowl"></i></div>
               <h4>Browse Menu</h4>
               <p>Category filters, images, dietary tags</p>
             </div>
             <div class="step-item">
               <div class="step-num">3</div>
-              <div class="ico">🛒</div>
+              <div class="ico"><i class="ti ti-shopping-cart"></i></div>
               <h4>Build Cart</h4>
               <p>Live cart context, promo codes</p>
             </div>
             <div class="step-item">
               <div class="step-num">4</div>
-              <div class="ico">💳</div>
+              <div class="ico"><i class="ti ti-credit-card"></i></div>
               <h4>Checkout</h4>
-              <p>Wallet, Stripe, or cash payment</p>
+              <p>JazzCash, EasyPaisa, Card, Cash or Wallet</p>
             </div>
             <div class="step-item">
               <div class="step-num">5</div>
-              <div class="ico">🔔</div>
+              <div class="ico"><i class="ti ti-bell"></i></div>
               <h4>Track Order</h4>
               <p>Live status via Socket.io events</p>
             </div>
@@ -1924,7 +1931,7 @@
             </p>
             <div class="qr-features" style="margin-top: 1.4rem">
               <div class="qr-feat">
-                <div class="ico">🌐</div>
+                <div class="ico"><i class="ti ti-world"></i></div>
                 <span
                   >Zero-auth public menu at
                   <code style="color: var(--green-light); font-size: 0.75rem"
@@ -1933,15 +1940,15 @@
                 >
               </div>
               <div class="qr-feat">
-                <div class="ico">📦</div>
-                <span>Full shopping cart & order placement</span>
+                <div class="ico"><i class="ti ti-package"></i></div>
+                <span>Full shopping cart &amp; order placement</span>
               </div>
               <div class="qr-feat">
-                <div class="ico">📲</div>
+                <div class="ico"><i class="ti ti-device-mobile"></i></div>
                 <span>Mobile-first, PWA-ready layout</span>
               </div>
               <div class="qr-feat">
-                <div class="ico">🏷️</div>
+                <div class="ico"><i class="ti ti-tag"></i></div>
                 <span>Per-table QR managed from admin panel</span>
               </div>
             </div>
@@ -1970,7 +1977,7 @@
           </p>
           <div class="reserv-grid">
             <div class="res-card">
-              <div class="ico">📅</div>
+              <div class="ico"><i class="ti ti-calendar"></i></div>
               <h4>Online Booking</h4>
               <p>
                 Customers reserve tables through the customer portal with date,
@@ -1978,7 +1985,7 @@
               </p>
             </div>
             <div class="res-card">
-              <div class="ico">🗓️</div>
+              <div class="ico"><i class="ti ti-calendar-event"></i></div>
               <h4>Calendar Overview</h4>
               <p>
                 Staff see all upcoming reservations in a clear timeline view
@@ -1986,7 +1993,7 @@
               </p>
             </div>
             <div class="res-card">
-              <div class="ico">🔔</div>
+              <div class="ico"><i class="ti ti-bell"></i></div>
               <h4>Automated Reminders</h4>
               <p>
                 Guests receive booking confirmation and reminder notifications
@@ -1994,7 +2001,7 @@
               </p>
             </div>
             <div class="res-card">
-              <div class="ico">🪑</div>
+              <div class="ico"><i class="ti ti-armchair"></i></div>
               <h4>Table Assignment</h4>
               <p>
                 Link reservations to specific tables for pre-setting and
@@ -2002,7 +2009,7 @@
               </p>
             </div>
             <div class="res-card">
-              <div class="ico">👥</div>
+              <div class="ico"><i class="ti ti-users"></i></div>
               <h4>Walk-in Management</h4>
               <p>
                 Log walk-in guests in real time and assign available tables from
@@ -2010,7 +2017,7 @@
               </p>
             </div>
             <div class="res-card">
-              <div class="ico">📊</div>
+              <div class="ico"><i class="ti ti-chart-bar"></i></div>
               <h4>Occupancy Insights</h4>
               <p>
                 Track peak reservation periods and table utilisation to maximise
@@ -2035,25 +2042,25 @@
           </p>
           <div class="rt-flow">
             <div class="rt-node">
-              <div class="ico">🛒</div>
+              <div class="ico"><i class="ti ti-shopping-cart"></i></div>
               <h4>Customer Orders</h4>
               <p>Order placed via portal or QR</p>
             </div>
             <div class="rt-arrow">→</div>
             <div class="rt-node">
-              <div class="ico">⚡</div>
+              <div class="ico"><i class="ti ti-bolt"></i></div>
               <h4>Socket.io Server</h4>
               <p>Event broadcast to all connected clients</p>
             </div>
             <div class="rt-arrow">→</div>
             <div class="rt-node">
-              <div class="ico">🍳</div>
+              <div class="ico"><i class="ti ti-chef-hat"></i></div>
               <h4>Kitchen Display</h4>
               <p>New ticket appears with audio alert</p>
             </div>
             <div class="rt-arrow">→</div>
             <div class="rt-node">
-              <div class="ico">🖥️</div>
+              <div class="ico"><i class="ti ti-layout-dashboard"></i></div>
               <h4>Staff Dashboard</h4>
               <p>Order list refreshes, notifications ring</p>
             </div>
@@ -2070,46 +2077,46 @@
           <h2>Data that drives decisions</h2>
           <div class="metrics-row">
             <div class="metric-chip">
-              <div class="val">📦</div>
+              <div class="val"><i class="ti ti-package"></i></div>
               <div class="lbl">Orders Dashboard</div>
             </div>
             <div class="metric-chip">
-              <div class="val">💰</div>
+              <div class="val"><i class="ti ti-currency-dollar"></i></div>
               <div class="lbl">Revenue Tracking</div>
             </div>
             <div class="metric-chip">
-              <div class="val">🏆</div>
+              <div class="val"><i class="ti ti-trophy"></i></div>
               <div class="lbl">Top Menu Items</div>
             </div>
             <div class="metric-chip">
-              <div class="val">📅</div>
+              <div class="val"><i class="ti ti-calendar"></i></div>
               <div class="lbl">Peak-Hour Analysis</div>
             </div>
           </div>
           <div class="report-types">
             <div class="rt">
-              <div class="ico">📊</div>
+              <div class="ico"><i class="ti ti-chart-bar"></i></div>
               <span>Daily, weekly &amp; monthly sales summaries</span>
             </div>
             <div class="rt">
-              <div class="ico">🛒</div>
+              <div class="ico"><i class="ti ti-shopping-cart"></i></div>
               <span>Order volume &amp; fulfilment time metrics</span>
             </div>
             <div class="rt">
-              <div class="ico">🍽️</div>
+              <div class="ico"><i class="ti ti-tools-kitchen"></i></div>
               <span>Item-level performance &amp; popularity ranking</span>
             </div>
             <div class="rt">
-              <div class="ico">👥</div>
+              <div class="ico"><i class="ti ti-users"></i></div>
               <span>Customer retention &amp; repeat visit analytics</span>
             </div>
             <div class="rt">
-              <div class="ico">🧾</div>
+              <div class="ico"><i class="ti ti-receipt"></i></div>
               <span>Invoice export (PDF) &amp; billing history</span>
             </div>
             <div class="rt">
-              <div class="ico">📍</div>
-              <span>Per-location reporting for multi-site owners</span>
+              <div class="ico"><i class="ti ti-map-pin"></i></div>
+              <span>Detailed reporting across all campus modules</span>
             </div>
           </div>
         </div>
@@ -2121,18 +2128,19 @@
         <div class="blob blob-1"></div>
         <div class="content">
           <p class="section-label">Architecture</p>
-          <h2>Built to scale across every campus</h2>
+          <h2>Built for your campus</h2>
           <p class="sub">
-            A single React SPA serves multiple isolated tenants. Each café or
-            restaurant operates within its own domain with dedicated data,
-            users, and settings.
+            A single React SPA powers your entire campus operation — staff,
+            kitchen, customers, and payments all in one unified platform.
           </p>
           <div class="arch-visual">
             <div class="arch-layer">
-              <div class="l-label">🏢 Super Admin Layer</div>
+              <div class="l-label">
+                <i class="ti ti-building"></i> Campus Admin Layer
+              </div>
               <div class="l-desc">
-                Creates &amp; manages all tenant accounts, subscriptions, and
-                billing
+                Manages users, menus, settings, subscriptions, and campus-wide
+                configuration
               </div>
             </div>
             <div
@@ -2145,7 +2153,9 @@
               ↓
             </div>
             <div class="arch-layer">
-              <div class="l-label">🔐 Auth &amp; RBAC Layer</div>
+              <div class="l-label">
+                <i class="ti ti-lock"></i> Auth &amp; RBAC Layer
+              </div>
               <div class="l-desc">
                 PrivateRoute, ScopeProtectedRoute — role-based access per
                 feature
@@ -2161,13 +2171,15 @@
               ↓
             </div>
             <div class="arch-layer">
-              <div class="l-label">🏪 Tenant Instances</div>
+              <div class="l-label">
+                <i class="ti ti-store"></i> Campus Instance
+              </div>
               <div class="arch-tenants">
-                <div class="tenant-pill">Café A</div>
-                <div class="tenant-pill">Café B</div>
-                <div class="tenant-pill">Restaurant C</div>
-                <div class="tenant-pill">Campus D</div>
-                <div class="tenant-pill">+ more</div>
+                <div class="tenant-pill">Staff Portal</div>
+                <div class="tenant-pill">Customer Portal</div>
+                <div class="tenant-pill">QR Menu</div>
+                <div class="tenant-pill">Kitchen</div>
+                <div class="tenant-pill">Payments</div>
               </div>
             </div>
             <div
@@ -2180,7 +2192,9 @@
               ↓
             </div>
             <div class="arch-layer">
-              <div class="l-label">⚡ Real-time Layer</div>
+              <div class="l-label">
+                <i class="ti ti-bolt"></i> Real-time Layer
+              </div>
               <div class="l-desc">
                 Socket.io SocketContext — live events across all portals
                 simultaneously
@@ -2200,7 +2214,7 @@
           <div class="rbac-grid">
             <div class="rbac-card">
               <div class="hdr">
-                <div class="ico">👤</div>
+                <div class="ico"><i class="ti ti-user"></i></div>
                 <h4>Staff Roles</h4>
               </div>
               <div class="scope-tags">
@@ -2213,7 +2227,7 @@
             </div>
             <div class="rbac-card">
               <div class="hdr">
-                <div class="ico">⚙️</div>
+                <div class="ico"><i class="ti ti-settings"></i></div>
                 <h4>Admin Roles</h4>
               </div>
               <div class="scope-tags">
@@ -2226,7 +2240,7 @@
             </div>
             <div class="rbac-card">
               <div class="hdr">
-                <div class="ico">🔒</div>
+                <div class="ico"><i class="ti ti-lock"></i></div>
                 <h4>Route Guards</h4>
               </div>
               <p
@@ -2252,7 +2266,7 @@
             </div>
             <div class="rbac-card">
               <div class="hdr">
-                <div class="ico">🛡️</div>
+                <div class="ico"><i class="ti ti-shield"></i></div>
                 <h4>Session Security</h4>
               </div>
               <p
@@ -2294,23 +2308,23 @@
           <div class="tech-category">
             <div class="tech-cat-label">Frontend Framework</div>
             <div class="tech-pills">
-              <div class="tech-pill tp-react">⚛️ React 18</div>
-              <div class="tech-pill tp-vite">⚡ Vite 5</div>
-              <div class="tech-pill tp-router">🔀 React Router 6</div>
+              <div class="tech-pill tp-react">React 18</div>
+              <div class="tech-pill tp-vite">Vite 5</div>
+              <div class="tech-pill tp-router">React Router 6</div>
             </div>
           </div>
           <div class="tech-category">
             <div class="tech-cat-label">Styling &amp; UI</div>
             <div class="tech-pills">
-              <div class="tech-pill tp-tailwind">🎨 Tailwind CSS 3</div>
-              <div class="tech-pill tp-daisyui">🌸 DaisyUI 4</div>
-              <div class="tech-pill tp-headless">🔲 Headless UI</div>
+              <div class="tech-pill tp-tailwind">Tailwind CSS 3</div>
+              <div class="tech-pill tp-daisyui">DaisyUI 4</div>
+              <div class="tech-pill tp-headless">Headless UI</div>
             </div>
           </div>
           <div class="tech-category">
             <div class="tech-cat-label">State &amp; Data</div>
             <div class="tech-pills">
-              <div class="tech-pill tp-swr">🔄 SWR</div>
+              <div class="tech-pill tp-swr">SWR</div>
               <div
                 class="tech-pill"
                 style="
@@ -2319,14 +2333,34 @@
                   border-color: rgba(255, 255, 255, 0.15);
                 "
               >
-                🧠 React Context API
+                React Context API
               </div>
-              <div class="tech-pill tp-socket">🔌 Socket.io</div>
+              <div class="tech-pill tp-socket">Socket.io</div>
             </div>
           </div>
           <div class="tech-category">
-            <div class="tech-cat-label">Integrations</div>
+            <div class="tech-cat-label">Payments &amp; Integrations</div>
             <div class="tech-pills">
+              <div
+                class="tech-pill"
+                style="
+                  background: rgba(0, 166, 79, 0.12);
+                  color: #4ade80;
+                  border-color: rgba(0, 166, 79, 0.3);
+                "
+              >
+                JazzCash
+              </div>
+              <div
+                class="tech-pill"
+                style="
+                  background: rgba(245, 158, 11, 0.1);
+                  color: #fbbf24;
+                  border-color: rgba(245, 158, 11, 0.3);
+                "
+              >
+                EasyPaisa
+              </div>
               <div
                 class="tech-pill"
                 style="
@@ -2335,17 +2369,17 @@
                   border-color: rgba(99, 91, 255, 0.25);
                 "
               >
-                💳 Stripe
+                Card
               </div>
               <div
                 class="tech-pill"
                 style="
-                  background: rgba(34, 197, 94, 0.08);
-                  color: #4ade80;
-                  border-color: rgba(34, 197, 94, 0.25);
+                  background: rgba(82, 183, 136, 0.08);
+                  color: var(--green-light);
+                  border-color: rgba(82, 183, 136, 0.25);
                 "
               >
-                🔥 react-hot-toast
+                Cash
               </div>
               <div
                 class="tech-pill"
@@ -2355,17 +2389,27 @@
                   border-color: rgba(212, 168, 83, 0.25);
                 "
               >
-                🎨 Tabler Icons
+                Wallet
               </div>
               <div
                 class="tech-pill"
                 style="
-                  background: rgba(244, 132, 95, 0.08);
-                  color: var(--orange);
-                  border-color: rgba(244, 132, 95, 0.25);
+                  background: rgba(34, 197, 94, 0.08);
+                  color: #4ade80;
+                  border-color: rgba(34, 197, 94, 0.25);
                 "
               >
-                🖼️ Playfair + Inter
+                react-hot-toast
+              </div>
+              <div
+                class="tech-pill"
+                style="
+                  background: rgba(212, 168, 83, 0.08);
+                  color: var(--gold);
+                  border-color: rgba(212, 168, 83, 0.25);
+                "
+              >
+                Tabler Icons
               </div>
             </div>
           </div>
@@ -2381,35 +2425,35 @@
             <p class="section-label">Super Admin Portal</p>
             <h2>Full platform<br />control in one place</h2>
             <p>
-              The Super Admin portal gives platform operators complete
-              visibility into every tenant account, their subscription status,
-              usage, and billing — from a single, dedicated interface.
+              The Admin portal gives campus operators complete visibility into
+              users, menus, payments, and settings — from a single, dedicated
+              interface.
             </p>
           </div>
           <div class="right">
             <div class="admin-stat">
-              <div class="ico">🏢</div>
+              <div class="ico"><i class="ti ti-building"></i></div>
               <div class="info">
-                <h4>Tenant Management</h4>
-                <p>Create, configure &amp; suspend café accounts</p>
+                <h4>Campus Management</h4>
+                <p>Configure menus, tables, hours &amp; branding</p>
               </div>
             </div>
             <div class="admin-stat">
-              <div class="ico">💳</div>
+              <div class="ico"><i class="ti ti-credit-card"></i></div>
               <div class="info">
-                <h4>Subscription Control</h4>
-                <p>Plans, billing cycles, payment status per tenant</p>
+                <h4>Payment Control</h4>
+                <p>JazzCash, EasyPaisa, Card, Cash &amp; Wallet settings</p>
               </div>
             </div>
             <div class="admin-stat">
-              <div class="ico">📊</div>
+              <div class="ico"><i class="ti ti-chart-bar"></i></div>
               <div class="info">
                 <h4>Platform Analytics</h4>
-                <p>Cross-tenant order volumes &amp; revenue overview</p>
+                <p>Campus-wide order volumes &amp; revenue overview</p>
               </div>
             </div>
             <div class="admin-stat">
-              <div class="ico">🔐</div>
+              <div class="ico"><i class="ti ti-lock"></i></div>
               <div class="info">
                 <h4>Super Admin Guard</h4>
                 <p>
@@ -2431,19 +2475,16 @@
         <div class="blob blob-2"></div>
         <div class="inner">
           <p class="eye">Ready to transform your restaurant?</p>
-          <h2>Campus Karahi —<br />The OS for Modern<br />Hospitality</h2>
+          <h2>OCOS —<br />The OS for Modern<br />Hospitality</h2>
           <p>
-            From a single campus café to a network of restaurants, Campus Karahi
-            scales with you — bringing order, efficiency, and delight to every
-            table.
+            Purpose-built for campus dining — OCOS brings order, efficiency, and
+            delight to every table with payments your customers already use.
           </p>
           <div class="cta-buttons">
             <button class="btn-primary">Get Started Today</button>
             <button class="btn-outline">Request a Demo</button>
           </div>
-          <div class="final-tag">
-            campus-karahi.com · Built with React 18 + Vite 5
-          </div>
+          <div class="final-tag">ocos.io · Built with React 18 + Vite 5</div>
         </div>
         <div class="slide-num">16 / 16</div>
       </section>
