@@ -19,7 +19,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import QRCode from "qrcode";
 import toast from "react-hot-toast";
-import { getDB, TableBookings, Settings } from "../../localdb/LocalDB";
+import { getQRMenuInit, getStoreTables } from "../../controllers/qrmenu.controller";
 import { useCustomer } from "../../contexts/CustomerContext";
 import { FRONTEND_DOMAIN } from "../../config/config";
 import {
@@ -44,30 +44,40 @@ export default function CafeTableQRPage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    try {
-      const db = getDB();
-      const found = (db.store_tables || []).find(
-        (t) => String(t.id) === String(tableId),
-      );
-      if (!found) {
+    async function loadData() {
+      try {
+        const [initRes, tablesRes] = await Promise.all([
+          getQRMenuInit("default"),
+          getStoreTables("default")
+        ]);
+
+        if (initRes.status === 200 && tablesRes.status === 200) {
+          setStore(initRes.data.storeSettings);
+          const tables = tablesRes.data.tables;
+          const found = tables.find((t) => String(t.id) === String(tableId));
+          
+          if (!found) {
+            setNotFound(true);
+            return;
+          }
+          setTable(found);
+          
+          // Disable booking check for now as backend reservation is pending
+          setIsBooked(false);
+
+          // Generate QR code image for display
+          const host = FRONTEND_DOMAIN || window.location.origin;
+          const url = `${host}/table/${found.id}`;
+          QRCode.toDataURL(url, { width: 180, margin: 2 }).then(setQrDataUrl);
+        } else {
+          setNotFound(true);
+        }
+      } catch (err) {
+        console.error(err);
         setNotFound(true);
-        return;
       }
-      setTable(found);
-      setStore(Settings.getStoreSetting());
-
-      // Check if booked today
-      const today = new Date().toISOString().split("T")[0];
-      setIsBooked(TableBookings.isBooked(found.id, today));
-
-      // Generate QR code image for display
-      const host = FRONTEND_DOMAIN || window.location.origin;
-      const url = `${host}/table/${found.id}`;
-      QRCode.toDataURL(url, { width: 180, margin: 2 }).then(setQrDataUrl);
-    } catch (err) {
-      console.error(err);
-      setNotFound(true);
     }
+    loadData();
   }, [tableId]);
 
   // Save the selected table in sessionStorage so Checkout can read it
@@ -81,7 +91,7 @@ export default function CafeTableQRPage() {
     }
     // Store pre-selected table + dine-in preference for checkout
     sessionStorage.setItem("qr_table_id", String(table.id));
-    sessionStorage.setItem("qr_table_title", table.title);
+    sessionStorage.setItem("qr_table_title", table.table_title);
     navigate("/menu");
   }
 
@@ -126,7 +136,7 @@ export default function CafeTableQRPage() {
               <IconArmchair size={32} className="text-white" />
             </div>
             <h1 className="text-4xl font-serif font-bold mb-1">
-              {table.title}
+              {table.table_title}
             </h1>
             <p className="text-white/80 text-sm font-medium">
               {store?.store_name || "Campus Cafe"}
