@@ -64,6 +64,7 @@ export default function CafeCheckoutPage() {
   }
 
   async function handlePlaceOrder() {
+    console.log("handlePlaceOrder started", form);
     // ── Basic validation ─────────────────────────────
     if (cartItems.length === 0) {
       toast.error("Your cart is empty");
@@ -77,13 +78,6 @@ export default function CafeCheckoutPage() {
     if (form.deliveryType === "dine_in") {
       if (!form.tableId) {
         toast.error("Please select a table for dine-in.");
-        return;
-      }
-      const today = new Date().toISOString().split("T")[0];
-      if (TableBookings.isBooked(form.tableId, today)) {
-        toast.error(
-          "That table is already reserved today. Please choose a different table.",
-        );
         return;
       }
     }
