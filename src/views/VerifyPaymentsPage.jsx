@@ -86,6 +86,8 @@ export default function VerifyPaymentsPage() {
                       "bg-orange-100 text-orange-600": payment.payment_method === 'JazzCash',
                       "bg-green-100 text-green-600": payment.payment_method === 'EasyPaisa',
                       "bg-blue-100 text-blue-600": payment.payment_method === 'Stripe',
+                      "bg-gray-100 text-gray-600": payment.payment_method === 'cash',
+                      "bg-purple-100 text-purple-600": payment.payment_method === 'wallet',
                     })}>
                       {payment.payment_method}
                     </span>
