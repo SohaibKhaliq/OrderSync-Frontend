@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { CustomerAccounts } from "../../localdb/LocalDB";
+import { cafeCustomerRegister } from "../../controllers/qrmenu.controller";
 import { useCustomer } from "../../contexts/CustomerContext";
 
 export default function CafeRegisterPage() {
@@ -26,8 +26,8 @@ export default function CafeRegisterPage() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.name || !form.email || !form.password) {
-      toast.error("Name, email and password are required");
+    if (!form.name || !form.email || !form.password || !form.phone) {
+      toast.error("Name, email, phone and password are required");
       return;
     }
     if (form.password !== form.confirmPassword) {
@@ -49,20 +49,24 @@ export default function CafeRegisterPage() {
     }
     setLoading(true);
     try {
-      const account = CustomerAccounts.register(
+      const res = await cafeCustomerRegister(
+        form.phone,
         form.name,
         form.email,
         form.password,
-        form.phone,
-        form.reg_no.trim().toUpperCase(),
+        "default"
       );
-      // Auto-login after registration
-      const session = CustomerAccounts.login(form.email, form.password);
-      login(session);
-      toast.success(`Welcome, ${account.name}!`);
-      navigate("/menu", { replace: true });
+
+      if (res.data?.success) {
+        const account = res.data.customer;
+        login(account);
+        toast.success(`Welcome, ${account.name}!`);
+        navigate("/menu", { replace: true });
+      } else {
+        toast.error("Registration failed");
+      }
     } catch (err) {
-      toast.error(err.message || "Registration failed");
+      toast.error(err.response?.data?.message || err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
@@ -121,10 +125,7 @@ export default function CafeRegisterPage() {
             <div className="form-control">
               <label className="label pb-2">
                 <span className="text-sm font-bold text-secondary uppercase tracking-wider">
-                  Phone{" "}
-                  <span className="text-neutral/40 font-normal normal-case">
-                    (optional)
-                  </span>
+                  Phone (Used for login) *
                 </span>
               </label>
               <input
@@ -134,6 +135,7 @@ export default function CafeRegisterPage() {
                 placeholder="+1 234 567 8900"
                 value={form.phone}
                 onChange={handleChange}
+                required
                 autoComplete="tel"
               />
             </div>
