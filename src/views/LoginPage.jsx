@@ -53,7 +53,7 @@ export default function LoginPage() {
 
     if (!username) {
       e.target.username.focus();
-      toast.error("Please provide username!");
+      toast.error("Please provide email or registration number!");
       return;
     }
 
@@ -73,6 +73,7 @@ export default function LoginPage() {
         toast.success(res.data.message);
 
         const user = res.data.user;
+        user.token = res.data.accessToken;
         saveUserDetailsInLocalStorage(user);
 
         const { role, scope } = getUserDetailsInLocalStorage();
@@ -150,7 +151,7 @@ export default function LoginPage() {
                 id="username"
                 name="username"
                 required
-                placeholder="e.g. admin@ucp.edu.pk or G3F22UBSCS078"
+                placeholder="e.g. admin@example.com or G3F22UBSCS078"
                 className="mt-1 block w-full bg-gray-100 px-4 py-3 rounded-xl"
               />
             </div>
