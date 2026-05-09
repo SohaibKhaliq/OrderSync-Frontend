@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { CafeOrders } from "../../localdb/LocalDB";
+import { createOrderFromQrMenu } from "../../controllers/qrmenu.controller";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 
 export default function JazzCashPage() {
@@ -40,22 +40,27 @@ export default function JazzCashPage() {
       const ref = "JC-" + Date.now();
       const pendingRaw = localStorage.getItem("cafe_pending_order");
       if (pendingRaw) {
-        try {
-          const pending = JSON.parse(pendingRaw);
-          const order = CafeOrders.create({
-            ...pending,
-            paymentGatewayRef: ref,
-            paymentMethod: "jazzcash",
-          });
-          localStorage.removeItem("cafe_pending_order");
-          clearCart();
-          setLoading(false);
-          navigate(`/orders/${order.id}`);
-          toast.success("Payment successful! Reference: " + ref);
-        } catch {
-          setLoading(false);
-          navigate("/payment/result?status=failed&gateway=jazzcash");
-        }
+        (async () => {
+          try {
+            const pending = JSON.parse(pendingRaw);
+            const res = await createOrderFromQrMenu(
+              pending.deliveryType,
+              pending.items.map(item => ({...item, addons_ids: item.addons?.map(a => a.id)})),
+              "customer",
+              pending.customer,
+              pending.tableId || null,
+              "default"
+            );
+            localStorage.removeItem("cafe_pending_order");
+            clearCart();
+            setLoading(false);
+            navigate(`/orders/${res.data?.orderId || ''}`);
+            toast.success("Payment successful! Reference: " + ref);
+          } catch {
+            setLoading(false);
+            navigate("/payment/result?status=failed&gateway=jazzcash");
+          }
+        })();
       } else {
         setLoading(false);
         navigate("/payment/result?status=success&gateway=jazzcash&ref=" + ref);
