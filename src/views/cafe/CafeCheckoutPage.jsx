@@ -107,6 +107,8 @@ export default function CafeCheckoutPage() {
           "customer",
           customer,
           form.tableId || null,
+          "wallet",
+          ref,
           "default"
         );
         
@@ -165,6 +167,8 @@ export default function CafeCheckoutPage() {
         "customer",
         customer,
         form.tableId || null,
+        form.paymentMethod,
+        null,
         "default"
       );
       
