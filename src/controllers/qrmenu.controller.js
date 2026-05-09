@@ -65,9 +65,9 @@ export async function cafeCustomerLogin(phone, password, qrcode = "default") {
   }
 }
 
-export async function cafeCustomerRegister(phone, name, email, password, qrcode = "default") {
+export async function cafeCustomerRegister(phone, name, registrationNumber, email, password, qrcode = "default") {
   try {
-    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/register`, { phone, name, email, password });
+    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/register`, { phone, name, registrationNumber, email, password });
     return response;
   } catch (error) {
     throw error;
@@ -110,13 +110,14 @@ export async function cafeCustomerOrderDetails(orderId, qrcode = "default") {
   }
 }
 
-export async function cafeCustomerAddReservation(customerId, date, tableId, peopleCount, notes = "", qrcode = "default") {
+export async function cafeCustomerAddReservation(customerId, date, tableId, peopleCount, registrationNumber = "", notes = "", qrcode = "default") {
   try {
     const response = await ApiClient.post(`/qrmenu/${qrcode}/reservations`, {
       customerId,
       date,
       tableId,
       peopleCount,
+      registrationNumber,
       notes
     });
     return response;
