@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { CustomerAccounts } from "../../localdb/LocalDB";
+import { cafeCustomerLogin } from "../../controllers/qrmenu.controller";
 import { useCustomer } from "../../contexts/CustomerContext";
 
 export default function CafeLoginPage() {
@@ -25,15 +25,18 @@ export default function CafeLoginPage() {
     }
     setLoading(true);
     try {
-      const account = CustomerAccounts.loginByCredential(
-        form.email,
-        form.password,
-      );
-      login(account);
-      toast.success(`Welcome back, ${account.name}!`);
-      navigate(from, { replace: true });
+      // In the cafe schema, the login ID is stored in the phone field
+      const res = await cafeCustomerLogin(form.email, form.password, "default");
+      if (res.data?.success) {
+        const account = res.data.customer;
+        login(account);
+        toast.success(`Welcome back, ${account.name}!`);
+        navigate(from, { replace: true });
+      } else {
+        toast.error("Login failed");
+      }
     } catch (err) {
-      toast.error(err.message || "Login failed");
+      toast.error(err.response?.data?.message || err.message || "Login failed");
     } finally {
       setLoading(false);
     }
