@@ -127,7 +127,7 @@ export default function LadingPage() {
           </h3>
           <a
             className="bg-white text-lg text-restro-green-dark rounded-full px-5 py-3 transition active:scale-95 block"
-            href="mailto:hi@uiflow.in"
+            href="mailto:contact@ocos.com"
           >
             Contact us
           </a>
