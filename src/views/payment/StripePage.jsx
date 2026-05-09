@@ -98,8 +98,10 @@ export default function StripePage() {
               pending.deliveryType,
               pending.items.map(item => ({...item, addons_ids: item.addons?.map(a => a.id)})),
               "customer",
-              pending.customer,
+              { phone: pending.customerPhone, name: pending.customerName },
               pending.tableId || null,
+              "Stripe",
+              ref,
               "default"
             );
             localStorage.removeItem("cafe_pending_order");
