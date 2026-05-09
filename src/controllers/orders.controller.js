@@ -115,3 +115,21 @@ export async function updateCafeOrderStatusForAdmin(id, status) {
         throw error;
     }
 }
+
+export async function getUnverifiedPayments() {
+    try {
+        const res = await ApiClient.get("/orders/unverified-payments");
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function verifyPayment(id) {
+    try {
+        const response = await ApiClient.post(`/orders/verify-payment/${id}`);
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
