@@ -736,7 +736,7 @@ export default function CafeWalletPage() {
                     >
                       {isTopUp ? "+" : "-"}
                       {symbol}
-                      {parseFloat(txn.amount).toFixed(2)}
+                      {Math.abs(parseFloat(txn.amount)).toFixed(2)}
                     </span>
                   </div>
                 );
