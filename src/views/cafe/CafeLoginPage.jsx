@@ -59,14 +59,14 @@ export default function CafeLoginPage() {
             <div className="form-control">
               <label className="label pb-2">
                 <span className="text-sm font-bold text-secondary uppercase tracking-wider">
-                  Email or Registration Number
+                  Email, Phone or Registration Number
                 </span>
               </label>
               <input
                 type="text"
                 name="email"
                 className="w-full h-12 rounded-xl pl-4 pr-4 bg-gray-50 border border-gray-200 text-secondary focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20"
-                placeholder="you@ucp.edu.pk or G3F22UBSCS078"
+                placeholder="Email, Phone or G3F22UBSCS078"
                 value={form.email}
                 onChange={handleChange}
                 required
