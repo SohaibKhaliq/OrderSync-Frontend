@@ -14,11 +14,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useCustomer } from "../../contexts/CustomerContext";
-import {
-  CustomerAccounts,
-  WalletTransactions,
-  Settings,
-} from "../../localdb/LocalDB";
+import { cafeCustomerWalletTopup, cafeCustomerWalletHistory, getQRMenuInit } from "../../controllers/qrmenu.controller";
 import {
   IconWallet,
   IconCreditCard,
@@ -113,11 +109,21 @@ export default function CafeWalletPage() {
 
   // ── Load data ───────────────────────────────────────────
   const loadData = useCallback(() => {
-    setStore(Settings.getStoreSetting());
-    if (customer?.id) {
-      setTransactions(WalletTransactions.getByCustomer(customer.id));
+    getQRMenuInit("default").then((res) => {
+      if (res.status === 200) {
+        setStore(res.data.storeSettings);
+      }
+    }).catch(console.error);
+    if (customer?.phone) {
+      cafeCustomerWalletHistory(customer.phone, "default")
+        .then(res => {
+          if (res.data?.success) {
+            setTransactions(res.data.transactions);
+          }
+        })
+        .catch(console.error);
     }
-  }, [customer?.id]);
+  }, [customer?.phone]);
 
   useEffect(() => {
     loadData();
@@ -251,31 +257,27 @@ export default function CafeWalletPage() {
   }
 
   // ── Simulate processing & credit wallet ───────────────
-  function processTopUp(ref) {
+  async function processTopUp(ref) {
     setStep("processing");
     setLoading(true);
-    setTimeout(() => {
-      try {
-        const amt = parseFloat(topupAmount);
-        // Add credit to wallet in LocalDB
-        CustomerAccounts.addCredit(customer.id, amt);
-        // Record transaction
-        WalletTransactions.addTopUp({
-          customerId: customer.id,
-          amount: amt,
-          method: selectedMethod,
-          ref,
-        });
-        refreshSession();
+    try {
+      const amt = parseFloat(topupAmount);
+      const res = await cafeCustomerWalletTopup(customer.phone, amt, selectedMethod, ref, "default");
+      if (res.data?.success) {
+        // update customer context balance
+        login({...customer, credit_balance: res.data.balance});
         loadData();
-        setLoading(false);
         setStep("done");
-      } catch (err) {
-        setLoading(false);
-        toast.error(err.message || "Top-up failed. Please try again.");
+      } else {
+        toast.error("Top-up failed");
         setStep("form");
       }
-    }, 2000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || err.message || "Top-up failed. Please try again.");
+      setStep("form");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // ── Close modal ─────────────────────────────────────────
