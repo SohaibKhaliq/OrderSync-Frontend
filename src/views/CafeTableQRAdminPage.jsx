@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Page from "../components/Page";
-import { col } from "../localdb/LocalDB";
+import { useStoreTables } from "../controllers/settings.controller";
 import { FRONTEND_DOMAIN } from "../config/config";
 import QRCode from "qrcode";
 import {
@@ -27,25 +27,27 @@ export default function CafeTableQRAdminPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null); // table for big-preview modal
 
-  useEffect(() => {
-    const loaded = col("store_tables");
-    setTables(loaded);
+  const { data: tablesData, isLoading } = useStoreTables();
 
-    // Generate QR for all tables
-    const generate = async () => {
-      const map = {};
-      for (const t of loaded) {
-        const url = `${FRONTEND_DOMAIN}/table/${t.id}`;
-        map[t.id] = await QRCode.toDataURL(url, {
-          width: 400,
-          margin: 2,
-          color: { dark: "#111111", light: "#ffffff" },
-        });
-      }
-      setQrUrls(map);
-    };
-    generate();
-  }, []);
+  useEffect(() => {
+    if (tablesData) {
+      setTables(tablesData);
+      // Generate QR for all tables
+      const generate = async () => {
+        const map = {};
+        for (const t of tablesData) {
+          const url = `${FRONTEND_DOMAIN}/table/${t.id}`;
+          map[t.id] = await QRCode.toDataURL(url, {
+            width: 400,
+            margin: 2,
+            color: { dark: "#111111", light: "#ffffff" },
+          });
+        }
+        setQrUrls(map);
+      };
+      generate();
+    }
+  }, [tablesData]);
 
   const handleDownload = (table) => {
     const dataUrl = qrUrls[table.id];
@@ -155,7 +157,11 @@ export default function CafeTableQRAdminPage() {
         />
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="flex justify-center py-24">
+          <span className="loading loading-spinner loading-lg text-primary" />
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-24 text-gray-400">
           <IconTableAlias
             size={48}
