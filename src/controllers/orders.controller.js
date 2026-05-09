@@ -97,3 +97,21 @@ export async function payAndCompleteKitchenOrder(
         throw error;
     }
 }
+
+export async function getCafeOrdersForAdmin() {
+    try {
+        const res = await ApiClient.get("/orders/cafe-orders");
+        return res;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function updateCafeOrderStatusForAdmin(id, status) {
+    try {
+        const response = await ApiClient.post(`/orders/cafe-orders/${id}/status`, { status });
+        return response;
+    } catch (error) {
+        throw error;
+    }
+}
