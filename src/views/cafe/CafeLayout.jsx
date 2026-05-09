@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { useCustomer } from "../../contexts/CustomerContext";
 import { useCafeCart } from "../../contexts/CafeCartContext";
-import { Settings } from "../../localdb/LocalDB";
+import { getQRMenuInit } from "../../controllers/qrmenu.controller";
 import { IconShoppingBag, IconMenu2, IconX } from "@tabler/icons-react";
 import NotificationDropdown from "../../components/NotificationDropdown";
 
@@ -15,7 +15,11 @@ export default function CafeLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
-    setStore(Settings.getStoreSetting());
+    getQRMenuInit("default").then((res) => {
+      if (res.status === 200) {
+        setStore(res.data.storeSettings);
+      }
+    }).catch(console.error);
   }, []);
 
   // Close drawer on route change
