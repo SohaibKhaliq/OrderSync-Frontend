@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Page from "../components/Page";
-import { CafeOrders, col, getDB, saveDB } from "../localdb/LocalDB";
+import { getCafeOrdersForAdmin, updateCafeOrderStatusForAdmin } from "../controllers/orders.controller";
 import {
   IconChefHat,
   IconCircleCheck,
@@ -47,12 +47,14 @@ const NEXT_STATUS = {
   ready: "delivered",
 };
 
-function updateOrderStatus(orderId, newStatus) {
-  const db = getDB();
-  db.cafe_orders = (db.cafe_orders || []).map((o) =>
-    String(o.id) === String(orderId) ? { ...o, status: newStatus } : o,
-  );
-  saveDB(db);
+async function updateOrderStatus(orderId, newStatus) {
+  try {
+    const res = await updateCafeOrderStatusForAdmin(orderId, newStatus);
+    return res.data?.success;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 }
 
 export default function CafeOrdersAdminPage() {
@@ -60,7 +62,13 @@ export default function CafeOrdersAdminPage() {
   const [filter, setFilter] = useState("all");
 
   const load = useCallback(() => {
-    setOrders(CafeOrders.getAll());
+    getCafeOrdersForAdmin()
+      .then((res) => {
+        if (res.data?.success) {
+          setOrders(res.data.orders);
+        }
+      })
+      .catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -70,19 +78,27 @@ export default function CafeOrdersAdminPage() {
     return () => clearInterval(interval);
   }, [load]);
 
-  const handleAdvance = (orderId, currentStatus) => {
+  const handleAdvance = async (orderId, currentStatus) => {
     const next = NEXT_STATUS[currentStatus];
     if (!next) return;
-    updateOrderStatus(orderId, next);
-    toast.success(`Order #${orderId} → ${STATUS_CONFIG[next].label}`);
-    load();
+    const success = await updateOrderStatus(orderId, next);
+    if (success) {
+      toast.success(`Order #${orderId} → ${STATUS_CONFIG[next].label}`);
+      load();
+    } else {
+      toast.error(`Failed to update order #${orderId}`);
+    }
   };
 
-  const handleCancel = (orderId) => {
+  const handleCancel = async (orderId) => {
     if (!window.confirm("Cancel this order?")) return;
-    updateOrderStatus(orderId, "cancelled");
-    toast.error(`Order #${orderId} cancelled`);
-    load();
+    const success = await updateOrderStatus(orderId, "cancelled");
+    if (success) {
+      toast.error(`Order #${orderId} cancelled`);
+      load();
+    } else {
+      toast.error(`Failed to cancel order #${orderId}`);
+    }
   };
 
   const visible =
@@ -164,7 +180,7 @@ export default function CafeOrdersAdminPage() {
                       Order #{order.id}
                     </span>
                     <p className="text-xs text-gray-400 mt-0.5">
-                      {new Date(order.created_at).toLocaleString()}
+                      {new Date(order.date).toLocaleString()}
                     </p>
                   </div>
                   <span className={`badge gap-1 ${cfg.color}`}>
@@ -203,7 +219,7 @@ export default function CafeOrdersAdminPage() {
                           {item.name}
                         </span>
                         <span className="text-gray-500">
-                          {order.currency_symbol}
+                          {order.currency_symbol || "$"}
                           {(item.price * item.quantity).toFixed(2)}
                         </span>
                       </li>
@@ -212,7 +228,7 @@ export default function CafeOrdersAdminPage() {
                   <div className="mt-3 pt-2 border-t border-gray-100 flex justify-between text-sm font-bold text-restro-green-dark">
                     <span>Total</span>
                     <span>
-                      {order.currency_symbol}
+                      {order.currency_symbol || "$"}
                       {parseFloat(order.total || 0).toFixed(2)}
                     </span>
                   </div>
