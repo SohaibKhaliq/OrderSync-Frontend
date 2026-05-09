@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { MenuItems, Settings } from "../../localdb/LocalDB";
+import { getQRMenuInit } from "../../controllers/qrmenu.controller";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { useCustomer } from "../../contexts/CustomerContext";
 
@@ -22,11 +22,14 @@ export default function CafeMenuPage() {
   const [selectedAddons, setSelectedAddons] = useState([]);
 
   useEffect(() => {
-    const items = MenuItems.getAll().filter((i) => i.is_active);
-    setMenuItems(items);
-    const cats = Settings.getCategories();
-    setCategories(cats);
-    setStore(Settings.getStoreSetting());
+    getQRMenuInit("default").then(res => {
+      if (res.status === 200) {
+        const data = res.data;
+        setMenuItems(data.menuItems.filter(i => i.is_active));
+        setCategories(data.categories);
+        setStore(data.storeSettings);
+      }
+    }).catch(console.error);
   }, []);
 
   const filtered = menuItems.filter((item) => {
