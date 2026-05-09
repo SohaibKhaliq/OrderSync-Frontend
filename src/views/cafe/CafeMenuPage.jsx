@@ -25,7 +25,8 @@ export default function CafeMenuPage() {
     getQRMenuInit("default").then(res => {
       if (res.status === 200) {
         const data = res.data;
-        setMenuItems(data.menuItems.filter(i => i.is_active));
+        const activeItems = data.menuItems.filter(i => i.is_active !== 0 && i.is_active !== false);
+        setMenuItems(activeItems);
         setCategories(data.categories);
         setStore(data.storeSettings);
       }
