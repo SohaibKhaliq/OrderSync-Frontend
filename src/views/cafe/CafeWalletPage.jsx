@@ -83,7 +83,7 @@ function fmtExpiry(v) {
 
 // ─────────────────────────────────────────────────────────
 export default function CafeWalletPage() {
-  const { customer, refreshSession } = useCustomer();
+  const { customer, login, refreshSession } = useCustomer();
 
   const [store, setStore] = useState(null);
   const [transactions, setTransactions] = useState([]);
