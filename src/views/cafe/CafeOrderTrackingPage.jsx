@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { CafeOrders } from "../../localdb/LocalDB";
+import { cafeCustomerOrderDetails } from "../../controllers/qrmenu.controller";
 
 const STEPS = ["pending", "confirmed", "preparing", "ready", "delivered"];
 
@@ -25,13 +25,20 @@ export default function CafeOrderTrackingPage() {
   const [order, setOrder] = useState(null);
 
   useEffect(() => {
-    const loaded = CafeOrders.getById(id);
-    setOrder(loaded);
+    const fetchOrder = () => {
+      cafeCustomerOrderDetails(id, "default")
+        .then(res => {
+          if (res.data?.success) {
+            setOrder(res.data.order);
+          }
+        })
+        .catch(console.error);
+    };
+
+    fetchOrder();
 
     // Poll every 5 seconds to reflect any status updates
-    const timer = setInterval(() => {
-      setOrder(CafeOrders.getById(id));
-    }, 5000);
+    const timer = setInterval(fetchOrder, 5000);
     return () => clearInterval(timer);
   }, [id]);
 
