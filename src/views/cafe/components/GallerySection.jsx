@@ -7,7 +7,7 @@ export default function GallerySection() {
     "https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=600&q=80",
     "https://images.unsplash.com/photo-1481070414801-51fd732d7184?w=600&q=80",
     "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&q=80",
-    "https://images.unsplash.com/photo-1414235077428-338988a2e8c0?w=600&q=80",
+    "https://images.unsplash.com/photo-1544025162-d76694265947?w=600&q=80",
     "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&q=80",
     "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?w=600&q=80",
   ];
