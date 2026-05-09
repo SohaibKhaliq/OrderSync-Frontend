@@ -117,6 +117,13 @@ export default function Navbar() {
     },
     {
       type: "link",
+      text: "Verify Payments",
+      icon: <IconFileInvoice stroke={iconStroke} />,
+      path: "/dashboard/verify-payments",
+      scopes: [SCOPES.POS, SCOPES.ORDERS],
+    },
+    {
+      type: "link",
       text: "Table QR Codes",
       icon: <IconQrcode stroke={iconStroke} />,
       path: "/dashboard/cafe-table-qr",
