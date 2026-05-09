@@ -52,6 +52,7 @@ export default function CafeRegisterPage() {
       const res = await cafeCustomerRegister(
         form.phone,
         form.name,
+        regNo,
         form.email,
         form.password,
         "default"
