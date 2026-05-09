@@ -27,7 +27,7 @@ import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
 import { SCOPES } from "../config/scopes";
 import { validateEmail } from "../utils/emailValidator";
 import { validatePhone } from "../utils/phoneValidator";
-import { CustomerAccounts } from "../localdb/LocalDB";
+import { adminCustomerWalletTopup } from "../controllers/customers.controller";
 
 export default function CustomersPage() {
   const { role, scope } = getUserDetailsInLocalStorage();
@@ -174,53 +174,50 @@ export default function CustomersPage() {
     document.getElementById("modal-update-customer").showModal();
   };
 
-  const btnShowWallet = (customerEmail) => {
-    // Find customer in LocalDB
-    const acc = CustomerAccounts.findByEmail(customerEmail);
-    if (!acc) {
-      toast.error(
-        "Customer not found in Cafe accounts matching this email. Have them register in Cafe first.",
-      );
-      return;
-    }
-    setActiveWalletCustomer(acc);
+  const btnShowWallet = (customerEmail, customerPhone, customerName, creditBalance) => {
+    setActiveWalletCustomer({
+      email: customerEmail,
+      phone: customerPhone,
+      name: customerName,
+      credit_balance: creditBalance
+    });
     if (walletAmountRef.current) walletAmountRef.current.value = "";
     document.getElementById("modal-wallet").showModal();
   };
 
-  const btnTopUpWallet = () => {
+  const btnTopUpWallet = async () => {
     const amount = parseFloat(walletAmountRef.current.value);
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
     try {
-      CustomerAccounts.addCredit(activeWalletCustomer.id, amount);
-      toast.success(`Successfully added to wallet!`);
-      document.getElementById("modal-wallet").close();
-      setActiveWalletCustomer(
-        CustomerAccounts.findByEmail(activeWalletCustomer.email),
-      ); // update state
+      const res = await adminCustomerWalletTopup(activeWalletCustomer.phone, amount, "cash", `POS-TOPUP-${Date.now()}`);
+      if (res.data?.success) {
+        toast.success(`Successfully added to wallet!`);
+        document.getElementById("modal-wallet").close();
+        mutate(APIURL);
+      }
     } catch (err) {
       toast.error("Failed to add credit");
     }
   };
 
-  const btnDeductWallet = () => {
+  const btnDeductWallet = async () => {
     const amount = parseFloat(walletAmountRef.current.value);
     if (!amount || amount <= 0) {
       toast.error("Please enter a valid amount");
       return;
     }
     try {
-      CustomerAccounts.deductCredit(activeWalletCustomer.id, amount);
-      toast.success(`Successfully deducted from wallet!`);
-      document.getElementById("modal-wallet").close();
-      setActiveWalletCustomer(
-        CustomerAccounts.findByEmail(activeWalletCustomer.email),
-      ); // update state
+      const res = await adminCustomerWalletTopup(activeWalletCustomer.phone, -Math.abs(amount), "cash", `POS-DEDUCT-${Date.now()}`);
+      if (res.data?.success) {
+        toast.success(`Successfully deducted from wallet!`);
+        document.getElementById("modal-wallet").close();
+        mutate(APIURL);
+      }
     } catch (err) {
-      toast.error(err.message || "Failed to deduct credit");
+      toast.error(err.response?.data?.message || err.message || "Failed to deduct credit");
     }
   };
 
@@ -339,6 +336,7 @@ export default function CustomersPage() {
               email,
               gender,
               birth_date,
+              credit_balance,
               created_at,
               updated_at,
             } = customer;
@@ -398,8 +396,7 @@ export default function CustomersPage() {
                   </button>
                   <button
                     onClick={() => {
-                      if (email) btnShowWallet(email);
-                      else toast.error("Email required to find Cafe wallet");
+                      btnShowWallet(email, phone, name, credit_balance || 0);
                     }}
                     className="btn btn-sm bg-primary/10 text-primary border-primary/20 flex-1 hover:bg-primary hover:text-white"
                   >
