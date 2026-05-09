@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { CafeOrders } from "../../localdb/LocalDB";
+import { createOrderFromQrMenu } from "../../controllers/qrmenu.controller";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 
 // Test card numbers: 4242424242424242 → success, 4000000000000002 → declined
@@ -91,22 +91,27 @@ export default function StripePage() {
       const ref = "ST-" + Date.now();
       const pendingRaw = localStorage.getItem("cafe_pending_order");
       if (pendingRaw) {
-        try {
-          const pending = JSON.parse(pendingRaw);
-          const order = CafeOrders.create({
-            ...pending,
-            paymentGatewayRef: ref,
-            paymentMethod: "stripe",
-          });
-          localStorage.removeItem("cafe_pending_order");
-          clearCart();
-          setLoading(false);
-          navigate(`/orders/${order.id}`);
-          toast.success("Payment successful! Ref: " + ref);
-        } catch {
-          setLoading(false);
-          navigate("/payment/result?status=failed&gateway=stripe");
-        }
+        (async () => {
+          try {
+            const pending = JSON.parse(pendingRaw);
+            const res = await createOrderFromQrMenu(
+              pending.deliveryType,
+              pending.items.map(item => ({...item, addons_ids: item.addons?.map(a => a.id)})),
+              "customer",
+              pending.customer,
+              pending.tableId || null,
+              "default"
+            );
+            localStorage.removeItem("cafe_pending_order");
+            clearCart();
+            setLoading(false);
+            navigate(`/orders/${res.data?.orderId || ''}`);
+            toast.success("Payment successful! Ref: " + ref);
+          } catch {
+            setLoading(false);
+            navigate("/payment/result?status=failed&gateway=stripe");
+          }
+        })();
       } else {
         setLoading(false);
         navigate("/payment/result?status=success&gateway=stripe&ref=" + ref);
