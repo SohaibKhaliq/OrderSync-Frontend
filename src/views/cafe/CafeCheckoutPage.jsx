@@ -3,14 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { useCustomer } from "../../contexts/CustomerContext";
-import {
-  CafeOrders,
-  Settings,
-  CustomerAccounts,
-  WalletTransactions,
-  getDB,
-  TableBookings,
-} from "../../localdb/LocalDB";
+import { getQRMenuInit, getStoreTables, createOrderFromQrMenu, cafeCustomerWalletTopup } from "../../controllers/qrmenu.controller";
 import { addNotification } from "../../hooks/useNotifications";
 
 const PAYMENT_METHODS = [
@@ -26,7 +19,7 @@ export default function CafeCheckoutPage() {
   const { customer } = useCustomer();
   const { cartItems, subtotal, taxTotal, total, clearCart } = useCafeCart();
 
-  const store = Settings.getStoreSetting();
+  const [store, setStore] = useState(null);
   const currency = store?.currency || "USD";
   const symbol = currency === "PKR" ? "Rs." : "$";
 
@@ -44,11 +37,18 @@ export default function CafeCheckoutPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // Load available tables for dine-in table selection
-    try {
-      const db = getDB();
-      setTables(db.store_tables || []);
-    } catch {}
+    // Load store settings and tables
+    getQRMenuInit("default").then((res) => {
+      if (res.status === 200) {
+        setStore(res.data.storeSettings);
+      }
+    }).catch(console.error);
+
+    getStoreTables("default").then((res) => {
+      if (res.data?.success) {
+        setTables(res.data.tables);
+      }
+    }).catch(console.error);
 
     // Clear QR session keys so they don't persist on next visit
     return () => {
@@ -99,47 +99,39 @@ export default function CafeCheckoutPage() {
       }
       setLoading(true);
       try {
-        const ref = `WALLET-${Date.now()}`;
-        CustomerAccounts.deductCredit(customer.id, total);
-        // Record wallet deduction transaction for history
-        WalletTransactions.addDeduction({
-          customerId: customer.id,
-          amount: total,
-        });
-        const order = CafeOrders.create({
-          customerId: customer.id,
-          customerName: customer.name,
-          customerEmail: customer.email,
-          customerPhone: customer.phone,
-          items: cartItems,
-          deliveryType: form.deliveryType,
-          address: form.deliveryType === "delivery" ? form.address : "",
-          tableId: form.tableId || null,
-          paymentMethod: "wallet",
-          paymentGatewayRef: ref,
-          subtotal: subtotal.toFixed(2),
-          taxTotal: taxTotal.toFixed(2),
-          total: total.toFixed(2),
-        });
+        const ref = `ORDER-WALLET-${Date.now()}`;
+        // Deduct from wallet first via backend API (negative amount)
+        const topupRes = await cafeCustomerWalletTopup(customer.phone, -total, "wallet", ref, "default");
+        if (!topupRes.data?.success) {
+           throw new Error("Failed to deduct wallet balance");
+        }
+
+        // Place order
+        const res = await createOrderFromQrMenu(
+          form.deliveryType,
+          cartItems.map(item => ({...item, addons_ids: item.addons?.map(a => a.id)})),
+          "customer",
+          customer,
+          form.tableId || null,
+          "default"
+        );
+        
         clearCart();
 
         addNotification({
-          userId: "admin",
-          forAdmin: true,
-          message: `New Order #${order.id} placed by ${customer.name} (Wallet) for ${symbol}${total.toFixed(2)}`,
-          type: "info",
-        });
-
-        addNotification({
           userId: customer.id,
-          message: `Your order #${order.id} has been placed successfully for ${symbol}${total.toFixed(2)} using your Wallet.`,
+          message: `Your order has been placed successfully for ${symbol}${total.toFixed(2)} using your Wallet.`,
           type: "success",
         });
 
         toast.success("Order placed successfully with Wallet!");
-        navigate(`/orders/${order.id}`);
+        if (res.data?.orderId) {
+          navigate(`/orders/${res.data.orderId}`);
+        } else {
+          navigate(`/orders`);
+        }
       } catch (err) {
-        toast.error(err.message || "Failed to place order.");
+        toast.error(err.response?.data?.message || err.message || "Failed to place order.");
       } finally {
         setLoading(false);
       }
@@ -147,7 +139,7 @@ export default function CafeCheckoutPage() {
     }
 
     // For online payment gateways, redirect to payment page
-    if (form.paymentMethod !== "cash" && form.paymentMethod !== "wallet") {
+    if (form.paymentMethod !== "cash") {
       // Persist pending order data temporarily in localStorage
       const pendingOrder = {
         customerId: customer.id,
@@ -173,40 +165,30 @@ export default function CafeCheckoutPage() {
     // Cash – place order immediately
     setLoading(true);
     try {
-      const order = CafeOrders.create({
-        customerId: customer.id,
-        customerName: customer.name,
-        customerEmail: customer.email,
-        customerPhone: customer.phone,
-        items: cartItems,
-        deliveryType: form.deliveryType,
-        address: form.deliveryType === "delivery" ? form.address : "",
-        tableId: form.tableId || null,
-        paymentMethod: "cash",
-        paymentGatewayRef: null,
-        subtotal: subtotal.toFixed(2),
-        taxTotal: taxTotal.toFixed(2),
-        total: total.toFixed(2),
-      });
+      const res = await createOrderFromQrMenu(
+        form.deliveryType,
+        cartItems.map(item => ({...item, addons_ids: item.addons?.map(a => a.id)})),
+        "customer",
+        customer,
+        form.tableId || null,
+        "default"
+      );
+      
       clearCart();
-
-      // Add Notification for Admin
-      addNotification({
-        userId: "admin",
-        forAdmin: true,
-        message: `New Order #${order.id} placed by ${customer.name} for ${symbol}${total.toFixed(2)}`,
-        type: "info",
-      });
 
       // Add Notification for Customer
       addNotification({
         userId: customer.id,
-        message: `Your order #${order.id} has been placed successfully for ${symbol}${total.toFixed(2)}.`,
+        message: `Your order has been placed successfully for ${symbol}${total.toFixed(2)}.`,
         type: "success",
       });
 
       toast.success("Order placed successfully!");
-      navigate(`/orders/${order.id}`);
+      if (res.data?.orderId) {
+        navigate(`/orders/${res.data.orderId}`);
+      } else {
+        navigate(`/orders`);
+      }
     } catch (err) {
       toast.error("Failed to place order. Please try again.");
     } finally {
@@ -284,7 +266,7 @@ export default function CafeCheckoutPage() {
                   <option value="">— Choose a table —</option>
                   {tables.map((t) => (
                     <option key={t.id} value={t.id}>
-                      {t.title} — {t.floor} ({t.seating_capacity} seats)
+                      {t.table_title} — Floor {t.floor} ({t.seating_capacity} seats)
                     </option>
                   ))}
                 </select>
