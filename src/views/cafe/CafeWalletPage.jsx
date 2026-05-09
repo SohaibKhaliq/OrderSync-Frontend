@@ -182,7 +182,7 @@ export default function CafeWalletPage() {
     
     setLoading(true);
     try {
-      const res = await sendPaymentOTP({ email: customer.email });
+      const res = await sendPaymentOTP(customer.email);
       if (res.data?.success) {
         toast.success("Verification code sent to " + customer.email);
         setStep("otp");
@@ -205,7 +205,7 @@ export default function CafeWalletPage() {
 
     setLoading(true);
     try {
-      const res = await verifyPaymentOTP({ email: customer.email, otp });
+      const res = await verifyPaymentOTP(customer.email, otp);
       if (res.data?.success) {
         processTopUp("JC-" + Date.now());
       } else {
@@ -239,7 +239,7 @@ export default function CafeWalletPage() {
     
     setLoading(true);
     try {
-      const res = await sendPaymentOTP({ email: customer.email });
+      const res = await sendPaymentOTP(customer.email);
       if (res.data?.success) {
         toast.success("Verification code sent to " + customer.email);
         setStep("ep_pin");
@@ -262,7 +262,7 @@ export default function CafeWalletPage() {
 
     setLoading(true);
     try {
-      const res = await verifyPaymentOTP({ email: customer.email, otp });
+      const res = await verifyPaymentOTP(customer.email, otp);
       if (res.data?.success) {
         processTopUp("EP-" + Date.now());
       } else {
