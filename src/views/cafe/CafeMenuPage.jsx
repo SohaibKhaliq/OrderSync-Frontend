@@ -167,7 +167,7 @@ export default function CafeMenuPage() {
 
                 <div className="mt-auto pt-4 flex items-center justify-between">
                   <span className="font-bold text-2xl text-secondary">
-                    ${parseFloat(item.price).toFixed(2)}
+                    Rs. {parseFloat(item.price).toFixed(2)}
                   </span>
                   <button
                     className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:scale-110 transition-transform shadow-md shadow-primary/30 shrink-0"
@@ -202,7 +202,7 @@ export default function CafeMenuPage() {
                       className={`btn btn-sm ${selectedVariant?.id === v.id ? "btn-primary" : "btn-outline"}`}
                       onClick={() => setSelectedVariant(v)}
                     >
-                      {v.title} — ${parseFloat(v.price).toFixed(2)}
+                      {v.title} — Rs. {parseFloat(v.price).toFixed(2)}
                     </button>
                   ))}
                 </div>
@@ -227,7 +227,7 @@ export default function CafeMenuPage() {
                       />
                       <span className="flex-1">{a.title}</span>
                       <span className="text-sm font-medium">
-                        +${parseFloat(a.price).toFixed(2)}
+                        +Rs. {parseFloat(a.price).toFixed(2)}
                       </span>
                     </label>
                   ))}
