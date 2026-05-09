@@ -27,7 +27,7 @@ import { getUserDetailsInLocalStorage } from "../helpers/UserDetails";
 import { SCOPES } from "../config/scopes";
 import { validateEmail } from "../utils/emailValidator";
 import { validatePhone } from "../utils/phoneValidator";
-import { adminCustomerWalletTopup } from "../controllers/customers.controller";
+import { adminCustomerWalletTopup, adminCustomerWalletHistory } from "../controllers/customers.controller";
 
 export default function CustomersPage() {
   const { role, scope } = getUserDetailsInLocalStorage();
@@ -174,15 +174,28 @@ export default function CustomersPage() {
     document.getElementById("modal-update-customer").showModal();
   };
 
-  const btnShowWallet = (customerEmail, customerPhone, customerName, creditBalance) => {
+  const btnShowWallet = async (customerEmail, customerPhone, customerName, creditBalance) => {
     setActiveWalletCustomer({
       email: customerEmail,
       phone: customerPhone,
       name: customerName,
-      credit_balance: creditBalance
+      credit_balance: creditBalance,
+      transactions: []
     });
     if (walletAmountRef.current) walletAmountRef.current.value = "";
     document.getElementById("modal-wallet").showModal();
+
+    try {
+      const res = await adminCustomerWalletHistory(customerPhone);
+      if (res.data?.success) {
+        setActiveWalletCustomer(prev => ({
+          ...prev,
+          transactions: res.data.transactions
+        }));
+      }
+    } catch (err) {
+      console.error("Failed to fetch wallet history", err);
+    }
   };
 
   const btnTopUpWallet = async () => {
@@ -631,6 +644,38 @@ export default function CustomersPage() {
             >
               Top Up
             </button>
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-gray-100">
+            <h4 className="font-bold text-sm mb-4 uppercase tracking-wider text-gray-400">Transaction History</h4>
+            <div className="max-h-60 overflow-y-auto pr-2 flex flex-col gap-3">
+              {activeWalletCustomer?.transactions?.length === 0 && (
+                <p className="text-center text-gray-400 text-sm py-4">No transactions found.</p>
+              )}
+              {activeWalletCustomer?.transactions?.map((tx) => (
+                <div key={tx.id} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg border border-gray-100">
+                  <div>
+                    <p className={clsx("text-sm font-bold uppercase", {
+                      "text-green-600": tx.type === 'topup',
+                      "text-red-500": tx.type === 'deduct'
+                    })}>
+                      {tx.type}
+                    </p>
+                    <p className="text-xs text-gray-400">{new Date(tx.created_at).toLocaleString()}</p>
+                    <p className="text-[10px] text-gray-500 mt-1">{tx.ref}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className={clsx("text-base font-bold", {
+                      "text-green-600": tx.type === 'topup',
+                      "text-red-500": tx.type === 'deduct'
+                    })}>
+                      {tx.type === 'topup' ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
+                    </p>
+                    <p className="text-[10px] text-gray-400 uppercase font-bold">{tx.method}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="modal-action mt-2">
