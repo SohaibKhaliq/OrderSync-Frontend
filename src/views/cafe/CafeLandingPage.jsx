@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Settings, MenuItems } from "../../localdb/LocalDB";
+import { getQRMenuInit } from "../../controllers/qrmenu.controller";
 import HeroSection from "./components/HeroSection";
 import MenuPreviewSection from "./components/MenuPreviewSection";
 import AboutSection from "./components/AboutSection";
@@ -11,11 +11,15 @@ export default function CafeLandingPage() {
   const [featured, setFeatured] = useState([]);
 
   useEffect(() => {
-    setFeatured(
-      MenuItems.getAll()
-        .filter((m) => m.is_active)
-        .slice(0, 4) // We want exactly 4 for the Menu Preview Section grid layout
-    );
+    getQRMenuInit("default").then((res) => {
+        if(res.status === 200) {
+           setFeatured(
+             res.data.menuItems
+               .filter((m) => m.is_active)
+               .slice(0, 4)
+           );
+        }
+    }).catch(console.error);
     window.scrollTo(0, 0);
   }, []);
 
