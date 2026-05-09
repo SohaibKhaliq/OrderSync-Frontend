@@ -37,12 +37,12 @@ export default function CafeContactPage() {
             <div className="relative z-10 w-full h-full p-8 md:p-10 flex flex-col justify-center gap-8 text-white">
               <div>
                 <h4 className="text-xs font-bold tracking-widest text-white/60 mb-2 uppercase">Address</h4>
-                <p className="text-lg font-serif">329 Queensberry Street,<br/>North Melbourne VIC 3051,<br/>Australia.</p>
+                <p className="text-lg font-serif">University of Central Punjab, Gujrat Campus, Pakistan</p>
               </div>
               <div>
                 <h4 className="text-xs font-bold tracking-widest text-white/60 mb-2 uppercase">Contact Info</h4>
-                <p className="text-xl font-medium">+1 800 555 123</p>
-                <p className="text-lg opacity-90">hello@dining.com</p>
+                <p className="text-xl font-medium">+92 300 0000000</p>
+                <p className="text-lg opacity-90">info@ocos.ucp.edu.pk</p>
               </div>
               <div>
                 <h4 className="text-xs font-bold tracking-widest text-white/60 mb-2 uppercase">Open Hours</h4>
