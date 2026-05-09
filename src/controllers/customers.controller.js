@@ -69,3 +69,12 @@ export async function adminCustomerWalletTopup(phone, amount, method = "cash", r
     throw error;
   }
 }
+
+export async function adminCustomerWalletHistory(phone) {
+  try {
+    const response = await ApiClient.get(`/customers/wallet/history?phone=${phone}`);
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
