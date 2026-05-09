@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCafeCart } from "../../contexts/CafeCartContext";
 import { useCustomer } from "../../contexts/CustomerContext";
-import { Settings } from "../../localdb/LocalDB";
+import { getQRMenuInit } from "../../controllers/qrmenu.controller";
 
 export default function CafeCartPage() {
   const navigate = useNavigate();
@@ -17,7 +17,15 @@ export default function CafeCartPage() {
     total,
   } = useCafeCart();
 
-  const store = Settings.getStoreSetting();
+  const [store, setStore] = React.useState(null);
+
+  React.useEffect(() => {
+    getQRMenuInit("default").then((res) => {
+      if (res.status === 200) {
+        setStore(res.data.storeSettings);
+      }
+    }).catch(console.error);
+  }, []);
   const currency = store?.currency || "USD";
   const symbol = currency === "PKR" ? "Rs." : "$";
 
