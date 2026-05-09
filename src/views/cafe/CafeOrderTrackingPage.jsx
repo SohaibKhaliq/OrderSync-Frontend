@@ -127,7 +127,11 @@ export default function CafeOrderTrackingPage() {
                         </p>
                         {active && (
                           <p className="text-sm text-neutral mt-1 animate-pulse font-medium">
-                            Currently processing...
+                            {step === "delivered" 
+                              ? "Order has been delivered! Enjoy your meal! 🎉" 
+                              : step === "ready"
+                                ? "Your order is ready for pickup! 🛎"
+                                : "Currently processing..."}
                           </p>
                         )}
                       </div>
