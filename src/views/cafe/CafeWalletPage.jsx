@@ -14,7 +14,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
 import { useCustomer } from "../../contexts/CustomerContext";
-import { cafeCustomerWalletTopup, cafeCustomerWalletHistory, getQRMenuInit } from "../../controllers/qrmenu.controller";
+import { cafeCustomerWalletTopup, cafeCustomerWalletHistory, getQRMenuInit, sendPaymentOTP, verifyPaymentOTP } from "../../controllers/qrmenu.controller";
 import {
   IconWallet,
   IconCreditCard,
@@ -173,23 +173,49 @@ export default function CafeWalletPage() {
   }
 
   // ── Step 2a: JazzCash — phone number → OTP ────────────
-  function handleJCPhoneNext(e) {
+  async function handleJCPhoneNext(e) {
     e.preventDefault();
     if (!/^(03\d{9}|\+923\d{9})$/.test(phoneNumber.replace(/\s/g, ""))) {
       toast.error("Enter a valid Pakistani mobile number (03xxxxxxxxx)");
       return;
     }
-    toast("OTP sent to " + phoneNumber, { icon: "📱" });
-    setStep("otp");
+    
+    setLoading(true);
+    try {
+      const res = await sendPaymentOTP({ email: customer.email });
+      if (res.data?.success) {
+        toast.success("Verification code sent to " + customer.email);
+        setStep("otp");
+      } else {
+        toast.error("Failed to send verification code");
+      }
+    } catch (err) {
+      toast.error("Error sending verification code");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleJCOtpSubmit(e) {
+  async function handleJCOtpSubmit(e) {
     e.preventDefault();
     if (otp.length < 4) {
-      toast.error("Enter the 4-digit OTP");
+      toast.error("Enter the verification code");
       return;
     }
-    processTopUp("JC-" + Date.now());
+
+    setLoading(true);
+    try {
+      const res = await verifyPaymentOTP({ email: customer.email, otp });
+      if (res.data?.success) {
+        processTopUp("JC-" + Date.now());
+      } else {
+        toast.error("Invalid or expired verification code");
+      }
+    } catch (err) {
+      toast.error("Verification failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // ── Step 2b: Easypaisa — CNIC → phone → PIN ───────────
@@ -204,22 +230,49 @@ export default function CafeWalletPage() {
     setStep("ep_phone");
   }
 
-  function handleEPPhoneNext(e) {
+  async function handleEPPhoneNext(e) {
     e.preventDefault();
     if (!/^(03\d{9}|\+923\d{9})$/.test(phoneNumber.replace(/\s/g, ""))) {
       toast.error("Enter a valid Pakistani mobile number");
       return;
     }
-    setStep("ep_pin");
+    
+    setLoading(true);
+    try {
+      const res = await sendPaymentOTP({ email: customer.email });
+      if (res.data?.success) {
+        toast.success("Verification code sent to " + customer.email);
+        setStep("ep_pin");
+      } else {
+        toast.error("Failed to send verification code");
+      }
+    } catch (err) {
+      toast.error("Error sending verification code");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  function handleEPPinSubmit(e) {
+  async function handleEPPinSubmit(e) {
     e.preventDefault();
     if (otp.length < 4) {
-      toast.error("Enter your 4-digit Easypaisa PIN");
+      toast.error("Enter your verification code");
       return;
     }
-    processTopUp("EP-" + Date.now());
+
+    setLoading(true);
+    try {
+      const res = await verifyPaymentOTP({ email: customer.email, otp });
+      if (res.data?.success) {
+        processTopUp("EP-" + Date.now());
+      } else {
+        toast.error("Invalid or expired verification code");
+      }
+    } catch (err) {
+      toast.error("Verification failed");
+    } finally {
+      setLoading(false);
+    }
   }
 
   // ── Step 2c: Stripe card ───────────────────────────────
@@ -336,7 +389,7 @@ export default function CafeWalletPage() {
             className="flex flex-col gap-4 mt-4"
           >
             <p className="text-sm text-gray-500 text-center">
-              Enter the 4-digit OTP sent to <strong>{phoneNumber}</strong>
+              Enter the verification code sent to <strong>{customer?.email}</strong>
             </p>
             <input
               type="text"
@@ -423,7 +476,7 @@ export default function CafeWalletPage() {
             className="flex flex-col gap-4 mt-4"
           >
             <p className="text-sm text-gray-500 text-center">
-              Enter your 4-digit Easypaisa PIN
+              Enter the verification code sent to <strong>{customer?.email}</strong>
             </p>
             <input
               type="password"
