@@ -56,9 +56,9 @@ export async function createOrderFromQrMenu(
   }
 }
 
-export async function cafeCustomerLogin(phone, password, qrcode = "default") {
+export async function cafeCustomerLogin(identifier, password, qrcode = "default") {
   try {
-    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/login`, { phone, password });
+    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/login`, { identifier, password });
     return response;
   } catch (error) {
     throw error;
