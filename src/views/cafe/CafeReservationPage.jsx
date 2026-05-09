@@ -24,7 +24,7 @@ import {
   IconCheck,
   IconBuildingSkyscraper,
 } from "@tabler/icons-react";
-import { getStoreTables } from "../../controllers/qrmenu.controller";
+import { getStoreTables, cafeCustomerAddReservation } from "../../controllers/qrmenu.controller";
 
 // ── Floor accent colours ───────────────────────────────
 const FLOOR_COLORS = {
@@ -90,6 +90,7 @@ export default function CafeReservationPage() {
     notes: "",
     name: customer?.name || "",
     phone: customer?.phone || "",
+    registrationNumber: customer?.registration_number || "",
   });
 
   // ── Load tables & default date ──────────────────────
@@ -177,8 +178,9 @@ export default function CafeReservationPage() {
         combinedDateTime,
         form.tableId,
         form.peopleCount,
+        form.registrationNumber,
         form.notes,
-        qrcode
+        "default"
       );
 
       if (res.data?.success) {
@@ -469,7 +471,8 @@ export default function CafeReservationPage() {
                 value={form.name}
                 onChange={handleChange}
                 placeholder="Your full name"
-                className="w-full h-14 rounded-xl px-5 bg-gray-50 border border-gray-200 focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20 text-secondary"
+                className="w-full h-14 rounded-xl px-5 bg-gray-100 border border-gray-200 focus:outline-none text-secondary cursor-not-allowed"
+                readOnly
                 required
               />
             </div>
@@ -484,8 +487,24 @@ export default function CafeReservationPage() {
                 value={form.phone}
                 onChange={handleChange}
                 placeholder="+92 300 000 0000"
-                className="w-full h-14 rounded-xl px-5 bg-gray-50 border border-gray-200 focus:outline-none focus:bg-white focus:border-primary transition-colors focus:ring-2 focus:ring-primary/20 text-secondary"
+                className="w-full h-14 rounded-xl px-5 bg-gray-100 border border-gray-200 focus:outline-none text-secondary cursor-not-allowed"
+                readOnly
                 required
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-bold text-secondary uppercase tracking-wider">
+                Registration Number
+              </label>
+              <input
+                type="text"
+                name="registrationNumber"
+                value={form.registrationNumber}
+                onChange={handleChange}
+                placeholder="G3F22UBSCS000"
+                className="w-full h-14 rounded-xl px-5 bg-gray-100 border border-gray-200 focus:outline-none text-secondary cursor-not-allowed"
+                readOnly
               />
             </div>
 
@@ -611,6 +630,7 @@ export default function CafeReservationPage() {
                 ["Guests", `${form.peopleCount} people`],
                 ["Name", form.name],
                 ["Phone", form.phone],
+                ["Reg No", form.registrationNumber || "N/A"],
                 ...(form.notes ? [["Notes", form.notes]] : []),
               ].map(([label, val]) => (
                 <div key={label} className="flex justify-between gap-4">
