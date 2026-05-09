@@ -139,46 +139,67 @@ export default function CafeOrderTrackingPage() {
           </div>
         )}
 
-        {/* Order details */}
-        <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 p-6 md:p-8 shrink-0">
-          <h3 className="font-serif font-bold text-2xl mb-6 text-secondary pb-4 border-b border-gray-100">Order Details</h3>
-          <div className="space-y-3 mb-6">
-            {order.items?.map((item, i) => (
-              <div key={i} className="flex justify-between text-neutral text-sm md:text-base border-b border-gray-50 pb-2 border-dashed">
-                <span className="font-medium">
-                  {item.title}
-                  {item.variant ? ` (${item.variant.title})` : ""}
-                  <span className="text-gray-400"> × {item.quantity}</span>
-                </span>
-                <span className="font-semibold text-secondary">
-                  Rs.{(
-                    (parseFloat(item.price) + (parseFloat(item.addonTotal) || 0)) *
-                    item.quantity
-                  ).toFixed(2)}
-                </span>
-              </div>
-            ))}
-          </div>
-          
-          <div className="space-y-2 mb-6 text-neutral text-sm md:text-base">
-            <div className="flex justify-between items-center">
-              <span className="opacity-80">Subtotal</span>
-              <span className="font-semibold text-secondary">Rs.{(parseFloat(order.subtotal) || 0).toFixed(2)}</span>
+          {/* Order details */}
+          <div className="bg-white rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 p-6 md:p-8 shrink-0">
+            <h3 className="font-serif font-bold text-2xl mb-6 text-secondary pb-4 border-b border-gray-100">Order Details</h3>
+            <div className="space-y-3 mb-6">
+              {order.items?.map((item, i) => (
+                <div key={i} className="flex justify-between text-neutral text-sm md:text-base border-b border-gray-50 pb-2 border-dashed">
+                  <span className="font-medium">
+                    {item.title}
+                    {item.variant_title ? ` (${item.variant_title})` : ""}
+                    <span className="text-gray-400"> × {item.quantity}</span>
+                  </span>
+                  <span className="font-semibold text-secondary">
+                    Rs.{(
+                      (parseFloat(item.price) + (parseFloat(item.addonTotal) || 0)) *
+                      item.quantity
+                    ).toFixed(2)}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className="flex justify-between items-center">
-              <span className="opacity-80">Tax</span>
-              <span className="font-semibold text-secondary">Rs.{(parseFloat(order.tax_total) || 0).toFixed(2)}</span>
-            </div>
-          </div>
-          
-          <div className="border-t border-dashed border-gray-300 my-6"></div>
-          
-          <div className="flex justify-between items-center mb-8">
-            <span className="font-serif font-bold text-2xl text-secondary">Total</span>
-            <span className="text-3xl font-bold text-primary">
-              Rs.{(parseFloat(order.total) || 0).toFixed(2)}
-            </span>
-          </div>
+            
+            {(() => {
+              // Calculate fallback totals if backend didn't provide them
+              let subtotal = parseFloat(order.subtotal);
+              let taxTotal = parseFloat(order.tax_total);
+              let total = parseFloat(order.total);
+
+              if (!subtotal || isNaN(subtotal)) {
+                subtotal = order.items?.reduce((acc, item) => {
+                  return acc + (parseFloat(item.price) + (parseFloat(item.addonTotal) || 0)) * item.quantity;
+                }, 0) || 0;
+                // Basic tax estimation if missing (e.g. 16% if inclusive, but let's just show zero if we can't be sure)
+                // Actually, let's just use the subtotal as total if no tax is provided
+                taxTotal = 0;
+                total = subtotal;
+              }
+
+              return (
+                <>
+                  <div className="space-y-2 mb-6 text-neutral text-sm md:text-base">
+                    <div className="flex justify-between items-center">
+                      <span className="opacity-80">Subtotal</span>
+                      <span className="font-semibold text-secondary">Rs.{subtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="opacity-80">Tax</span>
+                      <span className="font-semibold text-secondary">Rs.{taxTotal.toFixed(2)}</span>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-dashed border-gray-300 my-6"></div>
+                  
+                  <div className="flex justify-between items-center mb-8">
+                    <span className="font-serif font-bold text-2xl text-secondary">Total</span>
+                    <span className="text-3xl font-bold text-primary">
+                      Rs.{total.toFixed(2)}
+                    </span>
+                  </div>
+                </>
+              );
+            })()}
 
           <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
             <div className="grid grid-cols-2 gap-y-4 gap-x-6 text-sm">
