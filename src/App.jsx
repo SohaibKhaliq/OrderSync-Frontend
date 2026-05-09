@@ -51,6 +51,7 @@ import OrderSuccessPage from "./views/OrderSuccessPage";
 import OrderFailedPage from "./views/OrderFailedPage";
 import CafeOrdersAdminPage from "./views/CafeOrdersAdminPage";
 import CafeTableQRAdminPage from "./views/CafeTableQRAdminPage";
+import VerifyPaymentsPage from "./views/VerifyPaymentsPage";
 
 // ── OCOS – Customer Portal ────────────────────────────────
 import { CustomerProvider } from "./contexts/CustomerContext";
@@ -333,6 +334,10 @@ export default function App() {
                   <Route
                     path="cafe-table-qr"
                     element={<CafeTableQRAdminPage />}
+                  />
+                  <Route
+                    path="verify-payments"
+                    element={<VerifyPaymentsPage />}
                   />
                 </Route>
                 {/* app routes */}
