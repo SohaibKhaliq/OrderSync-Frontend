@@ -134,7 +134,7 @@ export default function CafeReservationPage() {
       tableId: String(table.id),
       peopleCount: String(Math.min(parseInt(prev.peopleCount) || 2, maxSeats)),
     }));
-    toast.success(`${table.title} selected!`);
+    toast.success(`${table.table_title} selected!`);
   }
 
   function handleChange(e) {
@@ -154,7 +154,7 @@ export default function CafeReservationPage() {
     }
     const sel = tables.find((t) => String(t.id) === form.tableId);
     if (sel && parseInt(form.peopleCount) > sel.seating_capacity) {
-      toast.error(`${sel.title} only fits ${sel.seating_capacity} people.`);
+      toast.error(`${sel.table_title} only fits ${sel.seating_capacity} people.`);
       return;
     }
     if (bookedMap[form.tableId]) {
@@ -319,7 +319,7 @@ export default function CafeReservationPage() {
                     <p
                       className={`font-bold text-lg mb-1 ${isSelected ? "text-white" : "text-secondary"}`}
                     >
-                      {table.title}
+                      {table.table_title}
                     </p>
                     <div
                       className={`flex items-center justify-center gap-1 text-xs font-semibold mb-1 ${isSelected ? "text-white/80" : "text-gray-500"}`}
@@ -352,7 +352,7 @@ export default function CafeReservationPage() {
             </div>
             <div className="flex-1">
               <p className="font-bold text-secondary">
-                {selectedTable.title} — {selectedTable.floor}
+                {selectedTable.table_title} — {selectedTable.floor}
               </p>
               <p className="text-sm text-gray-500">
                 Capacity: {selectedTable.seating_capacity} seats
@@ -444,7 +444,7 @@ export default function CafeReservationPage() {
               </label>
               <div className="w-full h-14 rounded-xl px-5 bg-gray-50 border border-gray-200 flex items-center text-secondary">
                 {selectedTable ? (
-                  `${selectedTable.title} — ${selectedTable.floor} (${selectedTable.seating_capacity} seats)`
+                  `${selectedTable.table_title} — ${selectedTable.floor} (${selectedTable.seating_capacity} seats)`
                 ) : (
                   <span className="text-gray-400 italic">
                     Click a table above to select
@@ -548,7 +548,7 @@ export default function CafeReservationPage() {
               <IconQrcode size={28} className="text-primary" />
             </div>
             <h3 className="text-xl font-bold text-secondary mb-1">
-              {qrTable.title}
+              {qrTable.table_title}
             </h3>
             <p className="text-sm text-gray-400 mb-5">
               {qrTable.floor} · {qrTable.seating_capacity} seats
@@ -588,7 +588,7 @@ export default function CafeReservationPage() {
             </h3>
             <div className="space-y-3 bg-gray-50 rounded-2xl p-5 mb-6 text-sm">
               {[
-                ["Table", `${selectedTable.title} — ${selectedTable.floor}`],
+                ["Table", `${selectedTable.table_title} — ${selectedTable.floor}`],
                 [
                   "Date",
                   new Date(`${form.date}T${form.time}`).toLocaleDateString(
