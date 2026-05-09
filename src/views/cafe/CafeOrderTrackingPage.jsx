@@ -151,8 +151,8 @@ export default function CafeOrderTrackingPage() {
                   <span className="text-gray-400"> × {item.quantity}</span>
                 </span>
                 <span className="font-semibold text-secondary">
-                  ${(
-                    (item.price + (item.addonTotal || 0)) *
+                  Rs.{(
+                    (parseFloat(item.price) + (parseFloat(item.addonTotal) || 0)) *
                     item.quantity
                   ).toFixed(2)}
                 </span>
@@ -163,11 +163,11 @@ export default function CafeOrderTrackingPage() {
           <div className="space-y-2 mb-6 text-neutral text-sm md:text-base">
             <div className="flex justify-between items-center">
               <span className="opacity-80">Subtotal</span>
-              <span className="font-semibold text-secondary">${parseFloat(order.subtotal).toFixed(2)}</span>
+              <span className="font-semibold text-secondary">Rs.{(parseFloat(order.subtotal) || 0).toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="opacity-80">Tax</span>
-              <span className="font-semibold text-secondary">${parseFloat(order.tax_total).toFixed(2)}</span>
+              <span className="font-semibold text-secondary">Rs.{(parseFloat(order.tax_total) || 0).toFixed(2)}</span>
             </div>
           </div>
           
@@ -176,7 +176,7 @@ export default function CafeOrderTrackingPage() {
           <div className="flex justify-between items-center mb-8">
             <span className="font-serif font-bold text-2xl text-secondary">Total</span>
             <span className="text-3xl font-bold text-primary">
-              ${parseFloat(order.total).toFixed(2)}
+              Rs.{(parseFloat(order.total) || 0).toFixed(2)}
             </span>
           </div>
 
