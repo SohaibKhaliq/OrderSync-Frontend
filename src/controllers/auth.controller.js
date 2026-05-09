@@ -1,26 +1,13 @@
-import { Users, initDB, getDB, saveDB } from "../localdb/LocalDB";
+import ApiClient from "../helpers/ApiClient";
 import { clearUserDetailsInLocalStorage } from "../helpers/UserDetails";
+import useSWR from "swr";
 
-initDB();
+const fetcher = (url) => ApiClient.get(url).then((res) => res.data);
 
 export async function signIn(username, password) {
   try {
-    const user = Users.findByUsername(username);
-    if (!user || user.password !== password) {
-      const err = {
-        response: {
-          status: 401,
-          data: { message: "Invalid username or password" },
-        },
-      };
-      throw err;
-    }
-    const { password: _p, ...safeUser } = user;
-    localStorage.setItem("session_user", JSON.stringify(safeUser));
-    return {
-      status: 200,
-      data: { message: "Login successful", user: safeUser },
-    };
+    const response = await ApiClient.post("/auth/signin", { username, password });
+    return response;
   } catch (error) {
     throw error;
   }
@@ -28,30 +15,13 @@ export async function signIn(username, password) {
 
 export async function signUp(biz_name, username, password, reg_no) {
   try {
-    const existing = Users.findByUsername(username);
-    if (existing) {
-      throw {
-        response: { status: 400, data: { message: "Username already exists" } },
-      };
-    }
-    const user = Users.add(
+    const response = await ApiClient.post("/auth/signup", {
+      biz_name,
       username,
       password,
-      biz_name,
-      "",
-      "",
-      username,
-      "dashboard,pos,orders,kitchen,customers,invoices,reports,reservations,users,settings",
-      reg_no || "",
-    );
-    // Upgrade to admin role
-    const db = getDB();
-    const idx = (db.users || []).findIndex((u) => u.username === username);
-    if (idx !== -1) {
-      db.users[idx].role = "admin";
-      saveDB(db);
-    }
-    return { status: 200, data: { message: "Registration successful", user } };
+      reg_no,
+    });
+    return response;
   } catch (error) {
     throw error;
   }
@@ -59,43 +29,58 @@ export async function signUp(biz_name, username, password, reg_no) {
 
 export async function signOut() {
   try {
-    localStorage.removeItem("session_user");
+    const response = await ApiClient.post("/auth/signout");
     clearUserDetailsInLocalStorage();
-    return { status: 200, data: { message: "Signed out" } };
+    return response;
   } catch (error) {
     throw error;
   }
 }
 
 export async function forgotPassword(email) {
-  // Offline mode: always pretend to succeed
-  return {
-    status: 200,
-    data: { message: "If that email exists, a reset link has been sent." },
-  };
+  try {
+    const response = await ApiClient.post("/auth/forgot-password", { email });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function resetPassword(token, password) {
-  // Offline mode: always pretend to succeed
-  return { status: 200, data: { message: "Password reset successful" } };
+  try {
+    const response = await ApiClient.post(`/auth/reset-password/${token}`, { password });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getStripeSubscriptionURL(productLookupKey) {
-  return { status: 200, data: { url: "#" } };
+  try {
+    const response = await ApiClient.post("/auth/stripe-product-lookup", { productLookupKey });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export function useSubscriptionDetails() {
+  const APIURL = "/auth/subscription-details";
+  const { data, error, isLoading } = useSWR(APIURL, fetcher);
   return {
-    data: { plan: "offline", status: "active" },
-    error: null,
-    isLoading: false,
-    APIURL: null,
+    data,
+    error,
+    isLoading,
+    APIURL,
   };
 }
 
 export async function cancelSubscription(subscriptionId) {
-  return {
-    status: 200,
-    data: { message: "Subscription cancelled (offline mode)" },
-  };
+  try {
+    const response = await ApiClient.post("/auth/cancel-subscription", { subscriptionId });
+    return response;
+  } catch (error) {
+    throw error;
+  }
 }
+
