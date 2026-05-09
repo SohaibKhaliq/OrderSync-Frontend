@@ -16,7 +16,7 @@ const PAYMENT_METHODS = [
 
 export default function CafeCheckoutPage() {
   const navigate = useNavigate();
-  const { customer } = useCustomer();
+  const { customer, login } = useCustomer();
   const { cartItems, subtotal, taxTotal, total, clearCart } = useCafeCart();
 
   const [store, setStore] = useState(null);
