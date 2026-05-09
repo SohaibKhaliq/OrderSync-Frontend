@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCustomer } from "../../contexts/CustomerContext";
-import { CafeOrders } from "../../localdb/LocalDB";
+import { cafeCustomerOrders } from "../../controllers/qrmenu.controller";
 
 const STATUS_BADGE = {
   pending: "badge-warning",
@@ -18,8 +18,14 @@ export default function CafeOrdersPage() {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    if (customer?.id) {
-      setOrders(CafeOrders.getByCustomer(customer.id));
+    if (customer?.phone) {
+      cafeCustomerOrders(customer.phone, "default")
+        .then(res => {
+          if (res.data?.success) {
+            setOrders(res.data.orders);
+          }
+        })
+        .catch(console.error);
     }
   }, [customer]);
 
