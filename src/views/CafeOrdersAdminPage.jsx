@@ -14,6 +14,11 @@ import { iconStroke } from "../config/config";
 import toast from "react-hot-toast";
 
 const STATUS_CONFIG = {
+  created: {
+    label: "Pending",
+    color: "badge-warning",
+    icon: <IconClock size={14} stroke={iconStroke} />,
+  },
   pending: {
     label: "Pending",
     color: "badge-warning",
@@ -42,6 +47,7 @@ const STATUS_CONFIG = {
 };
 
 const NEXT_STATUS = {
+  created: "preparing",
   pending: "preparing",
   preparing: "ready",
   ready: "delivered",
@@ -243,7 +249,7 @@ export default function CafeOrdersAdminPage() {
                           onClick={() => handleAdvance(order.id, order.status)}
                           className="btn btn-sm btn-primary flex-1 gap-1"
                         >
-                          {nextCfg.icon} Mark {nextCfg.label}
+                          {nextCfg.icon} {next === 'preparing' ? "Send to Kitchen" : `Mark ${nextCfg.label}`}
                         </button>
                       )}
                       <button
