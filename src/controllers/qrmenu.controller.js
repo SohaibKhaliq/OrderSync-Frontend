@@ -142,3 +142,12 @@ export async function verifyPaymentOTP(email, otp, qrcode = "default") {
     throw error;
   }
 }
+
+export async function createStripePaymentIntent(amount, currency, qrcode = "default") {
+  try {
+    const response = await ApiClient.post(`/qrmenu/${qrcode}/payment/create-intent`, { amount, currency });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
