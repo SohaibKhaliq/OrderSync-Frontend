@@ -610,7 +610,7 @@ export default function CustomersPage() {
                   Current Balance
                 </p>
                 <p className="text-3xl font-bold text-primary">
-                  $
+                  Rs:
                   {parseFloat(activeWalletCustomer.credit_balance || 0).toFixed(
                     2,
                   )}
@@ -657,7 +657,7 @@ export default function CustomersPage() {
                   <div>
                     <p className={clsx("text-sm font-bold uppercase", {
                       "text-green-600": tx.type === 'topup',
-                      "text-red-500": tx.type === 'deduct'
+                      "text-red-500": tx.type === 'deduction'
                     })}>
                       {tx.type}
                     </p>
@@ -667,9 +667,9 @@ export default function CustomersPage() {
                   <div className="text-right">
                     <p className={clsx("text-base font-bold", {
                       "text-green-600": tx.type === 'topup',
-                      "text-red-500": tx.type === 'deduct'
+                      "text-red-500": tx.type === 'deduction'
                     })}>
-                      {tx.type === 'topup' ? '+' : '-'}${parseFloat(tx.amount).toFixed(2)}
+                      Rs: {parseFloat(tx.amount).toFixed(2)}
                     </p>
                     <p className="text-[10px] text-gray-400 uppercase font-bold">{tx.method}</p>
                   </div>
