@@ -60,3 +60,12 @@ export async function deleteCustomer(id) {
     throw error;
   }
 };
+
+export async function adminCustomerWalletTopup(phone, amount, method = "cash", ref = "") {
+  try {
+    const response = await ApiClient.post("/customers/wallet/topup", { phone, amount, method, ref });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
