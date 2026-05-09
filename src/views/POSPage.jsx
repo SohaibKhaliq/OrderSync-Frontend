@@ -896,7 +896,7 @@ export default function POSPage() {
           <div className='sticky w-full px-4 py-4 bg-gradient-to-b from-white to-white/0 border-b rounded-t-2xl'>
             {/* search customer */}
             <div onClick={btnOpenSearchCustomerModal} className="flex items-center gap-2">
-              <input value={customerType=="WALKIN"?"WALKIN CUSTOMER":`${customer.name}`} type="text" placeholder='Search Customer' className='cursor-pointer text-sm w-full border rounded-lg px-4 py-2 bg-gray-50 outline-restro-border-green-light'  />
+              <input value={customerType=="WALKIN"?"WALKIN CUSTOMER":`${customer.name}`} type="text" placeholder='Search Customer' className='cursor-pointer text-sm w-full border rounded-lg px-4 py-2 bg-gray-50 outline-restro-border-green-light' readOnly />
               <button onClick={btnOpenSearchCustomerModal} className="rounded-lg border bg-gray-50 hover:bg-gray-100 transition active:scale-95 hover:shadow-lg text-gray-500 flex items-center justify-center w-9 h-9">
                 <IconSearch size={18} stroke={iconStroke} />
               </button>
