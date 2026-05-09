@@ -36,7 +36,9 @@ export async function createOrderFromQrMenu(
   customerType,
   customer,
   tableId,
-  qrcode
+  paymentMethod = "cash",
+  paymentRef = null,
+  qrcode = "default"
 ) {
   try {
     const response = await ApiClient.post(`/qrmenu/${qrcode || 'default'}/place-order`, {
@@ -44,7 +46,9 @@ export async function createOrderFromQrMenu(
       cartItems,
       customerType,
       customer,
-      tableId
+      tableId,
+      paymentMethod,
+      paymentRef
     });
     return response;
   } catch (error) {
@@ -115,6 +119,24 @@ export async function cafeCustomerAddReservation(customerId, date, tableId, peop
       peopleCount,
       notes
     });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function sendPaymentOTP(email, qrcode = "default") {
+  try {
+    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/send-otp`, { email });
+    return response;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function verifyPaymentOTP(email, otp, qrcode = "default") {
+  try {
+    const response = await ApiClient.post(`/qrmenu/${qrcode}/auth/verify-otp`, { email, otp });
     return response;
   } catch (error) {
     throw error;
