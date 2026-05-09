@@ -1,22 +1,35 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { CustomerAccounts } from "../localdb/LocalDB";
 
 const CustomerContext = createContext(null);
+const CAFE_SESSION_KEY = "cafe_user_session";
 
 export function CustomerProvider({ children }) {
-  const [customer, setCustomer] = useState(() => CustomerAccounts.getSession());
+  const [customer, setCustomer] = useState(() => {
+    try {
+      const data = localStorage.getItem(CAFE_SESSION_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch {
+      return null;
+    }
+  });
 
   function login(account) {
+    localStorage.setItem(CAFE_SESSION_KEY, JSON.stringify(account));
     setCustomer(account);
   }
 
   function logout() {
-    CustomerAccounts.logout();
+    localStorage.removeItem(CAFE_SESSION_KEY);
     setCustomer(null);
   }
 
   function refreshSession() {
-    setCustomer(CustomerAccounts.getSession());
+    try {
+      const data = localStorage.getItem(CAFE_SESSION_KEY);
+      setCustomer(data ? JSON.parse(data) : null);
+    } catch {
+      setCustomer(null);
+    }
   }
 
   // Sync across tabs and listen for local updates
