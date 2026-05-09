@@ -8,7 +8,6 @@
  *  • Guest count capped to table capacity
  *  • QR code per table (links to /table/:id) in a popup modal
  *  • Confirmation modal before saving
- *  • Persists to LocalStorage via LocalDB
  */
 import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -25,7 +24,7 @@ import {
   IconCheck,
   IconBuildingSkyscraper,
 } from "@tabler/icons-react";
-import { getDB, saveDB, TableBookings } from "../../localdb/LocalDB";
+import { getStoreTables } from "../../controllers/qrmenu.controller";
 
 // ── Floor accent colours ───────────────────────────────
 const FLOOR_COLORS = {
@@ -95,12 +94,13 @@ export default function CafeReservationPage() {
 
   // ── Load tables & default date ──────────────────────
   useEffect(() => {
-    try {
-      const db = getDB();
-      setTables(db.store_tables || []);
-    } catch (err) {
-      console.error(err);
-    }
+    getStoreTables("default")
+      .then(res => {
+        if (res.data?.success) {
+          setTables(res.data.tables);
+        }
+      })
+      .catch(console.error);
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -116,7 +116,8 @@ export default function CafeReservationPage() {
     if (!form.date) return;
     const map = {};
     tables.forEach((t) => {
-      map[t.id] = TableBookings.isBooked(t.id, form.date);
+      // Backend reservations not implemented yet, so assume all available
+      map[t.id] = false;
     });
     setBookedMap(map);
   }, [form.date, tables]);
@@ -165,57 +166,31 @@ export default function CafeReservationPage() {
     setShowConfirm(true);
   }
 
-  // ── Step 2: Save to LocalDB ──────────────────────────
+  // ── Step 2: Save via Backend API ──────────────────────────
   async function handleConfirm() {
     setLoading(true);
     try {
-      const db = getDB();
-      db.reservations = db.reservations || [];
-      const reservationId = Date.now() + Math.floor(Math.random() * 1000);
       const combinedDateTime = `${form.date}T${form.time}:00`;
-      const sel = tables.find((t) => String(t.id) === form.tableId);
-
-      const newReservation = {
-        id: reservationId,
-        customer_id: customer?.id || "GUEST",
-        customer_name: form.name,
-        customer_phone: form.phone,
-        date: combinedDateTime,
-        table_id: form.tableId ? parseInt(form.tableId) : null,
-        table_title: sel?.title || "Any Table",
-        status: "booked",
-        notes: form.notes,
-        people_count: parseInt(form.peopleCount),
-        unique_code: `RES-${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-
-      db.reservations.push(newReservation);
-      saveDB(db);
-
-      addNotification({
-        userId: "admin",
-        forAdmin: true,
-        message: `New reservation: ${form.peopleCount} pax for ${form.name} at ${sel?.title} on ${new Date(combinedDateTime).toLocaleString()}`,
-        type: "info",
-      });
-      if (customer?.id) {
-        addNotification({
-          userId: customer.id,
-          message: `Your reservation (${newReservation.unique_code}) for ${form.peopleCount} people on ${new Date(combinedDateTime).toLocaleDateString()} is confirmed!`,
-          type: "success",
-        });
-      }
-
-      toast.success(
-        `Reservation confirmed! Code: ${newReservation.unique_code}`,
+      
+      const res = await cafeCustomerAddReservation(
+        customer?.phone || form.phone,
+        combinedDateTime,
+        form.tableId,
+        form.peopleCount,
+        form.notes,
+        qrcode
       );
-      setShowConfirm(false);
-      navigate("/", { replace: true });
+
+      if (res.data?.success) {
+        toast.success(
+          `Reservation confirmed! Code: ${res.data.uniqueCode}`,
+        );
+        setShowConfirm(false);
+        navigate("/", { replace: true });
+      }
     } catch (err) {
       console.error(err);
-      toast.error("Failed to book. Please try again.");
+      toast.error(err.response?.data?.message || "Failed to book. Please try again.");
     } finally {
       setLoading(false);
     }
